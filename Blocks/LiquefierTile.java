@@ -13,6 +13,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import LM.CommonProxy;
@@ -20,6 +21,7 @@ import LM.CommonProxy;
 public class LiquefierTile extends TileBuildCraft implements ITankContainer, IInventory{
 
 	public final LiquidTank output = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 32);
+	public final LiquidTank waterTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME*16);
 	public ItemStack[] input = new ItemStack[4];
 	
 	public int cookTime = 0;
@@ -34,14 +36,21 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	/* UPDATING */
 	@Override
 	public void updateEntity() {
-		if (CommonProxy.proxy.isSimulating(worldObj) && hasUpdate && tracker.markTimeIfDelay(worldObj, 2 * BuildCraftCore.updateFactor)) {
+		if (CommonProxy.proxy.isSimulating(worldObj) && hasUpdate) {
 			sendNetworkUpdate();
 			hasUpdate = false;
 		}
 
-		if(CommonProxy.proxy.isSimulating(worldObj)) {
+		if(cookTime == 100) {
+			cookTime = 0;
 			if(input[0] != null) {
-				input[0].stackSize--;
+				if(0 < output.fill(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME), true)) {
+					if(input[0].stackSize == 1) {
+						input[0] = null;
+					} else {
+						input[0].stackSize--;
+					}
+				}
 				hasUpdate = true;
 			}
 		}
@@ -49,12 +58,13 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 		if (CommonProxy.proxy.isRenderWorld(worldObj)) {
 			return;
 		}
+		cookTime++;
 	}
 	
 	/* NETWORK */
 	@Override
 	public PacketPayload getPacketPayload() {
-		PacketPayload payload = new PacketPayload(17, 0, 0);
+		PacketPayload payload = new PacketPayload(20, 0, 0);
 		if (output.getLiquid() != null) {
 			payload.intPayload[0] = output.getLiquid().itemID;
 			payload.intPayload[1] = output.getLiquid().itemMeta;
@@ -111,6 +121,15 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 		else {
 			payload.intPayload[16] = 0;
 		}
+		if (waterTank.getLiquid() != null) {
+			payload.intPayload[17] = waterTank.getLiquid().itemID;
+			payload.intPayload[18] = waterTank.getLiquid().itemMeta;
+			payload.intPayload[19] = waterTank.getLiquid().amount;
+		} else {
+			payload.intPayload[17] = 0;
+			payload.intPayload[18] = 0;
+			payload.intPayload[19] = 0;
+		}
 		return payload;
 	}
 	
@@ -122,14 +141,40 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 		} else {
 			output.setLiquid(null);
 		}
-		input[0] = new ItemStack(packet.payload.intPayload[3], packet.payload.intPayload[5], packet.payload.intPayload[4]);
-		input[1] = new ItemStack(packet.payload.intPayload[6], packet.payload.intPayload[8], packet.payload.intPayload[7]);
-		input[2] = new ItemStack(packet.payload.intPayload[9], packet.payload.intPayload[11], packet.payload.intPayload[10]);
-		input[3] = new ItemStack(packet.payload.intPayload[12], packet.payload.intPayload[14], packet.payload.intPayload[13]);
+		if(packet.payload.intPayload[3] != 0) {
+			input[0] = new ItemStack(packet.payload.intPayload[3], packet.payload.intPayload[5], packet.payload.intPayload[4]);
+		}
+		else {
+			input[0] = null;
+		}
+		if(packet.payload.intPayload[6] != 0) {
+			input[1] = new ItemStack(packet.payload.intPayload[6], packet.payload.intPayload[8], packet.payload.intPayload[7]);
+		}
+		else {
+			input[1] = null;
+		}
+		if(packet.payload.intPayload[9] != 0) {
+			input[2] = new ItemStack(packet.payload.intPayload[9], packet.payload.intPayload[11], packet.payload.intPayload[10]);
+		}
+		else {
+			input[2] = null;
+		}
+		if(packet.payload.intPayload[12] != 0) {
+			input[3] = new ItemStack(packet.payload.intPayload[12], packet.payload.intPayload[14], packet.payload.intPayload[13]);
+		}
+		else {
+			input[3] = null;
+		}
 		cookTime = packet.payload.intPayload[15];
 		cooking = false;
 		if(packet.payload.intPayload[16] == 1) {
 			cooking = true;
+		}
+		if (packet.payload.intPayload[17] > 0) {
+			LiquidStack liquid = new LiquidStack(packet.payload.intPayload[17], packet.payload.intPayload[19], packet.payload.intPayload[18]);
+			waterTank.setLiquid(liquid);
+		} else {
+			waterTank.setLiquid(null);
 		}
 	}
 	
@@ -137,14 +182,23 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	@Override
 	public void readFromNBT(NBTTagCompound data) {
 		super.readFromNBT(data);
-		if (data.hasKey("stored") && data.hasKey("liquidId")) {
-			LiquidStack liquid = new LiquidStack(data.getInteger("liquidId"), data.getInteger("stored"), 0);
-			output.setLiquid(liquid);
-		} else {
+		if(data.hasKey("Output")) {
 			LiquidStack liquid = new LiquidStack(0, 0, 0);
-			liquid.readFromNBT(data.getCompoundTag("Liquefier"));
+			liquid.readFromNBT(data.getCompoundTag("Output"));
 			output.setLiquid(liquid);
 		}
+		else {
+			output.setLiquid(null);
+		}
+		if(data.hasKey("Water")) {
+			LiquidStack liquid = new LiquidStack(0, 0, 0);
+			liquid.readFromNBT(data.getCompoundTag("Water"));
+			waterTank.setLiquid(liquid);
+		}
+		else {
+			waterTank.setLiquid(null);
+		}
+		
 		if(data.getInteger("id0") != 0) {
 			input[0] = new ItemStack(data.getInteger("id0"), data.getInteger("amount0"), data.getInteger("damage0"));
 		}
@@ -177,7 +231,10 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	public void writeToNBT(NBTTagCompound data) {
 		super.writeToNBT(data);
 		if (output.getLiquid() != null) {
-			data.setTag("Liquefier", output.getLiquid().writeToNBT(new NBTTagCompound()));
+			data.setTag("Output", output.getLiquid().writeToNBT(new NBTTagCompound()));
+		}
+		if(waterTank.getLiquid() != null) {
+			data.setTag("Water", waterTank.getLiquid().writeToNBT(new NBTTagCompound()));
 		}
 		if(input[0] != null) {
 			data.setInteger("id0", input[0].getItem().shiftedIndex);
@@ -221,21 +278,31 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-		return 0;
+		int filled = waterTank.fill(resource, doFill);
+		if(filled > 0) {
+			hasUpdate = true;
+		}
+		return filled;
 	}
 
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-		return 0;
+		int filled = waterTank.fill(resource, doFill);
+		if(filled > 0) {
+			hasUpdate = true;
+		}
+		return filled;
 	}
 
 	@Override
 	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		hasUpdate = true;
 		return output.drain(maxDrain, doDrain);
 	}
 
 	@Override
 	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
+		hasUpdate = true;
 		return output.drain(maxDrain, doDrain);
 	}
 
@@ -309,5 +376,47 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	@Override
 	public void closeChest() {
 		
+	}
+
+	public int getScaledOutput()
+	{
+		if(output.getLiquid()!=null)
+			return (int) ((((float) output.getLiquid().amount / output.getCapacity())) * 58);
+		return 0;
+	}
+	
+	public int getOutputId() {
+		if(output.getLiquid() != null) {
+			return output.getLiquid().itemID;
+		}
+		return -1;
+	}
+
+	public int getOutputMeta() {
+		if(output.getLiquid() != null) {
+			return output.getLiquid().itemMeta;
+		}
+		return -1;
+	}
+	
+	public int getScaledWater()
+	{
+		if(waterTank.getLiquid()!=null)
+			return (int) ((((float) waterTank.getLiquid().amount / waterTank.getCapacity())) * 58);
+		return 0;
+	}
+	
+	public int getWaterId() {
+		if(waterTank.getLiquid() != null) {
+			return waterTank.getLiquid().itemID;
+		}
+		return -1;
+	}
+
+	public int getWaterMeta() {
+		if(waterTank.getLiquid() != null) {
+			return waterTank.getLiquid().itemMeta;
+		}
+		return -1;
 	}
 }

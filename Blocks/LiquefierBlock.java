@@ -27,7 +27,6 @@ public class LiquefierBlock extends BlockContainer{
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
 		//super.onBlockActivated(world, x, y, z, entityplayer, par6, par7, par8, par9);
-		System.out.println("Bah");
 		if (entityplayer.isSneaking())
 			return false;
 
@@ -36,7 +35,7 @@ public class LiquefierBlock extends BlockContainer{
 			return true;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	@Override

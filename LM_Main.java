@@ -70,6 +70,7 @@ public class LM_Main {
 	 */
 	@PreInit
 	public void preInitialise(FMLPreInitializationEvent event) {
+		DEFAULT_SETTINGS.readConfig(event.getSuggestedConfigurationFile());
 		proxy.registerEventHandlers();
 	}
 	

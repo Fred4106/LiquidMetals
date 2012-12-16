@@ -2,6 +2,9 @@ package LM;
 
 import java.util.ArrayList;
 
+import LM.Blocks.LiquefierBlock;
+import LM.Blocks.LiquefierTile;
+
 import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EnumToolMaterial;
@@ -25,6 +28,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -35,11 +39,12 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * This class also holds references to all our blocks and items that get added to the game.
  */
 @Mod(modid = "LM", name = "LiquidMetals", useMetadata = true)
-@NetworkMod(serverSideRequired = false, clientSideRequired = true)
+@NetworkMod(serverSideRequired = true, clientSideRequired = true)
 public class LM_Main {
 
-	@Instance("lm_main")
-	public static LM_Main instance;
+	@Instance("LM")
+	public static LM_Main instance = new LM_Main();
+	public static GuiHandler guiHandler = new GuiHandler();
 	
 	@SidedProxy(clientSide = "LM.ClientProxy", serverSide = "LM.CommonProxy")
 	public static CommonProxy proxy;
@@ -52,6 +57,9 @@ public class LM_Main {
 	public static Item bucketMoltenIron;
 	public static Item bucketMoltenGold;
 	//end
+	
+	//start blocks
+	public static LiquefierBlock liquefierBlock;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -73,6 +81,8 @@ public class LM_Main {
 	 */
 	@Init
 	public void initialise(FMLInitializationEvent event) {
+		NetworkRegistry.instance().registerGuiHandler(instance, guiHandler);
+		
 		//iron
 		moltenIron = new ItemLiquidMetal(7000).setItemName("moltenIron").setIconIndex(0);
 		bucketMoltenIron = new ItemLiquidMetal(7001).setItemName("bucketMoltenIron").setContainerItem(Item.bucketEmpty).setIconIndex(1).setMaxStackSize(1).setCreativeTab(CreativeTabs.tabMisc);
@@ -87,6 +97,12 @@ public class LM_Main {
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketMoltenGold), new ItemStack(Item.bucketEmpty)));
 		LanguageRegistry.addName(bucketMoltenGold, "Molten Gold Bucket");
 		LanguageRegistry.addName(moltenGold, "Molten Gold");
+		
+		//machines
+		liquefierBlock = new LiquefierBlock(500);
+		GameRegistry.registerBlock(liquefierBlock);
+		LanguageRegistry.addName(liquefierBlock, "Liquefier");
+		GameRegistry.registerTileEntity(LiquefierTile.class, "Liquefier");
 		
 		proxy.registerRenderers();
 		proxy.registerTextureFX();

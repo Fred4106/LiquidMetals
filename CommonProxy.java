@@ -33,4 +33,12 @@ public class CommonProxy {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public boolean isSimulating(World worldObj) {
+		return !worldObj.isRemote;
+	}
+
+	public boolean isRenderWorld(World worldObj) {
+		return worldObj.isRemote;
+	}
 }

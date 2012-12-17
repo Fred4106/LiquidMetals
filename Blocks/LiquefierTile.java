@@ -371,7 +371,6 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 	@Override
 	public void setInventorySlotContents(int var1, ItemStack var2) {
 		input[var1] = var2;
-		
 	}
 
 	@Override

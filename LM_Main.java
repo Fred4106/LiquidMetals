@@ -50,12 +50,16 @@ public class LM_Main {
 	public static CommonProxy proxy;
 	
 	//start
-	public static Item moltenIron;
-	public static Item moltenGold;
+	public static Item molten;
+	public static Item bucketMolten;
+	public static Item gravel;
+	public static Item sand;
+	public static Item dust;
 	public static LiquidStack liquidMoltenIron;
 	public static LiquidStack liquidMoltenGold;
-	public static Item bucketMoltenIron;
-	public static Item bucketMoltenGold;
+	public static LiquidStack liquidMoltenCopper;
+	public static LiquidStack liquidMoltenTin;
+	public static LiquidStack liquidMoltenSilver;
 	//end
 	
 	//start blocks
@@ -71,6 +75,9 @@ public class LM_Main {
 	@PreInit
 	public void preInitialise(FMLPreInitializationEvent event) {
 		DEFAULT_SETTINGS.readConfig(event.getSuggestedConfigurationFile());
+		DEFAULT_SETTINGS.setup();
+		DEFAULT_SETTINGS.initItems();
+		DEFAULT_SETTINGS.setupLiquids();
 		proxy.registerEventHandlers();
 	}
 	
@@ -83,7 +90,7 @@ public class LM_Main {
 	@Init
 	public void initialise(FMLInitializationEvent event) {
 		NetworkRegistry.instance().registerGuiHandler(instance, guiHandler);
-		
+		/*
 		//iron
 		moltenIron = new ItemLiquidMetal(7000).setItemName("moltenIron").setIconIndex(0);
 		bucketMoltenIron = new ItemLiquidMetal(7001).setItemName("bucketMoltenIron").setContainerItem(Item.bucketEmpty).setIconIndex(1).setMaxStackSize(1).setCreativeTab(CreativeTabs.tabMisc);
@@ -98,15 +105,10 @@ public class LM_Main {
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketMoltenGold), new ItemStack(Item.bucketEmpty)));
 		LanguageRegistry.addName(bucketMoltenGold, "Molten Gold Bucket");
 		LanguageRegistry.addName(moltenGold, "Molten Gold");
-		
-		//machines
-		liquefierBlock = new LiquefierBlock(500);
-		GameRegistry.registerBlock(liquefierBlock);
-		LanguageRegistry.addName(liquefierBlock, "Liquefier");
-		GameRegistry.registerTileEntity(LiquefierTile.class, "Liquefier");
-		
+		*/
 		proxy.registerRenderers();
 		proxy.registerTextureFX();
+		
 	}
 	
 	/**
@@ -117,7 +119,7 @@ public class LM_Main {
 	 */
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
-		
+		//RecipeManager.addRecipeArcFurnace(new ItemStack(Block.oreIron, 0, 1), new LiquidStack(moltenIron, LiquidContainerRegistry.BUCKET_VOLUME));
 	}
 	
 }

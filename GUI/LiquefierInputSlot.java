@@ -1,6 +1,7 @@
 package LM.GUI;
 
 import LM.DEFAULT_SETTINGS;
+import LM.RecipeManager;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -21,12 +22,8 @@ public class LiquefierInputSlot extends Slot{
 		}
 		else
 		{
-			for(int a = 0; a < DEFAULT_SETTINGS.metals.size(); a++) {
-				for(int b = 0; b < DEFAULT_SETTINGS.metals.get(a).getOres().length; b++) {
-					if(item.getItem() == DEFAULT_SETTINGS.metals.get(a).getOres()[b].getItem()) {
-						return true;
-					}
-				}
+			if(RecipeManager.validArcInput(item)) {
+				return true;
 			}
 		}
 		return false;

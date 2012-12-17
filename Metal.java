@@ -3,6 +3,7 @@ package LM;
 import java.util.ArrayList;
 
 import net.minecraft.src.ItemStack;
+import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Metal {
@@ -12,17 +13,20 @@ public class Metal {
 	private String ingotName = "";
 	private ItemStack ingot;
 	private int dustId;
+	private LiquidStack liquidStack;
 	
-	public Metal(ItemStack ore, int dustId, ItemStack ingot) {
+	public Metal(ItemStack ore, int dustId, LiquidStack liquidStack, ItemStack ingot) {
 		this.ore = ore;
 		this.ingot = ingot;
 		this.dustId = dustId;
+		this.liquidStack = liquidStack;
 	}
 	
-	public Metal(String oreIdent, int dustId, String outputIdent) {
+	public Metal(String oreIdent, int dustId, LiquidStack liquidStack, String outputIdent) {
 		oreName = oreIdent;
 		this.dustId = dustId;
 		ingotName = outputIdent;
+		this.liquidStack = liquidStack;
 	}
 	
 	public ItemStack getIngotOutput() {

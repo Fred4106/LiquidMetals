@@ -17,6 +17,7 @@ import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import LM.CommonProxy;
+import LM.RecipeManager;
 
 public class LiquefierTile extends TileBuildCraft implements ITankContainer, IInventory{
 
@@ -41,17 +42,16 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 			hasUpdate = false;
 		}
 
-		if(cookTime == 100) {
+		if(cookTime == 50) {
 			cookTime = 0;
 			if(input[0] != null) {
-				if(0 < output.fill(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME), true)) {
+				//if(attemptFill()) {
 					if(input[0].stackSize == 1) {
 						input[0] = null;
 					} else {
 						input[0].stackSize--;
 					}
-				}
-				hasUpdate = true;
+				//}
 			}
 		}
 		
@@ -59,6 +59,27 @@ public class LiquefierTile extends TileBuildCraft implements ITankContainer, IIn
 			return;
 		}
 		cookTime++;
+	}
+	
+	public ItemStack attemptFill() {
+		if(input[0] == null) {
+			
+		} else if(input[1] == null) {
+			
+		} else if(input[2] == null) {
+			
+		} else if(input[3] == null) {
+			
+		} else {
+			return null;
+		}
+		if(0 < output.fill(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME), true)) {
+			hasUpdate = true;
+			//return true;
+		} else {
+			return null;
+		}
+		return null;
 	}
 	
 	/* NETWORK */

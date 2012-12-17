@@ -1,7 +1,10 @@
 package LM;
 
+import LM.render.TextureCopperFX;
 import LM.render.TextureGoldFX;
 import LM.render.TextureIronFX;
+import LM.render.TextureSilverFX;
+import LM.render.TextureTinFX;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
@@ -29,5 +32,8 @@ public class ClientProxy extends CommonProxy {
 		net.minecraft.src.RenderEngine renderEngine = FMLClientHandler.instance().getClient().renderEngine;
 		renderEngine.registerTextureFX(new TextureIronFX());
 		renderEngine.registerTextureFX(new TextureGoldFX());
+		renderEngine.registerTextureFX(new TextureCopperFX());
+		renderEngine.registerTextureFX(new TextureTinFX());
+		renderEngine.registerTextureFX(new TextureSilverFX());
 	}
 }

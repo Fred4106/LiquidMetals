@@ -4,36 +4,88 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
+import LM.CommonProxy;
 import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
 
 public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	public ItemStack[] inventory = new ItemStack[2];
+	public int cookTime = 0;
+	public boolean hasUpdate = false;
+	
+	private static int cookReq = 100;
 	
 	public void updateEntity() {
-		
+		if (CommonProxy.proxy.isSimulating(worldObj) && hasUpdate) {
+			sendNetworkUpdate();
+			hasUpdate = false;
+		}
+	}
+
+	private int[] getValuesArray() {
+		int[] values = new int[7];
+		if(inventory[0] != null) {
+			values[0] = inventory[0].itemID;
+			values[1] = inventory[0].getItemDamage();
+			values[2] = inventory[0].stackSize;
+		} else {
+			values[0] = 0;
+			values[1] = 0;
+			values[2] = 0;
+		}
+		if(inventory[1] != null) {
+			values[3] = inventory[1].itemID;
+			values[4] = inventory[1].getItemDamage();
+			values[5] = inventory[1].stackSize;
+		} else {
+			values[3] = 0;
+			values[4] = 0;
+			values[5] = 0;
+		}
+		values[6] = cookTime;
+		return values;
+	}
+	
+	private void useValuesArray(int[] values) {
+		if(values[0] != 0) {
+			inventory[0] = new ItemStack(values[0], values[1], values[2]);
+		} else {
+			inventory[0] = null;
+		}
+		if(values[3] != 0) {
+			inventory[1] = new ItemStack(values[3], values[4], values[5]);
+		} else {
+			inventory[2] = null;
+		}
+		cookTime = values[6];
 	}
 	
 	@Override
 	public PacketPayload getPacketPayload() {
-		PacketPayload payload = new PacketPayload(20, 0, 0);
+		int[] intpayload = getValuesArray();
+		PacketPayload payload = new PacketPayload(intpayload.length, 0, 0);
+		for(int a = 0; a < intpayload.length; a++) {
+			payload.intPayload[a] = intpayload[a];
+		}
 		return payload;
 	}
 	
 	@Override
 	public void handleUpdatePacket(PacketUpdate packet) {
-		
+		useValuesArray(packet.payload.intPayload);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound data) {
 		super.readFromNBT(data);
+		useValuesArray(data.getIntArray("Values"));
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound data) {
 		super.writeToNBT(data);
+		data.setIntArray("Values", getValuesArray());
 	}
 	
 	//required stuff

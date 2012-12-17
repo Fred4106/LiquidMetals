@@ -17,7 +17,6 @@ import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import LM.CommonProxy;
-import LM.RecipeManager;
 
 public class LiquefierTile extends TileBuildCraft implements ITankContainer, IInventory{
 

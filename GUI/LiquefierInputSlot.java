@@ -1,7 +1,6 @@
 package LM.GUI;
 
 import LM.DEFAULT_SETTINGS;
-import LM.RecipeManager;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -22,10 +21,7 @@ public class LiquefierInputSlot extends Slot{
 		}
 		else
 		{
-			if(RecipeManager.validArcInput(item)) {
-				return true;
-			}
+			return true;
 		}
-		return false;
 	}
 }

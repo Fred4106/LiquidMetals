@@ -5,6 +5,10 @@ import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import LM.CommonProxy;
+import LM.DEFAULT_SETTINGS;
+import LM.GrinderRecipe;
+import LM.GrinderRecipeManager;
+import LM.LM_Main;
 import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
@@ -14,15 +18,73 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	public int cookTime = 0;
 	public boolean hasUpdate = false;
 	
-	private static int cookReq = 100;
+	public static int cookReq = 500;
 	
+	/* UPDATING */
+	@Override
 	public void updateEntity() {
-		if (CommonProxy.proxy.isSimulating(worldObj) && hasUpdate) {
+		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 100 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
 		}
+		if(canCook()) {
+			cookTime++;
+		} else {
+			cookTime = 0;
+		}
+		if (CommonProxy.proxy.isRenderWorld(worldObj)) {
+			return;
+		}
+		if(cookTime == cookReq) {
+			if(canCook()) {
+				doCook();
+			}
+			cookTime = 0;
+		}
 	}
-
+	
+	private boolean canCook() {
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		if(tempRecipe != null) {
+			if(inventory[1] == null) {
+				return true;
+			}
+			else {
+				if((inventory[1].getItem().shiftedIndex == tempRecipe.getOutput().getItem().shiftedIndex) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void ajustInput() {
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		if(inventory[0].stackSize > tempRecipe.getInput().stackSize) {
+			inventory[0].stackSize-=2;
+			return;
+		} else {
+			inventory[0] = null;
+			return;
+		}
+	}
+	
+	private void doCook() {
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		if(tempRecipe != null) {
+			if(inventory[1] == null) {
+				inventory[1] = tempRecipe.getOutput();
+			}
+			else {
+				if((inventory[1].getItem().shiftedIndex == tempRecipe.getOutput().getItem().shiftedIndex) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
+					inventory[1].stackSize+=tempRecipe.getOutput().stackSize;
+				}
+			}
+			ajustInput();
+			hasUpdate = true;
+		}
+	}
+	
 	private int[] getValuesArray() {
 		int[] values = new int[7];
 		if(inventory[0] != null) {
@@ -49,14 +111,14 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	
 	private void useValuesArray(int[] values) {
 		if(values[0] != 0) {
-			inventory[0] = new ItemStack(values[0], values[1], values[2]);
+			inventory[0] = new ItemStack(values[0], values[2], values[1]);
 		} else {
 			inventory[0] = null;
 		}
 		if(values[3] != 0) {
-			inventory[1] = new ItemStack(values[3], values[4], values[5]);
+			inventory[1] = new ItemStack(values[3], values[5], values[4]);
 		} else {
-			inventory[2] = null;
+			inventory[1] = null;
 		}
 		cookTime = values[6];
 	}
@@ -89,6 +151,11 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	}
 	
 	//required stuff
+	@Override
+	public void onInventoryChanged() {
+		hasUpdate = true;
+	}
+	
 	@Override
 	public int getSizeInventory() {
 		return inventory.length;

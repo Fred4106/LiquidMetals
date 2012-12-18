@@ -1,8 +1,7 @@
 package LM;
 
-import LM.Blocks.LiquefierTile;
-import LM.GUI.LiquefierContainer;
-import LM.GUI.LiquefierGui;
+import LM.Blocks.*;
+import LM.GUI.*;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
@@ -10,18 +9,18 @@ import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
 	
-	public static final int LIQUEFIER = 0;
+	public static final int Grinder1 = 0;
 	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if(!world.blockExists(x,  y, z))
 			return null;
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if(ID == LIQUEFIER) {
-			if(!(tile instanceof LiquefierTile)) {
+		if(ID == Grinder1) {
+			if(!(tile instanceof TileGrinder1)) {
 				return null;
 			}
-			return new LiquefierGui(new LiquefierContainer(player.inventory, (LiquefierTile) tile), (LiquefierTile) tile);
+			return new GuiGrinder1(new ContainerGrinder1(player.inventory, (TileGrinder1) tile), (TileGrinder1) tile);
 		}
 		return null;
 	}
@@ -31,11 +30,11 @@ public class GuiHandler implements IGuiHandler {
 		if(!world.blockExists(x,  y, z))
 			return null;
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if(ID == LIQUEFIER) {
-			if(!(tile instanceof LiquefierTile)) {
+		if(ID == Grinder1) {
+			if(!(tile instanceof TileGrinder1)) {
 				return null;
 			}
-			return new LiquefierContainer(player.inventory, (LiquefierTile) tile);
+			return new ContainerGrinder1(player.inventory, (TileGrinder1) tile);
 		}
 		return null;
 	}

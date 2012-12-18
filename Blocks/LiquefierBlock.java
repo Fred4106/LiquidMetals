@@ -31,7 +31,7 @@ public class LiquefierBlock extends BlockContainer{
 			return false;
 
 		if (!CommonProxy.proxy.isRenderWorld(world)) {
-			entityplayer.openGui(LM_Main.instance, GuiHandler.LIQUEFIER, world, x, y, z);
+			entityplayer.openGui(LM_Main.instance, 1, world, x, y, z);
 			return true;
 		}
 		

@@ -2,6 +2,7 @@ package LM;
 
 import java.util.ArrayList;
 
+import LM.Blocks.BlockGrinder1;
 import LM.Blocks.LiquefierBlock;
 import LM.Blocks.LiquefierTile;
 
@@ -18,6 +19,7 @@ import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -64,6 +66,7 @@ public class LM_Main {
 	
 	//start blocks
 	public static LiquefierBlock liquefierBlock;
+	public static BlockGrinder1 blockGrinder1;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -76,8 +79,10 @@ public class LM_Main {
 	public void preInitialise(FMLPreInitializationEvent event) {
 		DEFAULT_SETTINGS.readConfig(event.getSuggestedConfigurationFile());
 		DEFAULT_SETTINGS.setup();
+		DEFAULT_SETTINGS.initBlocks();
 		DEFAULT_SETTINGS.initItems();
 		DEFAULT_SETTINGS.setupLiquids();
+		OreDictionary.registerOre("oreCopper", new ItemStack(Block.sand, 0, 1));
 		proxy.registerEventHandlers();
 	}
 	
@@ -119,7 +124,9 @@ public class LM_Main {
 	 */
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
-		//RecipeManager.addRecipeArcFurnace(new ItemStack(Block.oreIron, 0, 1), new LiquidStack(moltenIron, LiquidContainerRegistry.BUCKET_VOLUME));
+		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreIron, 2, 0), new ItemStack(LM_Main.gravel, 3, 0), 1);
+		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreGold, 2, 0), new ItemStack(LM_Main.gravel, 3, 1), 1);
+		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 1);
 	}
 	
 }

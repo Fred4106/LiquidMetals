@@ -21,11 +21,16 @@ public class SlotInputGrinder1 extends Slot{
 		}
 		else
 		{
-			if(GrinderRecipeManager.getRecipe(item, 1) != null) {
+			System.out.println(item);
+			if(GrinderRecipeManager.getRecipe(item, getTier()) != null) {
+				System.out.println(getTier() + " " + GrinderRecipeManager.getRecipe(item, getTier()).toString());
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	protected int getTier() {
+		return 1;
+	}
 }

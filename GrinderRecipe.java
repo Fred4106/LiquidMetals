@@ -21,6 +21,10 @@ public class GrinderRecipe {
 		return input.copy();
 	}
 	
+	public int getTier() {
+		return tier;
+	}
+	
 	public String toString() {
 		return input.itemID + " " + input.getItemDamage() + " " + input.stackSize + " " +output.itemID + " " + output.getItemDamage() + " " + output.stackSize + " " + tier;
 	}

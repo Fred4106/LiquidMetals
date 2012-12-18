@@ -25,7 +25,8 @@ public class GrinderRecipeManager {
 			return null;
 		}
 		for(int a = 0; a < instance.recipes.size(); a++) {
-  			if((instance.recipes.get(a).getInput().getItem().shiftedIndex == item.getItem().shiftedIndex)  && (instance.recipes.get(a).getInput().getItemDamage() == item.getItemDamage())) {
+  			if((instance.recipes.get(a).getInput().getItem().shiftedIndex == item.getItem().shiftedIndex)  && (instance.recipes.get(a).getInput().getItemDamage() == item.getItemDamage()) && 
+  					(instance.recipes.get(a).getTier() == tier)) {
 				int stackSize = item.stackSize;
   				if(stackSize >= instance.recipes.get(a).getInput().stackSize)
   					return instance.recipes.get(a);

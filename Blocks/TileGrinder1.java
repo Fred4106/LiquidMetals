@@ -44,7 +44,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	}
 	
 	private boolean canCook() {
-		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], getTier());
 		if(tempRecipe != null) {
 			if(inventory[1] == null) {
 				return true;
@@ -59,7 +59,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	}
 	
 	private void ajustInput() {
-		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], getTier());
 		if(inventory[0].stackSize > tempRecipe.getInput().stackSize) {
 			inventory[0].stackSize-=2;
 			return;
@@ -69,8 +69,12 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 		}
 	}
 	
+	protected int getTier() {
+		return 1;
+	}
+	
 	private void doCook() {
-		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], 1);
+		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], getTier());
 		if(tempRecipe != null) {
 			if(inventory[1] == null) {
 				inventory[1] = tempRecipe.getOutput();

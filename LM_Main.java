@@ -3,8 +3,7 @@ package LM;
 import java.util.ArrayList;
 
 import LM.Blocks.BlockGrinder1;
-import LM.Blocks.LiquefierBlock;
-import LM.Blocks.LiquefierTile;
+import LM.Blocks.BlockGrinder2;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
@@ -65,8 +64,8 @@ public class LM_Main {
 	//end
 	
 	//start blocks
-	public static LiquefierBlock liquefierBlock;
 	public static BlockGrinder1 blockGrinder1;
+	public static BlockGrinder2 blockGrinder2;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -125,8 +124,8 @@ public class LM_Main {
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
 		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreIron, 2, 0), new ItemStack(LM_Main.gravel, 3, 0), 1);
-		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreGold, 2, 0), new ItemStack(LM_Main.gravel, 3, 1), 1);
-		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 1);
+		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreGold, 2, 0), new ItemStack(LM_Main.gravel, 3, 1), 2);
+		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 2);
 	}
 	
 }

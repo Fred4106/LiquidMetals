@@ -12,10 +12,12 @@ import net.minecraft.src.World;
 
 public class BlockGrinder1 extends BlockContainer{
 
+	protected String blockName = "smallGrinder";
+	
 	public BlockGrinder1(int par1) {
 		super(par1, Material.iron);
 		setHardness(5F);
-		this.setBlockName("LargeGrinder");
+		this.setBlockName(blockName);
 		setCreativeTab(CreativeTabs.tabDecorations);
 	}
 
@@ -31,11 +33,15 @@ public class BlockGrinder1 extends BlockContainer{
 			return false;
 
 		if (!CommonProxy.proxy.isRenderWorld(world)) {
-			entityplayer.openGui(LM_Main.instance, GuiHandler.Grinder1, world, x, y, z);
+			openGui(world, x, y, z, entityplayer);
 			return true;
 		}
 		
 		return true;
+	}
+	
+	public void openGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
+		entityplayer.openGui(LM_Main.instance, GuiHandler.Grinder1, world, x, y, z);
 	}
 	
 	@Override

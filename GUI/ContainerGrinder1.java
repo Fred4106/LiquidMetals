@@ -17,8 +17,8 @@ public class ContainerGrinder1 extends Container {
 		playerInventory = inventoryPlayer;
 		tile = te;
 		
-		this.addSlotToContainer(new SlotInputGrinder1(inventoryPlayer.player, te, 0, 26, 48));
-		this.addSlotToContainer(new SlotInputGrinder1(inventoryPlayer.player, te, 1, 134, 48));
+		this.addSlotToContainer(getSlot(inventoryPlayer.player, te, 0, 26, 48));
+		this.addSlotToContainer(new SlotOutputGrinder(inventoryPlayer.player, te, 1, 134, 48));
 		
 		for (int var3 = 0; var3 < 3; ++var3)
 		{
@@ -32,6 +32,10 @@ public class ContainerGrinder1 extends Container {
 		{
 			this.addSlotToContainer(new Slot(inventoryPlayer, var3, 8 + var3 * 18, 142));
 		}
+	}
+	
+	public Slot getSlot(EntityPlayer p, TileGrinder1 t, int num, int x, int y) {
+		return new SlotInputGrinder1(p, t, num, x, y);
 	}
 	
 	protected boolean pushItemStack(ItemStack item, int lowSlot, int highSlot, boolean reverseOrder) {
@@ -63,7 +67,7 @@ public class ContainerGrinder1 extends Container {
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer pl, int i) {
 		ItemStack itemstack = null;
-		if(!(inventorySlots.get(i) instanceof LiquefierInputSlot)) {
+		if(!(inventorySlots.get(i) instanceof SlotInputGrinder1)) {
 			if(!((SlotInputGrinder1)inventorySlots.get(0)).isItemValid(((Slot)inventorySlots.get(i)).getStack())) {
 				return null;
 			}

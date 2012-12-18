@@ -8,7 +8,6 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
-import LM.Blocks.LiquefierTile;
 import LM.Blocks.TileGrinder1;
 
 public class GuiGrinder1 extends GuiContainer {
@@ -31,12 +30,16 @@ public class GuiGrinder1 extends GuiContainer {
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 		int getScaledDist = (int) (90*grinder.cookTime/grinder.cookReq);
-		drawTexturedModalRect(left+44, top+51, 0, 166, getScaledDist, 174);
+		drawTexturedModalRect(left+44, top+51, 0, 166, getScaledDist, 10);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2){
-		fontRenderer.drawString(""+grinder.cookTime+"/50", 10, 10, 0x404040);
+		fontRenderer.drawString(getName(), 10, 10, 0x404040);
+	}
+	
+	protected String getName() {
+		return "Small Grinder";
 	}
 
 }

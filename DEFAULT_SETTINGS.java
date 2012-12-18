@@ -7,7 +7,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import LM.Blocks.BlockGrinder1;
+import LM.Blocks.BlockGrinder2;
 import LM.Blocks.TileGrinder1;
+import LM.Blocks.TileGrinder2;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
@@ -55,9 +57,16 @@ public class DEFAULT_SETTINGS {
 	
 	public static void initBlocks() {
 		LM_Main.blockGrinder1 = new BlockGrinder1(500);
+		LM_Main.blockGrinder2 = new BlockGrinder2(501);
+		
 		GameRegistry.registerBlock(LM_Main.blockGrinder1);
+		GameRegistry.registerBlock(LM_Main.blockGrinder2);
+		
 		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rough Ore Grinder");
+		LanguageRegistry.addName(LM_Main.blockGrinder2, "Ore Pulverizer");
+		
 		GameRegistry.registerTileEntity(TileGrinder1.class, "Rough Grinder");
+		GameRegistry.registerTileEntity(TileGrinder2.class, "Ore Pulverizer");
 	}
 	
 	public static void initItems() {

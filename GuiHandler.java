@@ -28,6 +28,11 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new GuiGrinder2(new ContainerGrinder2(player.inventory, (TileGrinder2) tile), (TileGrinder2) tile);
+		} else if(ID == Grinder3) {
+			if(!(tile instanceof TileGrinder3)) {
+				return null;
+			}
+			return new GuiGrinder3(new ContainerGrinder3(player.inventory, (TileGrinder3) tile), (TileGrinder3) tile);
 		}
 		return null;
 	}
@@ -47,6 +52,11 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new ContainerGrinder2(player.inventory, (TileGrinder2) tile);
+		}  else if(ID == Grinder3) {
+			if(!(tile instanceof TileGrinder3)) {
+				return null;
+			}
+			return new ContainerGrinder3(player.inventory, (TileGrinder3) tile);
 		}
 		return null;
 	}

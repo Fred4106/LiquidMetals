@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import LM.Blocks.BlockGrinder1;
 import LM.Blocks.BlockGrinder2;
+import LM.Blocks.BlockGrinder3;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
@@ -52,7 +53,7 @@ public class LM_Main {
 	
 	//start
 	public static Item molten;
-	public static Item bucketMolten;
+	public static Item bucketMolten;	
 	public static Item gravel;
 	public static Item sand;
 	public static Item dust;
@@ -66,6 +67,7 @@ public class LM_Main {
 	//start blocks
 	public static BlockGrinder1 blockGrinder1;
 	public static BlockGrinder2 blockGrinder2;
+	public static BlockGrinder3 blockGrinder3;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -81,7 +83,7 @@ public class LM_Main {
 		DEFAULT_SETTINGS.initBlocks();
 		DEFAULT_SETTINGS.initItems();
 		DEFAULT_SETTINGS.setupLiquids();
-		OreDictionary.registerOre("oreCopper", new ItemStack(Block.sand, 0, 1));
+		OreDictionary.registerOre("oreCopper", new ItemStack(Block.sand, 1, 0));
 		proxy.registerEventHandlers();
 	}
 	
@@ -123,9 +125,7 @@ public class LM_Main {
 	 */
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
-		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreIron, 2, 0), new ItemStack(LM_Main.gravel, 3, 0), 1);
-		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreGold, 2, 0), new ItemStack(LM_Main.gravel, 3, 1), 2);
-		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 2);
+		DEFAULT_SETTINGS.addRecipes();
 	}
 	
 }

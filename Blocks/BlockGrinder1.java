@@ -11,13 +11,11 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
 public class BlockGrinder1 extends BlockContainer{
-
-	protected String blockName = "smallGrinder";
 	
 	public BlockGrinder1(int par1) {
 		super(par1, Material.iron);
 		setHardness(5F);
-		this.setBlockName(blockName);
+		this.setBlockName("SmallGrinder");
 		setCreativeTab(CreativeTabs.tabDecorations);
 	}
 

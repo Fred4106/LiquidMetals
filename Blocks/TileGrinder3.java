@@ -6,7 +6,19 @@ public class TileGrinder3 extends TileGrinder1 {
 	
 	public TileGrinder3() {
 		super();
-		cookReq = 1500;
+		cookReq = 80;
+	}
+	
+	protected boolean useEnergy() {
+		if(powerProvider.useEnergy(8, 8, true) == 8)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	protected void configPower() {
+		powerProvider.configure(5, 8, 8, 8, 8);
 	}
 
 	protected int getTier() {

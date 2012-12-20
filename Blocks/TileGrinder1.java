@@ -9,38 +9,64 @@ import LM.DEFAULT_SETTINGS;
 import LM.GrinderRecipe;
 import LM.GrinderRecipeManager;
 import LM.LM_Main;
+import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerFramework;
+import buildcraft.core.IMachine;
 import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
 
-public class TileGrinder1 extends TileBuildCraft implements IInventory {
+public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerReceptor{
 	public ItemStack[] inventory = new ItemStack[2];
 	public int cookTime = 0;
 	public boolean hasUpdate = false;
 	
-	public static int cookReq = 500;
+	public static int cookReq = 20;
+	
+	protected IPowerProvider powerProvider;
+	
+	public TileGrinder1() {
+		powerProvider = PowerFramework.currentFramework.createPowerProvider();
+		configPower();
+	}
+	
+	protected void configPower() {
+		powerProvider.configure(5, 2, 2, 2, 2);
+	}
 	
 	/* UPDATING */
 	@Override
 	public void updateEntity() {
-		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 100 == 0 || hasUpdate)) {
+		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 10 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
 		}
 		if(canCook()) {
-			cookTime++;
+			if(useEnergy())
+			{
+				cookTime++;
+			}
 		} else {
 			cookTime = 0;
 		}
 		if (CommonProxy.proxy.isRenderWorld(worldObj)) {
 			return;
 		}
-		if(cookTime == cookReq) {
+		if(cookTime >= cookReq) {
 			if(canCook()) {
 				doCook();
 			}
 			cookTime = 0;
 		}
+	}
+	
+	protected boolean useEnergy() {
+		if(powerProvider.useEnergy(2, 2, true) == 2)
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean canCook() {
@@ -90,7 +116,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	}
 	
 	private int[] getValuesArray() {
-		int[] values = new int[7];
+		int[] values = new int[8];
 		if(inventory[0] != null) {
 			values[0] = inventory[0].itemID;
 			values[1] = inventory[0].getItemDamage();
@@ -221,5 +247,23 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory {
 	public void closeChest() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setPowerProvider(IPowerProvider provider) {
+		this.powerProvider = provider;
+	}
+
+	@Override
+	public IPowerProvider getPowerProvider() {
+		return powerProvider;
+	}
+
+	@Override
+	public void doWork() { }
+
+	@Override
+	public int powerRequest() {
+		return (int) Math.ceil(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored() - getPowerProvider().getEnergyStored()));
 	}
 }

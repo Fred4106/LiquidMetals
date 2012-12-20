@@ -125,7 +125,7 @@ public class LM_Main {
 	 */
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
-		DEFAULT_SETTINGS.addRecipes();
+		DEFAULT_SETTINGS.addGrinderRecipes();
 	}
 	
 }

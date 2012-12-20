@@ -99,7 +99,7 @@ public class DEFAULT_SETTINGS {
 		//*/
 	}
 	
-	public static void addRecipes() {
+	public static void addGrinderRecipes() {
 		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreIron, 2, 0), new ItemStack(LM_Main.gravel, 3, 0), 1);
 		GrinderRecipeManager.addRecipe(new ItemStack(Block.oreGold, 2, 0), new ItemStack(LM_Main.gravel, 3, 1), 1);
 		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 1);
@@ -115,6 +115,10 @@ public class DEFAULT_SETTINGS {
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 2), new ItemStack(LM_Main.dust, 3, 2), 3);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 3), new ItemStack(LM_Main.dust, 3, 3), 3);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 4), new ItemStack(LM_Main.dust, 3, 4), 3);
+	}
+	
+	public static void addArcFurnaceRecipes() {
+		//ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 0), new LiquidStack());
 	}
 	
 }

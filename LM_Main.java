@@ -57,11 +57,7 @@ public class LM_Main {
 	public static Item gravel;
 	public static Item sand;
 	public static Item dust;
-	public static LiquidStack liquidMoltenIron;
-	public static LiquidStack liquidMoltenGold;
-	public static LiquidStack liquidMoltenCopper;
-	public static LiquidStack liquidMoltenTin;
-	public static LiquidStack liquidMoltenSilver;
+	public static LiquidStack liquid;
 	//end
 	
 	//start blocks

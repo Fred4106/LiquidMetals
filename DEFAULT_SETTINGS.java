@@ -32,6 +32,8 @@ public class DEFAULT_SETTINGS {
 	public static int liquid = 7004;
 	
 	public static int blockGrinder1 = 500;
+	public static int blockGrinder2 = 501;
+	public static int blockGrinder3 = 502;
 	
 	public static void setup() {
 		names.add("Iron");
@@ -51,6 +53,8 @@ public class DEFAULT_SETTINGS {
 			buckets = config.get("Item Ids", "Buckets", buckets).getInt();
 			liquid = config.get("Item Ids", "Liquid", liquid).getInt();
 			blockGrinder1 = config.get("Block Ids", "Small Grinder", blockGrinder1).getInt();
+			blockGrinder2 = config.get("Block Ids", "Medium Grinder", blockGrinder2).getInt();
+			blockGrinder3 = config.get("Block Ids", "Large Grinder", blockGrinder3).getInt();
 		}
 		finally {
 			config.save();
@@ -84,11 +88,9 @@ public class DEFAULT_SETTINGS {
 	}
 	
 	public static void setupLiquids() {
-		LM_Main.liquidMoltenIron = LiquidDictionary.getOrCreateLiquid("Molten " + names.get(0), new LiquidStack(LM_Main.molten.shiftedIndex, 1, 0));
-		LM_Main.liquidMoltenGold = LiquidDictionary.getOrCreateLiquid("Molten " + names.get(1), new LiquidStack(LM_Main.molten.shiftedIndex, 1, 1));
-		LM_Main.liquidMoltenCopper = LiquidDictionary.getOrCreateLiquid("Molten " + names.get(2), new LiquidStack(LM_Main.molten.shiftedIndex, 1, 2));
-		LM_Main.liquidMoltenTin = LiquidDictionary.getOrCreateLiquid("Molten " + names.get(3), new LiquidStack(LM_Main.molten.shiftedIndex, 1, 3));
-		LM_Main.liquidMoltenSilver = LiquidDictionary.getOrCreateLiquid("Molten " + names.get(4), new LiquidStack(LM_Main.molten.shiftedIndex, 1, 4));
+		for(int a = 0; a < names.size(); a++) {
+			LiquidDictionary.getOrCreateLiquid("Molten " + names.get(a), new LiquidStack(LM_Main.molten.shiftedIndex, 1, a));
+		}
 		
 		//* Comment out below to remove molten buckets without breaking worlds or items.
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(0), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 0), new ItemStack(Item.bucketEmpty)));

@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
+import LM.Blocks.BlockFurnace;
 import LM.Blocks.BlockGrinder1;
 import LM.Blocks.BlockGrinder2;
 import LM.Blocks.BlockGrinder3;
+import LM.Blocks.TileFurnace;
 import LM.Blocks.TileGrinder1;
 import LM.Blocks.TileGrinder2;
 import LM.Blocks.TileGrinder3;
@@ -62,21 +64,25 @@ public class DEFAULT_SETTINGS {
 	}
 	
 	public static void initBlocks() {
-		LM_Main.blockGrinder1 = new BlockGrinder1(500);
-		LM_Main.blockGrinder2 = new BlockGrinder2(501);
-		LM_Main.blockGrinder3 = new BlockGrinder3(502);
+		LM_Main.blockGrinder1 = new BlockGrinder1(blockGrinder1);
+		LM_Main.blockGrinder2 = new BlockGrinder2(blockGrinder2);
+		LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
+		LM_Main.blockFurnace = new BlockFurnace(503);
 		
 		GameRegistry.registerBlock(LM_Main.blockGrinder1);
 		GameRegistry.registerBlock(LM_Main.blockGrinder2);
 		GameRegistry.registerBlock(LM_Main.blockGrinder3);
+		GameRegistry.registerBlock(LM_Main.blockFurnace);
 		
 		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
 		LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");
 		LanguageRegistry.addName(LM_Main.blockGrinder3, "Fine Grinder");
+		LanguageRegistry.addName(LM_Main.blockFurnace, "Arc Furnace");
 		
 		GameRegistry.registerTileEntity(TileGrinder1.class, "Rock Pulverizer");
 		GameRegistry.registerTileEntity(TileGrinder2.class, "Rough Grinder");
 		GameRegistry.registerTileEntity(TileGrinder3.class, "Fine Grinder");
+		GameRegistry.registerTileEntity(TileFurnace.class, "Arc Furnace");
 	}
 	
 	public static void initItems() {
@@ -119,8 +125,24 @@ public class DEFAULT_SETTINGS {
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 4), new ItemStack(LM_Main.dust, 3, 4), 3);
 	}
 	
+	public static void addIngotFormerRecipes() {
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(0), LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotIron, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(1), LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotGold, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(2), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(3), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotTin");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(4), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotSilver");
+	}
+	
 	public static void addArcFurnaceRecipes() {
-		//ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 0), new LiquidStack());
+		for(int a = 0; a < names.size(); a++) {
+			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
+		}
+		for(int a = 0; a < names.size(); a++) {
+			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
+		}
+		for(int a = 0; a < names.size(); a++) {
+			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
+		}
 	}
 	
 }

@@ -12,9 +12,12 @@ public class GuiHandler implements IGuiHandler {
 	public static final int Grinder1 = 0;
 	public static final int Grinder2 = 1;
 	public static final int Grinder3 = 2;
+	public static final int Furnace = 3;
+	public static final int IngotFormer = 4;
 	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		System.out.println("opens now.");
 		if(!world.blockExists(x,  y, z))
 			return null;
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
@@ -33,6 +36,14 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new GuiGrinder3(new ContainerGrinder3(player.inventory, (TileGrinder3) tile), (TileGrinder3) tile);
+		} else if(ID == Furnace) {
+			System.out.println("Open you pos gui");
+			if(!(tile instanceof TileFurnace)) {
+				System.out.println("Or not.");
+				return null;
+			}
+			System.out.println("Its opening now.");
+			return new GuiFurnace(new ContainerFurnace(player.inventory, (TileFurnace) tile), (TileFurnace) tile);
 		}
 		return null;
 	}
@@ -57,6 +68,14 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new ContainerGrinder3(player.inventory, (TileGrinder3) tile);
+		}  else if(ID == Furnace) {
+			System.out.println("Open again you pos gui");
+			if(!(tile instanceof TileFurnace)) {
+				System.out.println("Or not again");
+				return null;
+			}
+			System.out.println("Its opening now again");
+			return new ContainerFurnace(player.inventory, (TileFurnace) tile);
 		}
 		return null;
 	}

@@ -2,6 +2,7 @@ package LM;
 
 import java.util.ArrayList;
 
+import LM.Blocks.BlockFurnace;
 import LM.Blocks.BlockGrinder1;
 import LM.Blocks.BlockGrinder2;
 import LM.Blocks.BlockGrinder3;
@@ -64,6 +65,7 @@ public class LM_Main {
 	public static BlockGrinder1 blockGrinder1;
 	public static BlockGrinder2 blockGrinder2;
 	public static BlockGrinder3 blockGrinder3;
+	public static BlockFurnace blockFurnace;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -122,6 +124,7 @@ public class LM_Main {
 	@PostInit
 	public void postInitialise(FMLPostInitializationEvent event) {
 		DEFAULT_SETTINGS.addGrinderRecipes();
+		DEFAULT_SETTINGS.addArcFurnaceRecipes();
 	}
 	
 }

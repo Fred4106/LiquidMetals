@@ -28,7 +28,7 @@ public class BlockIngotFormer extends BlockContainer{
 
 	@Override
 	public String getTextureFile() {
-		return "/LM/gfx/LiquidMetal/icons.png";
+		return "/LM/gfx/LiquidMetal/Icons.png";
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class BlockIngotFormer extends BlockContainer{
 
 		if (!CommonProxy.proxy.isRenderWorld(world)) {
 			entityplayer.openGui(LM_Main.instance, GuiHandler.IngotFormer, world, x, y, z);
-			return true;
+			return true;	
 		}
 		
 		return true;

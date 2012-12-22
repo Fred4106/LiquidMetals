@@ -4,6 +4,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ISidedInventory;
 import LM.CommonProxy;
 import LM.DEFAULT_SETTINGS;
 import LM.GrinderRecipe;
@@ -17,7 +19,7 @@ import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
 
-public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerReceptor{
+public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerReceptor, ISidedInventory{
 	public ItemStack[] inventory = new ItemStack[2];
 	public int cookTime = 0;
 	public boolean hasUpdate = false;
@@ -265,5 +267,20 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	@Override
 	public int powerRequest() {
 		return (int) Math.ceil(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored() - getPowerProvider().getEnergyStored()));
+	}
+
+	@Override
+	public int getStartInventorySide(ForgeDirection side) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side) {
+		int meta = getBlockMetadata();
+		if(side == BlockGrinder1.metaToForgeDir(meta)) {
+			return 1;
+		}
+		return 0;
 	}
 }

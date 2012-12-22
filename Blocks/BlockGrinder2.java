@@ -11,6 +11,7 @@ public class BlockGrinder2 extends BlockGrinder1 {
 	public BlockGrinder2(int par1) {
 		super(par1);
 		this.setBlockName("MediumGrinder");
+		textureOffset = 1;
 	}
 	
 	public void openGui(World world, int x, int y, int z, EntityPlayer entityplayer) {

@@ -2,6 +2,8 @@ package LM.Blocks;
 
 import java.util.Random;
 
+import buildcraft.api.tools.IToolWrench;
+
 import LM.CommonProxy;
 import LM.GuiHandler;
 import LM.LM_Main;
@@ -9,16 +11,19 @@ import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntityFurnace;
 import net.minecraft.src.World;
+import net.minecraftforge.common.ForgeDirection;
 
 public class BlockGrinder1 extends BlockContainer{
 	
 	private Random grinderRandom = new Random();
+	protected int textureOffset = 0;
 	
 	public BlockGrinder1(int par1) {
 		super(par1, Material.iron);
@@ -35,6 +40,16 @@ public class BlockGrinder1 extends BlockContainer{
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
 		super.onBlockActivated(world, x, y, z, entityplayer, par6, par7, par8, par9);
+		
+		// Switch orientation if whacked with a wrench.
+		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
+		if (equipped instanceof IToolWrench && ((IToolWrench) equipped).canWrench(entityplayer, x, y, z)) {
+
+			world.setBlockMetadata(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4);
+			((IToolWrench) equipped).wrenchUsed(entityplayer, x, y, z);
+			return true;
+		}
+		
 		if (entityplayer.isSneaking())
 			return false;
 
@@ -55,10 +70,111 @@ public class BlockGrinder1 extends BlockContainer{
 		return new TileGrinder1();
 	}
 
-	@Override
-	public int getBlockTextureFromSide(int par1) {
-		return 66;
+	public static ForgeDirection metaToForgeDir(int meta) {
+		if(meta == 0) {
+			return ForgeDirection.NORTH;
+		}
+		if(meta == 1) {
+			return ForgeDirection.SOUTH;
+		}
+		if(meta == 2) {
+			return ForgeDirection.EAST;
+		}
+		if(meta == 3) {
+			return ForgeDirection.WEST;
+		}
+		return null;
 	}
+	
+	private int getTextureLoc(int side, int meta) {
+		if(side == 0 || side == 1) {
+			return 208;
+		}
+		ForgeDirection dir = metaToForgeDir(meta);
+		System.out.println(dir);
+		if(dir == ForgeDirection.NORTH) {
+			//north
+			if(side == 2) {
+				//back
+				return 160;
+			}
+			if(side == 3) {
+				//front
+				return 192;
+			}
+			if(side == 4) {
+				//left
+				return 176;
+			}
+			if(side == 5) {
+				//right
+				return 176;
+			}
+		}
+		if(dir == ForgeDirection.SOUTH) {
+			//south
+			if(side == 3) {
+				//front
+				return 160;
+			}
+			if(side == 2) {
+				//back
+				return 192;
+			}
+			if(side == 4) {
+				//left
+				return 176;
+			}
+			if(side == 5) {
+				//right
+				return 176;
+			}
+		}
+		if(dir == ForgeDirection.EAST) {
+			//east
+			if(side == 5) {
+				//back
+				return 160;
+			}
+			if(side == 4) {
+				//front
+				return 192;
+			}
+			if(side == 3) {
+				//left
+				return 176;
+			}
+			if(side == 2) {
+				//right
+				return 176;
+			}
+		}
+		if(dir == ForgeDirection.WEST) {
+			//west
+			if(side == 4) {
+				//back
+				return 160;
+			}
+			if(side == 5) {
+				//front
+				return 192;
+			}
+			if(side == 2) {
+				//left
+				return 176;
+			}
+			if(side == 3) {
+				//right
+				return 176;
+			}
+		}
+		return 0;
+	}
+	
+	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    {
+		return getTextureLoc(side, meta)+textureOffset;
+    }
 	
 	public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
     {

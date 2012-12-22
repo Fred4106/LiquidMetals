@@ -22,7 +22,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	public int cookTime = 0;
 	public boolean hasUpdate = false;
 	
-	public static int cookReq = 20;
+	public static int cookReq = 10;
 	
 	protected IPowerProvider powerProvider;
 	
@@ -32,7 +32,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	}
 	
 	protected void configPower() {
-		powerProvider.configure(5, 2, 2, 2, 2);
+		powerProvider.configure(5, 20, 20, 20, 20);
 	}
 	
 	/* UPDATING */
@@ -62,7 +62,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	}
 	
 	protected boolean useEnergy() {
-		if(powerProvider.useEnergy(2, 2, true) == 2)
+		if(powerProvider.useEnergy(20, 20, true) == 20)
 		{
 			return true;
 		}

@@ -6,7 +6,7 @@ public class TileGrinder2 extends TileGrinder1 {
 	
 	public TileGrinder2() {
 		super();
-		cookReq = 40;
+		cookReq = 20;
 	}
 
 	protected int getTier() {
@@ -14,7 +14,7 @@ public class TileGrinder2 extends TileGrinder1 {
 	}
 	
 	protected boolean useEnergy() {
-		if(powerProvider.useEnergy(4, 4, true) == 4)
+		if(powerProvider.useEnergy(40, 40, true) == 40)
 		{
 			return true;
 		}
@@ -22,7 +22,7 @@ public class TileGrinder2 extends TileGrinder1 {
 	}
 	
 	protected void configPower() {
-		powerProvider.configure(5, 4, 4, 4, 4);
+		powerProvider.configure(5, 40, 40, 40, 40);
 	}
 	
 	@Override

@@ -1,12 +1,15 @@
 package LM.GUI;
 
+import LM.GrinderRecipeManager;
 import LM.Blocks.TileGrinder1;
 import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.InventoryPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
+import net.minecraft.src.TileEntityFurnace;
 
 public class ContainerGrinder1 extends Container {
 
@@ -64,29 +67,73 @@ public class ContainerGrinder1 extends Container {
 		return pushed;
 	}
 	
+	public int getTier() {
+		return 1;
+	}
+	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer pl, int i) {
-		ItemStack itemstack = null;
-		if(!(inventorySlots.get(i) instanceof SlotInputGrinder1)) {
-			if(!((SlotInputGrinder1)inventorySlots.get(0)).isItemValid(((Slot)inventorySlots.get(i)).getStack())) {
-				return null;
-			}
-		}
-		Slot slot = (Slot) inventorySlots.get(i);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
-			if (i < ((IInventory)tile).getSizeInventory()) {
-				if (!mergeItemStack(itemstack1, ((IInventory)tile).getSizeInventory(), inventorySlots.size(), true))
-					return null;
-			} else if (!mergeItemStack(itemstack1, 0, ((IInventory)tile).getSizeInventory(), false))
-				return null;
-			if (itemstack1.stackSize == 0)
-				slot.putStack(null);
-			else
-				slot.onSlotChanged();
-		}
-		return itemstack;
+		ItemStack var3 = null;
+        Slot var4 = (Slot)this.inventorySlots.get(i);
+
+        if (var4 != null && var4.getHasStack())
+        {
+            ItemStack var5 = var4.getStack();
+            var3 = var5.copy();
+
+            if (i == 1)
+            {
+                if (!this.mergeItemStack(var5, 2, 38, true))
+                {
+                    return null;
+                }
+
+                var4.onSlotChange(var5, var3);
+            }
+            else if (i != 0)
+            {
+            	if (GrinderRecipeManager.getRecipe(var5, getTier()) != null)
+                {
+                    if (!this.mergeItemStack(var5, 0, 1, false))
+                    {
+                        return null;
+                    }
+                }
+                else if (i >= 2 && i < 29)
+                {
+                    if (!this.mergeItemStack(var5, 29, 38, false))
+                    {
+                        return null;
+                    }
+                }
+                else if (i >= 29 && i < 38 && !this.mergeItemStack(var5, 2, 29, false))
+                {
+                    return null;
+                }
+            }
+            else if (!this.mergeItemStack(var5, 2, 38, false))
+            {
+                return null;
+            }
+
+            if (var5.stackSize == 0)
+            {
+                var4.putStack((ItemStack)null);
+            }
+            else
+            {
+                var4.onSlotChanged();
+            }
+
+            if (var5.stackSize == var3.stackSize)
+            {
+                return null;
+            }
+
+            var4.onPickupFromSlot(pl, var5);
+        }
+
+        return var3;
 	}
 	
 	@Override

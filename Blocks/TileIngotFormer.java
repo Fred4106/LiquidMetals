@@ -25,9 +25,9 @@ import buildcraft.core.network.PacketUpdate;
 public class TileIngotFormer extends TileBuildCraft implements ITankContainer, IInventory{
 
 	public ItemStack[] inventory = new ItemStack[1];
-	public LiquidTank input = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 8);
+	public LiquidTank input = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 4);
 	
-	public static int timeReq = 20;
+	public static int timeReq = 40;
 	public int time = 0;
 	
 	public boolean hasUpdate = false;
@@ -60,14 +60,15 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		IngotFormerRecipe temp = IngotFormerRecipeManager.getRecipe(input.getLiquid());
 		if(temp != null) {
 			if(input.getLiquid().isLiquidEqual(temp.getInput())) {
-				if(input.getLiquid().amount >= temp.getInput().amount)
-				if(inventory[0] == null) {
-					return true;
-				}
-				if(inventory[0].isItemEqual(temp.getOutput()))
-				{
-					if(inventory[0].stackSize + temp.getOutput().stackSize <= 64) {
+				if(input.getLiquid().amount >= temp.getInput().amount) {
+					if(inventory[0] == null) {
 						return true;
+					}
+					if(inventory[0].isItemEqual(temp.getOutput()))
+					{
+						if(inventory[0].stackSize + temp.getOutput().stackSize <= 64) {
+							return true;
+						}
 					}
 				}
 			}
@@ -79,13 +80,16 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		IngotFormerRecipe temp = IngotFormerRecipeManager.getRecipe(input.getLiquid());
 		if(canCook()) {
 			input.drain(temp.getInput().amount, true);
-			if(input.getLiquid().amount <= 0) {
-				input = null;
+			if(input.getLiquid() != null) {
+				if(input.getLiquid().amount <= 0) {
+					input = null;
+				}
 			}
 			if(inventory[0] == null) {
 				inventory[0] = temp.getOutput();
+			} else {
+				inventory[0].stackSize += temp.getOutput().stackSize;
 			}
-			inventory[0].stackSize += temp.getOutput().stackSize;
 			hasUpdate = true;
 		}
 	}
@@ -227,12 +231,14 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-		return 0;
+		hasUpdate = true;
+		return input.fill(resource, doFill);
 	}
 
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-		return 0;
+		hasUpdate = true;
+		return input.fill(resource, doFill);
 	}
 
 	@Override

@@ -10,10 +10,12 @@ import LM.Blocks.BlockFurnace;
 import LM.Blocks.BlockGrinder1;
 import LM.Blocks.BlockGrinder2;
 import LM.Blocks.BlockGrinder3;
+import LM.Blocks.BlockIngotFormer;
 import LM.Blocks.TileFurnace;
 import LM.Blocks.TileGrinder1;
 import LM.Blocks.TileGrinder2;
 import LM.Blocks.TileGrinder3;
+import LM.Blocks.TileIngotFormer;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
@@ -68,21 +70,25 @@ public class DEFAULT_SETTINGS {
 		LM_Main.blockGrinder2 = new BlockGrinder2(blockGrinder2);
 		LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
 		LM_Main.blockFurnace = new BlockFurnace(503);
+		LM_Main.blockIngotFormer = new BlockIngotFormer(504);
 		
 		GameRegistry.registerBlock(LM_Main.blockGrinder1);
 		GameRegistry.registerBlock(LM_Main.blockGrinder2);
 		GameRegistry.registerBlock(LM_Main.blockGrinder3);
 		GameRegistry.registerBlock(LM_Main.blockFurnace);
+		GameRegistry.registerBlock(LM_Main.blockIngotFormer);
 		
 		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
 		LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");
 		LanguageRegistry.addName(LM_Main.blockGrinder3, "Fine Grinder");
 		LanguageRegistry.addName(LM_Main.blockFurnace, "Arc Furnace");
+		LanguageRegistry.addName(LM_Main.blockIngotFormer, "Ingot Former");
 		
 		GameRegistry.registerTileEntity(TileGrinder1.class, "Rock Pulverizer");
 		GameRegistry.registerTileEntity(TileGrinder2.class, "Rough Grinder");
 		GameRegistry.registerTileEntity(TileGrinder3.class, "Fine Grinder");
 		GameRegistry.registerTileEntity(TileFurnace.class, "Arc Furnace");
+		GameRegistry.registerTileEntity(TileIngotFormer.class, "Ingot Former");
 	}
 	
 	public static void initItems() {

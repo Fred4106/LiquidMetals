@@ -15,9 +15,12 @@ public class ContainerGrinder2 extends ContainerGrinder1 {
 		super(inventoryPlayer, te);
 	}
 
+	public int getTier() {
+		return 2;
+	}
+	
 	@Override
 	public Slot getSlot(EntityPlayer p, TileGrinder1 t, int num, int x, int y) {
-		System.out.println("Please print out :)");
 		return new SlotInputGrinder2(p, t, num, x, y);
 	}
 }

@@ -37,13 +37,15 @@ public class GuiHandler implements IGuiHandler {
 			}
 			return new GuiGrinder3(new ContainerGrinder3(player.inventory, (TileGrinder3) tile), (TileGrinder3) tile);
 		} else if(ID == Furnace) {
-			System.out.println("Open you pos gui");
 			if(!(tile instanceof TileFurnace)) {
-				System.out.println("Or not.");
 				return null;
 			}
-			System.out.println("Its opening now.");
 			return new GuiFurnace(new ContainerFurnace(player.inventory, (TileFurnace) tile), (TileFurnace) tile);
+		} else if(ID == IngotFormer) {
+			if(!(tile instanceof TileIngotFormer)) {
+				return null;
+			}
+			return new GuiIngotFormer(new ContainerIngotFormer(player.inventory, (TileIngotFormer) tile), (TileIngotFormer) tile);
 		}
 		return null;
 	}
@@ -69,13 +71,15 @@ public class GuiHandler implements IGuiHandler {
 			}
 			return new ContainerGrinder3(player.inventory, (TileGrinder3) tile);
 		}  else if(ID == Furnace) {
-			System.out.println("Open again you pos gui");
 			if(!(tile instanceof TileFurnace)) {
-				System.out.println("Or not again");
 				return null;
 			}
-			System.out.println("Its opening now again");
 			return new ContainerFurnace(player.inventory, (TileFurnace) tile);
+		}  else if(ID == IngotFormer) {
+			if(!(tile instanceof TileIngotFormer)) {
+				return null;
+			}
+			return new ContainerIngotFormer(player.inventory, (TileIngotFormer) tile);
 		}
 		return null;
 	}

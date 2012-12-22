@@ -16,6 +16,10 @@ public class ContainerGrinder3 extends ContainerGrinder1 {
 		super(inventoryPlayer, te);
 	}
 
+	public int getTier() {
+		return 3;
+	}
+	
 	@Override
 	public Slot getSlot(EntityPlayer p, TileGrinder1 t, int num, int x, int y) {
 		return new SlotInputGrinder3(p, t, num, x, y);

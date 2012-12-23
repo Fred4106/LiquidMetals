@@ -1,5 +1,8 @@
 package LiquidMetals;
 
+import buildcraft.BuildCraftCore;
+import buildcraft.BuildCraftFactory;
+import buildcraft.BuildCraftTransport;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,6 +24,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * This is the main mod class. This is basically just an event handler which passes
@@ -28,7 +32,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
  * 
  * This class also holds references to all our blocks and items that get added to the game.
  */
-@Mod(modid = "LiquidMetals", version = "0.1.1", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders;")
+@Mod(modid = "LiquidMetals", version = "0.1.2", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders;")
 @NetworkMod(serverSideRequired = true, clientSideRequired = true)
 public class LM_Main {
 
@@ -69,7 +73,6 @@ public class LM_Main {
 		DEFAULT_SETTINGS.initBlocks();
 		DEFAULT_SETTINGS.initItems();
 		DEFAULT_SETTINGS.setupLiquids();
-		OreDictionary.registerOre("oreCopper", new ItemStack(Block.sand, 1, 0));
 		proxy.registerEventHandlers();
 	}
 	
@@ -82,22 +85,6 @@ public class LM_Main {
 	@Init
 	public void initialise(FMLInitializationEvent event) {
 		NetworkRegistry.instance().registerGuiHandler(instance, guiHandler);
-		/*
-		//iron
-		moltenIron = new ItemLiquidMetal(7000).setItemName("moltenIron").setIconIndex(0);
-		bucketMoltenIron = new ItemLiquidMetal(7001).setItemName("bucketMoltenIron").setContainerItem(Item.bucketEmpty).setIconIndex(1).setMaxStackSize(1).setCreativeTab(CreativeTabs.tabMisc);
-		liquidMoltenIron = LiquidDictionary.getOrCreateLiquid("Molten Iron", new LiquidStack(moltenIron, 1));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketMoltenIron), new ItemStack(Item.bucketEmpty)));
-		LanguageRegistry.addName(bucketMoltenIron, "Molten Iron Bucket");
-		LanguageRegistry.addName(moltenIron, "Molten Iron");
-		//gold
-		moltenGold = new ItemLiquidMetal(7002).setItemName("moltenGold").setIconIndex(2);
-		bucketMoltenGold = new ItemLiquidMetal(7003).setItemName("bucketMoltenGold").setContainerItem(Item.bucketEmpty).setIconIndex(3).setMaxStackSize(1).setCreativeTab(CreativeTabs.tabMisc);
-		liquidMoltenGold = LiquidDictionary.getOrCreateLiquid("Molten Gold", new LiquidStack(moltenGold, 1));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketMoltenGold), new ItemStack(Item.bucketEmpty)));
-		LanguageRegistry.addName(bucketMoltenGold, "Molten Gold Bucket");
-		LanguageRegistry.addName(moltenGold, "Molten Gold");
-		*/
 		proxy.registerRenderers();
 		proxy.registerTextureFX();
 		
@@ -114,13 +101,13 @@ public class LM_Main {
 		DEFAULT_SETTINGS.addGrinderRecipes();
 		DEFAULT_SETTINGS.addArcFurnaceRecipes();
 		DEFAULT_SETTINGS.addIngotFormerRecipes();
-		/*
-		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
-		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);
-		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder3), "#@#", "$%$", "###", '#', Item.diamond, '$', BuildCraftCore.goldGearItem, '%', blockGrinder2, '@', BuildCraftTransport.pipePowerGold);
-		CraftingManager.getInstance().addRecipe(new ItemStack(blockIngotFormer), "!@!", "!#!", "!!!", '!', Item.ingotIron, '@', BuildCraftFactory.tankBlock, '#', BuildCraftCore.goldGearItem);
-		CraftingManager.getInstance().addRecipe(new ItemStack(this.blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
-		*/
+		
+		GameRegistry.addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
+		GameRegistry.addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);
+		GameRegistry.addRecipe(new ItemStack(blockGrinder3), "#@#", "$%$", "###", '#', Item.diamond, '$', BuildCraftCore.goldGearItem, '%', blockGrinder2, '@', BuildCraftTransport.pipePowerGold);
+		GameRegistry.addRecipe(new ItemStack(blockIngotFormer), "!@!", "!#!", "!!!", '!', Item.ingotIron, '@', BuildCraftFactory.tankBlock, '#', BuildCraftCore.goldGearItem);
+		GameRegistry.addRecipe(new ItemStack(this.blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
+		
 	}
 	
 }

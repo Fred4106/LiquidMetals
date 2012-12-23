@@ -74,11 +74,11 @@ public class DEFAULT_SETTINGS {
 		LM_Main.blockFurnace = new BlockFurnace(blockFurnace);
 		LM_Main.blockIngotFormer = new BlockIngotFormer(blockIngotFormer);
 		
-		GameRegistry.registerBlock(LM_Main.blockGrinder1);
-		GameRegistry.registerBlock(LM_Main.blockGrinder2);
-		GameRegistry.registerBlock(LM_Main.blockGrinder3);
-		GameRegistry.registerBlock(LM_Main.blockFurnace);
-		GameRegistry.registerBlock(LM_Main.blockIngotFormer);
+		GameRegistry.registerBlock(LM_Main.blockGrinder1, "LM.Grind1");
+		GameRegistry.registerBlock(LM_Main.blockGrinder2, "LM.Grind2");
+		GameRegistry.registerBlock(LM_Main.blockGrinder3, "LM.Grind3");
+		GameRegistry.registerBlock(LM_Main.blockFurnace, "LM.Furnace");
+		GameRegistry.registerBlock(LM_Main.blockIngotFormer, "LM.IngotFormer");
 		
 		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
 		LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");

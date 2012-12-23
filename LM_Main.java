@@ -1,32 +1,15 @@
-package LM;
+package LiquidMetals;
 
-import java.util.ArrayList;
-
-import buildcraft.BuildCraftCore;
-import buildcraft.BuildCraftFactory;
-import buildcraft.BuildCraftTransport;
-
-import LM.Blocks.BlockFurnace;
-import LM.Blocks.BlockGrinder1;
-import LM.Blocks.BlockGrinder2;
-import LM.Blocks.BlockGrinder3;
-import LM.Blocks.BlockIngotFormer;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.CraftingManager;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EnumToolMaterial;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.EnumHelper;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.liquids.LiquidContainerData;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import LiquidMetals.Blocks.BlockFurnace;
+import LiquidMetals.Blocks.BlockGrinder1;
+import LiquidMetals.Blocks.BlockGrinder2;
+import LiquidMetals.Blocks.BlockGrinder3;
+import LiquidMetals.Blocks.BlockIngotFormer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -38,8 +21,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 /**
  * This is the main mod class. This is basically just an event handler which passes
@@ -47,15 +28,15 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * 
  * This class also holds references to all our blocks and items that get added to the game.
  */
-@Mod(modid = "LiquidMetals", version = "0.0.2", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders;")
+@Mod(modid = "LiquidMetals", version = "0.1.1", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders;")
 @NetworkMod(serverSideRequired = true, clientSideRequired = true)
 public class LM_Main {
 
-	@Instance("LM")
+	@Instance("LiquidMetals")
 	public static LM_Main instance = new LM_Main();
 	public static GuiHandler guiHandler = new GuiHandler();
 	
-	@SidedProxy(clientSide = "LM.ClientProxy", serverSide = "LM.CommonProxy")
+	@SidedProxy(clientSide = "LiquidMetals.ClientProxy", serverSide = "LiquidMetals.CommonProxy")
 	public static CommonProxy proxy;
 	
 	//start
@@ -133,11 +114,13 @@ public class LM_Main {
 		DEFAULT_SETTINGS.addGrinderRecipes();
 		DEFAULT_SETTINGS.addArcFurnaceRecipes();
 		DEFAULT_SETTINGS.addIngotFormerRecipes();
+		/*
 		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
 		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);
 		CraftingManager.getInstance().addRecipe(new ItemStack(blockGrinder3), "#@#", "$%$", "###", '#', Item.diamond, '$', BuildCraftCore.goldGearItem, '%', blockGrinder2, '@', BuildCraftTransport.pipePowerGold);
 		CraftingManager.getInstance().addRecipe(new ItemStack(blockIngotFormer), "!@!", "!#!", "!!!", '!', Item.ingotIron, '@', BuildCraftFactory.tankBlock, '#', BuildCraftCore.goldGearItem);
 		CraftingManager.getInstance().addRecipe(new ItemStack(this.blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
+		*/
 	}
 	
 }

@@ -1,8 +1,8 @@
-package LM;
+package LiquidMetals;
 
 import java.util.ArrayList;
 
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidStack;
 
 public class ArcFurnaceRecipeManager {

@@ -1,14 +1,14 @@
-package LM.GUI;
+package LiquidMetals.GUI;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
 
-import LM.Blocks.TileFurnace;
-import LM.Blocks.TileGrinder1;
-import net.minecraft.src.Block;
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.Item;
-import net.minecraftforge.client.ForgeHooksClient;
+import LiquidMetals.Blocks.TileFurnace;
 
 public class GuiFurnace extends GuiContainer {
 	
@@ -23,7 +23,7 @@ public class GuiFurnace extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int i = mc.renderEngine.getTexture("/LM/gfx/LiquidMetal/Arcfurnace.png");
+		int i = mc.renderEngine.getTexture("/LiquidMetals/gfx/LiquidMetal/Arcfurnace.png");
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		mc.renderEngine.bindTexture(i);
 		int left = (width - xSize) / 2;

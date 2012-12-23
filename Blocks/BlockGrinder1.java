@@ -1,24 +1,22 @@
-package LM.Blocks;
+package LiquidMetals.Blocks;
 
 import java.util.Random;
 
-import buildcraft.api.tools.IToolWrench;
-
-import LM.CommonProxy;
-import LM.GuiHandler;
-import LM.LM_Main;
-import net.minecraft.src.BlockContainer;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntityFurnace;
-import net.minecraft.src.World;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import LiquidMetals.CommonProxy;
+import LiquidMetals.GuiHandler;
+import LiquidMetals.LM_Main;
+import buildcraft.api.tools.IToolWrench;
 
 public class BlockGrinder1 extends BlockContainer{
 	
@@ -34,7 +32,7 @@ public class BlockGrinder1 extends BlockContainer{
 
 	@Override
 	public String getTextureFile() {
-		return "/LM/gfx/LiquidMetal/Icons.png";
+		return "/LiquidMetals/gfx/LiquidMetal/Icons.png";
 	}
 	
 	@Override
@@ -174,7 +172,7 @@ public class BlockGrinder1 extends BlockContainer{
     {
 		return getTextureLoc(side, meta)+textureOffset;
     }
-	
+	//*
 	public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
     {
             TileGrinder1 var7 = (TileGrinder1)par1World.getBlockTileEntity(par2, par3, par4);
@@ -205,7 +203,7 @@ public class BlockGrinder1 extends BlockContainer{
 
                         if (var9.hasTagCompound())
                         {
-                            var14.item.setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                            var14.func_92014_d().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
                         }
 
                         float var15 = 0.05F;
@@ -220,5 +218,5 @@ public class BlockGrinder1 extends BlockContainer{
 
         super.breakBlock(par1World, par2, par3, par4, par5, par6);
     }
-	
+	//*/
 }

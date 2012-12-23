@@ -1,10 +1,23 @@
-package LM;
+package LiquidMetals;
 
-import LM.Blocks.*; 
-import LM.GUI.*;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import LiquidMetals.Blocks.TileFurnace;
+import LiquidMetals.Blocks.TileGrinder1;
+import LiquidMetals.Blocks.TileGrinder2;
+import LiquidMetals.Blocks.TileGrinder3;
+import LiquidMetals.Blocks.TileIngotFormer;
+import LiquidMetals.GUI.ContainerFurnace;
+import LiquidMetals.GUI.ContainerGrinder1;
+import LiquidMetals.GUI.ContainerGrinder2;
+import LiquidMetals.GUI.ContainerGrinder3;
+import LiquidMetals.GUI.ContainerIngotFormer;
+import LiquidMetals.GUI.GuiFurnace;
+import LiquidMetals.GUI.GuiGrinder1;
+import LiquidMetals.GUI.GuiGrinder2;
+import LiquidMetals.GUI.GuiGrinder3;
+import LiquidMetals.GUI.GuiIngotFormer;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {

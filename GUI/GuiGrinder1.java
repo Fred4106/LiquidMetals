@@ -1,14 +1,11 @@
-package LM.GUI;
+package LiquidMetals.GUI;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.Item;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
 
 import org.lwjgl.opengl.GL11;
 
-import LM.Blocks.TileGrinder1;
+import LiquidMetals.Blocks.TileGrinder1;
 
 public class GuiGrinder1 extends GuiContainer {
 
@@ -23,7 +20,7 @@ public class GuiGrinder1 extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		int i = mc.renderEngine.getTexture("/LM/gfx/LiquidMetal/grinder1.png");
+		int i = mc.renderEngine.getTexture("/LiquidMetals/gfx/LiquidMetal/grinder1.png");
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		mc.renderEngine.bindTexture(i);
 		int left = (width - xSize) / 2;

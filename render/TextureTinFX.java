@@ -1,7 +1,7 @@
-package LM.render;
+package LiquidMetals.render;
 
-import LM.DEFAULT_SETTINGS;
-import LM.LM_Main;
+import LiquidMetals.DEFAULT_SETTINGS;
+import LiquidMetals.LM_Main;
 
 public class TextureTinFX extends TextureLiquidsFX {
 

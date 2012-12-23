@@ -1,12 +1,11 @@
-package LM;
+package LiquidMetals;
 
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.Item;
 
 public class ItemLiquidMetal extends Item {
 
 	public ItemLiquidMetal(int i) {
 		super(i);
-		setTextureFile("/LM/gfx/LiquidMetal/Icons.png");
+		setTextureFile("/LiquidMetals/gfx/LiquidMetal/Icons.png");
 	}
 }

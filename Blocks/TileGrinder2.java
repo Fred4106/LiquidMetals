@@ -1,6 +1,5 @@
-package LM.Blocks;
+package LiquidMetals.Blocks;
 
-import net.minecraft.src.TileEntity;
 
 public class TileGrinder2 extends TileGrinder1 {
 	

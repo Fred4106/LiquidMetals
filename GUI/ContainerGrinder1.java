@@ -1,15 +1,12 @@
-package LM.GUI;
+package LiquidMetals.GUI;
 
-import LM.GrinderRecipeManager;
-import LM.Blocks.TileGrinder1;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.FurnaceRecipes;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
-import net.minecraft.src.TileEntityFurnace;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import LiquidMetals.GrinderRecipeManager;
+import LiquidMetals.Blocks.TileGrinder1;
 
 public class ContainerGrinder1 extends Container {
 

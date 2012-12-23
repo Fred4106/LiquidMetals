@@ -7,9 +7,9 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
 
-package LM.render;
+package LiquidMetals.render;
 
-import net.minecraft.src.RenderEngine;
+import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.ForgeHooksClient;
 import cpw.mods.fml.client.FMLTextureFX;
 

@@ -1,13 +1,10 @@
-package LM.GUI;
+package LiquidMetals.GUI;
 
-import LM.Blocks.TileGrinder1;
-import LM.Blocks.TileGrinder2;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import LiquidMetals.Blocks.TileGrinder1;
+import LiquidMetals.Blocks.TileGrinder2;
 
 public class ContainerGrinder2 extends ContainerGrinder1 {
 

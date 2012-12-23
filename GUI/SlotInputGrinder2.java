@@ -1,7 +1,7 @@
-package LM.GUI;
+package LiquidMetals.GUI;
 
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 
 public class SlotInputGrinder2 extends SlotInputGrinder1 {
 

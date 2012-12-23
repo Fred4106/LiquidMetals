@@ -1,18 +1,15 @@
-package LM;
+package LiquidMetals;
 
-import LM.render.TextureCopperFX;
-import LM.render.TextureGoldFX;
-import LM.render.TextureIronFX;
-import LM.render.TextureSilverFX;
-import LM.render.TextureTinFX;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
+import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.MinecraftForgeClient;
+import LiquidMetals.render.TextureCopperFX;
+import LiquidMetals.render.TextureGoldFX;
+import LiquidMetals.render.TextureIronFX;
+import LiquidMetals.render.TextureSilverFX;
+import LiquidMetals.render.TextureTinFX;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Overriden proxy to additionally handle things that need to happen on the client side.
@@ -29,7 +26,7 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void registerTextureFX() {
-		net.minecraft.src.RenderEngine renderEngine = FMLClientHandler.instance().getClient().renderEngine;
+		RenderEngine renderEngine = FMLClientHandler.instance().getClient().renderEngine;
 		renderEngine.registerTextureFX(new TextureIronFX());
 		renderEngine.registerTextureFX(new TextureGoldFX());
 		renderEngine.registerTextureFX(new TextureCopperFX());

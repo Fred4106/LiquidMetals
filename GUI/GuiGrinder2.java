@@ -1,8 +1,7 @@
-package LM.GUI;
+package LiquidMetals.GUI;
 
-import net.minecraft.src.Container;
-import LM.Blocks.TileGrinder1;
-import LM.Blocks.TileGrinder2;
+import net.minecraft.inventory.Container;
+import LiquidMetals.Blocks.TileGrinder2;
 
 public class GuiGrinder2 extends GuiGrinder1 {
 

@@ -1,6 +1,6 @@
-package LM;
+package LiquidMetals;
 
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidStack;
 
 public class IngotFormerRecipe {

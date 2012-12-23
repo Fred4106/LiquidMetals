@@ -1,30 +1,28 @@
-package LM;
+package LiquidMetals;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-
-import LM.Blocks.BlockFurnace;
-import LM.Blocks.BlockGrinder1;
-import LM.Blocks.BlockGrinder2;
-import LM.Blocks.BlockGrinder3;
-import LM.Blocks.BlockIngotFormer;
-import LM.Blocks.TileFurnace;
-import LM.Blocks.TileGrinder1;
-import LM.Blocks.TileGrinder2;
-import LM.Blocks.TileGrinder3;
-import LM.Blocks.TileIngotFormer;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
+import LiquidMetals.Blocks.BlockFurnace;
+import LiquidMetals.Blocks.BlockGrinder1;
+import LiquidMetals.Blocks.BlockGrinder2;
+import LiquidMetals.Blocks.BlockGrinder3;
+import LiquidMetals.Blocks.BlockIngotFormer;
+import LiquidMetals.Blocks.TileFurnace;
+import LiquidMetals.Blocks.TileGrinder1;
+import LiquidMetals.Blocks.TileGrinder2;
+import LiquidMetals.Blocks.TileGrinder3;
+import LiquidMetals.Blocks.TileIngotFormer;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class DEFAULT_SETTINGS {
 	public static ArrayList<String> names = new ArrayList();

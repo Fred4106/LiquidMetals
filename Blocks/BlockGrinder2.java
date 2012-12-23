@@ -1,11 +1,10 @@
-package LM.Blocks;
+package LiquidMetals.Blocks;
 
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
-import LM.GuiHandler;
-import LM.LM_Main;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import LiquidMetals.GuiHandler;
+import LiquidMetals.LM_Main;
 
 public class BlockGrinder2 extends BlockGrinder1 {
 	

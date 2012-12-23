@@ -2,6 +2,8 @@ package LM.Blocks;
 
 import java.util.Random;
 
+import buildcraft.api.tools.IToolWrench;
+
 import LM.CommonProxy;
 import LM.GuiHandler;
 import LM.LM_Main;
@@ -9,6 +11,7 @@ import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
 import net.minecraft.src.NBTTagCompound;
@@ -18,6 +21,7 @@ import net.minecraft.src.World;
 public class BlockFurnace extends BlockContainer{
 
 	private Random furnaceRandom = new Random();
+	private int textureOffset = 1;
 	
 	public BlockFurnace(int par1) {
 		super(par1, Material.iron);
@@ -28,16 +32,13 @@ public class BlockFurnace extends BlockContainer{
 
 	@Override
 	public String getTextureFile() {
-		return "/LM/gfx/LiquidMetal/icons.png";
+		return "/LM/gfx/LiquidMetal/Icons.png";
 	}
 	
-	@Override
-	public int getBlockTextureFromSide(int side) {
-		if(side == 1) {
-			return 65;
-		}
-		return 64;
-	}
+	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    {
+		return BlockGrinder1.getTextureLoc(side, meta)+textureOffset;
+    }
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
@@ -45,8 +46,15 @@ public class BlockFurnace extends BlockContainer{
 		if (entityplayer.isSneaking())
 			return false;
 
+		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
+		if (equipped instanceof IToolWrench && ((IToolWrench) equipped).canWrench(entityplayer, x, y, z)) {
+
+			world.setBlockMetadata(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4);
+			((IToolWrench) equipped).wrenchUsed(entityplayer, x, y, z);
+			return true;
+		}
+		
 		if (!CommonProxy.proxy.isRenderWorld(world)) {
-			System.out.println("Opening Gui");
 			entityplayer.openGui(LM_Main.instance, GuiHandler.Furnace, world, x, y, z);
 			return true;
 		}

@@ -38,6 +38,8 @@ public class DEFAULT_SETTINGS {
 	public static int blockGrinder1 = 500;
 	public static int blockGrinder2 = 501;
 	public static int blockGrinder3 = 502;
+	public static int blockFurnace = 503;
+	public static int blockIngotFormer = 504;
 	
 	public static void setup() {
 		names.add("Iron");
@@ -59,6 +61,8 @@ public class DEFAULT_SETTINGS {
 			blockGrinder1 = config.get("Block Ids", "Small Grinder", blockGrinder1).getInt();
 			blockGrinder2 = config.get("Block Ids", "Medium Grinder", blockGrinder2).getInt();
 			blockGrinder3 = config.get("Block Ids", "Large Grinder", blockGrinder3).getInt();
+			blockFurnace = config.get("Block Ids", "Arc Furnace", blockFurnace).getInt();
+			blockIngotFormer = config.get("Block Ids", "Ingot Former", blockIngotFormer).getInt();
 		}
 		finally {
 			config.save();
@@ -69,8 +73,8 @@ public class DEFAULT_SETTINGS {
 		LM_Main.blockGrinder1 = new BlockGrinder1(blockGrinder1);
 		LM_Main.blockGrinder2 = new BlockGrinder2(blockGrinder2);
 		LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
-		LM_Main.blockFurnace = new BlockFurnace(503);
-		LM_Main.blockIngotFormer = new BlockIngotFormer(504);
+		LM_Main.blockFurnace = new BlockFurnace(blockFurnace);
+		LM_Main.blockIngotFormer = new BlockIngotFormer(blockIngotFormer);
 		
 		GameRegistry.registerBlock(LM_Main.blockGrinder1);
 		GameRegistry.registerBlock(LM_Main.blockGrinder2);

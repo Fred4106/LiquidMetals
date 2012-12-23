@@ -23,7 +23,7 @@ import net.minecraftforge.common.ForgeDirection;
 public class BlockGrinder1 extends BlockContainer{
 	
 	private Random grinderRandom = new Random();
-	protected int textureOffset = 0;
+	protected int textureOffset = 2;
 	
 	public BlockGrinder1(int par1) {
 		super(par1, Material.iron);
@@ -72,26 +72,25 @@ public class BlockGrinder1 extends BlockContainer{
 
 	public static ForgeDirection metaToForgeDir(int meta) {
 		if(meta == 0) {
-			return ForgeDirection.NORTH;
-		}
-		if(meta == 1) {
 			return ForgeDirection.SOUTH;
 		}
+		if(meta == 1) {
+			return ForgeDirection.NORTH;
+		}
 		if(meta == 2) {
-			return ForgeDirection.EAST;
+			return ForgeDirection.WEST;
 		}
 		if(meta == 3) {
-			return ForgeDirection.WEST;
+			return ForgeDirection.EAST;
 		}
 		return null;
 	}
 	
-	private int getTextureLoc(int side, int meta) {
+	public static int getTextureLoc(int side, int meta) {
 		if(side == 0 || side == 1) {
 			return 208;
 		}
 		ForgeDirection dir = metaToForgeDir(meta);
-		System.out.println(dir);
 		if(dir == ForgeDirection.NORTH) {
 			//north
 			if(side == 2) {

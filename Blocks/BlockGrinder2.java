@@ -1,5 +1,6 @@
 package LM.Blocks;
 
+import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
@@ -11,7 +12,7 @@ public class BlockGrinder2 extends BlockGrinder1 {
 	public BlockGrinder2(int par1) {
 		super(par1);
 		this.setBlockName("MediumGrinder");
-		textureOffset = 1;
+		textureOffset = 3;
 	}
 	
 	public void openGui(World world, int x, int y, int z, EntityPlayer entityplayer) {

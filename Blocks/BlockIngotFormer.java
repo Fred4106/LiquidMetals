@@ -19,6 +19,8 @@ public class BlockIngotFormer extends BlockContainer{
 
 	private Random ingotFormerRandom = new Random();
 
+	private int textureOffset = 0;
+	
 	public BlockIngotFormer(int par1) {
 		super(par1, Material.iron);
 		setHardness(5F);
@@ -31,10 +33,10 @@ public class BlockIngotFormer extends BlockContainer{
 		return "/LM/gfx/LiquidMetal/Icons.png";
 	}
 	
-	@Override
-	public int getBlockTextureFromSide(int side) {
-		return 69;
-	}
+	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    {
+		return BlockGrinder1.getTextureLoc(side, meta)+textureOffset;
+    }
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {

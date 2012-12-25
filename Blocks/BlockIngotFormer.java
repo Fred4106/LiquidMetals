@@ -2,11 +2,14 @@ package LiquidMetals.Blocks;
 
 import java.util.Random;
 
+import buildcraft.api.tools.IToolWrench;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -44,6 +47,14 @@ public class BlockIngotFormer extends BlockContainer{
 		if (entityplayer.isSneaking())
 			return false;
 
+		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
+		if (equipped instanceof IToolWrench && ((IToolWrench) equipped).canWrench(entityplayer, x, y, z)) {
+
+			world.setBlockMetadata(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4);
+			((IToolWrench) equipped).wrenchUsed(entityplayer, x, y, z);
+			return true;
+		}
+		
 		if (!CommonProxy.proxy.isRenderWorld(world)) {
 			entityplayer.openGui(LM_Main.instance, GuiHandler.IngotFormer, world, x, y, z);
 			return true;	

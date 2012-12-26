@@ -27,6 +27,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int Grinder3 = 2;
 	public static final int Furnace = 3;
 	public static final int IngotFormer = 4;
+	public static final int Crafting = 5;
 	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {

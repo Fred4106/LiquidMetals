@@ -8,6 +8,8 @@ public class ArcFurnaceRecipe {
 	private ItemStack input;
 	private LiquidStack output;
 	
+	
+	
 	public ArcFurnaceRecipe(ItemStack input, LiquidStack output) {
 		this.input = input;
 		this.output = output;

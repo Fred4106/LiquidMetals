@@ -43,11 +43,14 @@ public class DEFAULT_SETTINGS {
 	public static int blockIngotFormer = 504;
 	
 	public static void setup() {
+		//*
 		names.add("Iron");
 		names.add("Gold");
 		names.add("Copper");
 		names.add("Tin");
 		names.add("Silver");
+		names.add("Lead");
+		//*/
 	}
 	
 	public static void readConfig(File configurationFile) {
@@ -105,17 +108,19 @@ public class DEFAULT_SETTINGS {
 	}
 	
 	public static void setupLiquids() {
-		for(int a = 0; a < names.size(); a++) {
-			LiquidDictionary.getOrCreateLiquid("Molten " + names.get(a), new LiquidStack(LM_Main.molten.shiftedIndex, 1, a));
-		}
+		LiquidDictionary.getOrCreateLiquid("Molten Iron", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 0));
+		LiquidDictionary.getOrCreateLiquid("Molten Gold", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 1));
+		LiquidDictionary.getOrCreateLiquid("Molten Copper", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 2));
+		LiquidDictionary.getOrCreateLiquid("Molten Tin", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 3));
+		LiquidDictionary.getOrCreateLiquid("Molten Silver", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 4));
+		LiquidDictionary.getOrCreateLiquid("Molten Lead", new LiquidStack(LM_Main.molten.shiftedIndex, 1, 5));
 		
-		//* Comment out below to remove molten buckets without breaking worlds or items.
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(0), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 0), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(1), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 1), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(2), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 2), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(3), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 3), new ItemStack(Item.bucketEmpty)));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + names.get(4), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 4), new ItemStack(Item.bucketEmpty)));
-		//*/
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 0), new ItemStack(Item.bucketEmpty)));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 1), new ItemStack(Item.bucketEmpty)));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 2), new ItemStack(Item.bucketEmpty)));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 3), new ItemStack(Item.bucketEmpty)));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 4), new ItemStack(Item.bucketEmpty)));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, 5), new ItemStack(Item.bucketEmpty)));
 	}
 	
 	public static void addGrinderRecipes() {
@@ -124,36 +129,60 @@ public class DEFAULT_SETTINGS {
 		GrinderRecipeManager.addRecipe("oreCopper", 2, new ItemStack(LM_Main.gravel, 3, 2), 1);
 		GrinderRecipeManager.addRecipe("oreTin", 2, new ItemStack(LM_Main.gravel, 3, 3), 1);
 		GrinderRecipeManager.addRecipe("oreSilver", 2, new ItemStack(LM_Main.gravel, 3, 4), 1);
+		GrinderRecipeManager.addRecipe("oreLead", 2, new ItemStack(LM_Main.gravel, 3, 5), 1);
+		
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 0), new ItemStack(LM_Main.sand, 3, 0), 2);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 1), new ItemStack(LM_Main.sand, 3, 1), 2);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 2), new ItemStack(LM_Main.sand, 3, 2), 2);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 3), new ItemStack(LM_Main.sand, 3, 3), 2);
 		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 4), new ItemStack(LM_Main.sand, 3, 4), 2);
-		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 0), new ItemStack(LM_Main.dust, 3, 0), 3);
-		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 1), new ItemStack(LM_Main.dust, 3, 1), 3);
-		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 2), new ItemStack(LM_Main.dust, 3, 2), 3);
-		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 3), new ItemStack(LM_Main.dust, 3, 3), 3);
-		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 2, 4), new ItemStack(LM_Main.dust, 3, 4), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 2, 5), new ItemStack(LM_Main.sand, 3, 5), 2);
+		
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 0), new ItemStack(LM_Main.dust, 5, 0), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 1), new ItemStack(LM_Main.dust, 5, 1), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 2), new ItemStack(LM_Main.dust, 5, 2), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 3), new ItemStack(LM_Main.dust, 5, 3), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 4), new ItemStack(LM_Main.dust, 5, 4), 3);
+		GrinderRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 4, 5), new ItemStack(LM_Main.dust, 5, 5), 3);
 	}
 	
 	public static void addIngotFormerRecipes() {
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(0), LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotIron, 1));
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(1), LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotGold, 1));
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(2), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(3), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotTin");
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten " + names.get(4), LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotSilver");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotIron, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotGold, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotTin");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotSilver");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotLead");
 	}
 	
 	public static void addArcFurnaceRecipes() {
-		for(int a = 0; a < names.size(); a++) {
-			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
-		}
-		for(int a = 0; a < names.size(); a++) {
-			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
-		}
-		for(int a = 0; a < names.size(); a++) {
-			ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, a), LiquidDictionary.getLiquid("Molten " + names.get(a), LiquidContainerRegistry.BUCKET_VOLUME/8));
-		}
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 0), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 2), LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 3), LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 4), LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.gravel, 1, 5), LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 0), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 2), LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 3), LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 4), LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 5), LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 0), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 2), LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 3), LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 4), LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 5), LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.ingotIron, 1), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.ingotGold, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotCopper", LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotTin", LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotSilver", LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotLead", LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
 	}
 	
 	public static void editRp2Recipes() {

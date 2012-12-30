@@ -5,6 +5,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import LiquidMetals.render.TextureCopperFX;
 import LiquidMetals.render.TextureGoldFX;
 import LiquidMetals.render.TextureIronFX;
+import LiquidMetals.render.TextureLeadFX;
 import LiquidMetals.render.TextureSilverFX;
 import LiquidMetals.render.TextureTinFX;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -32,5 +33,6 @@ public class ClientProxy extends CommonProxy {
 		renderEngine.registerTextureFX(new TextureCopperFX());
 		renderEngine.registerTextureFX(new TextureTinFX());
 		renderEngine.registerTextureFX(new TextureSilverFX());
+		renderEngine.registerTextureFX(new TextureLeadFX());
 	}
 }

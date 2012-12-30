@@ -15,9 +15,7 @@ public class GrinderRecipeManager {
 	
 	public static void addRecipe(String input, int inputAmount, ItemStack output, int tier) {
 		ArrayList<ItemStack> ores = OreDictionary.getOres(input);
-		System.out.println("Starting Ore List");
 		for(int a = 0; a < ores.size(); a++) {
-			System.out.println(ores.get(a).getItemName() + " " + ores.get(a).getItemDamage());
 			addRecipe(new ItemStack(ores.get(a).itemID, inputAmount, ores.get(a).getItemDamage()), output, tier);
 		}
 	}

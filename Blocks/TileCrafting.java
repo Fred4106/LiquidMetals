@@ -1,218 +1,384 @@
 package LiquidMetals.Blocks;
 
+import java.util.LinkedList;
+
+import buildcraft.api.core.Position;
+import buildcraft.api.inventory.ISpecialInventory;
+import buildcraft.core.TileBuildCraft;
+import buildcraft.core.inventory.TransactorRoundRobin;
+import buildcraft.core.proxy.CoreProxy;
+import buildcraft.core.utils.Utils;
+
 import LiquidMetals.ArcFurnaceRecipe;
 import LiquidMetals.ArcFurnaceRecipeManager;
 import LiquidMetals.CommonProxy;
-import buildcraft.api.power.IPowerProvider;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerFramework;
-import buildcraft.core.TileBuildCraft;
-import buildcraft.core.network.PacketPayload;
-import buildcraft.core.network.PacketUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileCrafting extends TileBuildCraft implements ITankContainer, IInventory{
+public class TileCrafting extends TileBuildCraft implements ISpecialInventory {
 
-	public ItemStack[] inventory = new ItemStack[10];
-	public LiquidTank liquidInventory = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 8);
-	
-	public boolean hasUpdate = false;
-	
-	/* UPDATING */
-	@Override
-	public void updateEntity() {
-		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 100 == 0 || hasUpdate)) {
-			sendNetworkUpdate();
-			hasUpdate = false;
+	private ItemStack stackList[] = new ItemStack[9];
+
+	class LocalInventoryCrafting extends InventoryCrafting {
+
+		public LocalInventoryCrafting() {
+			super(new Container() {
+
+				@SuppressWarnings("all")
+				public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+					return false;
+				}
+
+				@SuppressWarnings("all")
+				public boolean canInteractWith(EntityPlayer entityplayer) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+			}, 3, 3);
+			// TODO Auto-generated constructor stub
 		}
-	}
-	
-	//start to edit
-	private int[] getValuesArray() {
-		int[] values = new int[33];
-		for(int a =  0; a < 30; a+=3)
-		{
-			if(inventory[a/3] != null) {
-				values[a] = inventory[a/3].getItem().shiftedIndex;
-				values[a+1] = inventory[a/3].getItemDamage();
-				values[a+2] = inventory[a/3].stackSize;
-			} else {
-				values[a] = 0;
-				values[a+1] = 0;
-				values[a+2] = 0;
-			}
-		}
-		if(liquidInventory.getLiquid() != null) {
-			values[30] = liquidInventory.getLiquid().itemID;
-			values[31] = liquidInventory.getLiquid().itemMeta;
-			values[32] = liquidInventory.getLiquid().amount;
-		} else {
-			values[30] = 0;
-			values[31] = 0;
-			values[32] = 0;
-		}
-		return values;
-	}
-	
-	private void useValuesArray(int[] values) {
-		for(int a = 0; a < 10; a++) {
-			if(values[a*3] != 0) {
-				inventory[0] = new ItemStack(values[(a*3)], values[(a*3)+2], values[(a*3)+1]);
-			}
-		}
-		if(values[30] != 0) {
-			liquidInventory.setLiquid(new LiquidStack(values[30], values[32], values[31]));
-		} else {
-			liquidInventory.setLiquid(null);
-		}
-	}
-	
-	@Override
-	public PacketPayload getPacketPayload() {
-		int[] intpayload = getValuesArray();
-		PacketPayload payload = new PacketPayload(intpayload.length, 0, 0);
-		for(int a = 0; a < intpayload.length; a++) {
-			payload.intPayload[a] = intpayload[a];
-		}
-		return payload;
-	}
-	
-	@Override
-	public void handleUpdatePacket(PacketUpdate packet) {
-		useValuesArray(packet.payload.intPayload);
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound data) {
-		super.readFromNBT(data);
-		useValuesArray(data.getIntArray("Values"));
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound data) {
-		super.writeToNBT(data);
-		data.setIntArray("Values", getValuesArray());
-	}
-	//end to edit
-	
-	@Override
-	public void onInventoryChanged() {
-		hasUpdate = true;
+
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return inventory.length;
+
+		return stackList.length;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return inventory[i];
+		return stackList[i];
 	}
 
 	@Override
 	public ItemStack decrStackSize(int slotId, int count) {
-		if (inventory[slotId] == null)
+		if (stackList[slotId] == null)
 			return null;
-		if(slotId == 9) {
-			for(int a = 0; a < 9; a++) {
-				decrStackSize(a, 1*count);
-			}
-			
-		}
-		
-		if (inventory[slotId].stackSize > count)
-			return inventory[slotId].splitStack(count);
-		ItemStack stack = inventory[slotId];
-		inventory[slotId] = null;
+		if (stackList[slotId].stackSize > count)
+			return stackList[slotId].splitStack(count);
+		ItemStack stack = stackList[slotId];
+		stackList[slotId] = null;
 		return stack;
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
-		if (this.inventory[i] == null)
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		stackList[i] = itemstack;
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		if (this.stackList[slot] == null)
 			return null;
 
-		ItemStack stackToTake = this.inventory[i];
-		this.inventory[i] = null;
+		ItemStack stackToTake = this.stackList[slot];
+		this.stackList[slot] = null;
 		return stackToTake;
 	}
 
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2) {
-		inventory[var1] = var2;
-	}
-
-	@Override
 	public String getInvName() {
-		return "PoweredCrafter";
+
+		return "";
 	}
 
 	@Override
 	public int getInventoryStackLimit() {
+
 		return 64;
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) {
-		return true;
+	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbttagcompound) {
+		super.readFromNBT(nbttagcompound);
+
+		Utils.readStacksFromNBT(nbttagcompound, "stackList", stackList);
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbttagcompound) {
+		super.writeToNBT(nbttagcompound);
+
+		Utils.writeStacksToNBT(nbttagcompound, "stackList", stackList);
+	}
+
+	class StackPointer {
+
+		IInventory inventory;
+		int index;
+		ItemStack item;
+	}
+
+	public ItemStack findRecipe() {
+		InventoryCrafting craftMatrix = new LocalInventoryCrafting();
+
+		for (int i = 0; i < getSizeInventory(); ++i) {
+			ItemStack stack = getStackInSlot(i);
+
+			craftMatrix.setInventorySlotContents(i, stack);
+		}
+
+		ItemStack recipe = CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj);
+
+		return recipe;
+	}
+
+	public ItemStack extractItem(boolean doRemove, boolean removeRecipe) {
+		InventoryCrafting craftMatrix = new LocalInventoryCrafting();
+
+		LinkedList<StackPointer> pointerList = new LinkedList<StackPointer>();
+
+		int itemsToLeave = (removeRecipe ? 0 : 1);
+
+		for (int i = 0; i < getSizeInventory(); ++i) {
+			ItemStack stack = getStackInSlot(i);
+
+			if (stack != null) {
+				if (stack.stackSize <= itemsToLeave) {
+					StackPointer pointer = getNearbyItem(stack);
+
+					if (pointer == null) {
+						resetPointers(pointerList);
+
+						return null;
+					} else {
+						pointerList.add(pointer);
+					}
+				} else {
+					StackPointer pointer = new StackPointer();
+					pointer.inventory = this;
+					pointer.item = this.decrStackSize(i, 1);
+					pointer.index = i;
+					stack = pointer.item;
+
+					pointerList.add(pointer);
+				}
+			}
+
+			craftMatrix.setInventorySlotContents(i, stack);
+		}
+
+		ItemStack resultStack = CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj);
+
+		if (resultStack == null || !doRemove) {
+			resetPointers(pointerList);
+		} else {
+			for (StackPointer p : pointerList) {
+				// replace with the container where appropriate
+
+				if (p.item.getItem().getContainerItem() != null) {
+					ItemStack newStack = p.item.getItem().getContainerItemStack(p.item);
+
+					if (p.item.isItemStackDamageable()) {
+						if (newStack.getItemDamage() >= p.item.getMaxDamage()) {
+							MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(CoreProxy.proxy.getBuildCraftPlayer(worldObj, xCoord, yCoord, zCoord),
+									newStack));
+							this.worldObj.playSoundAtEntity(CoreProxy.proxy.getBuildCraftPlayer(worldObj, xCoord, yCoord, zCoord), "random.break", 0.8F,
+									0.8F + this.worldObj.rand.nextFloat() * 0.4F);
+							newStack = null;
+						}
+					}
+
+					p.inventory.setInventorySlotContents(p.index, newStack);
+				}
+			}
+		}
+
+		return resultStack;
+	}
+
+	public void resetPointers(LinkedList<StackPointer> pointers) {
+		for (StackPointer p : pointers) {
+			ItemStack item = p.inventory.getStackInSlot(p.index);
+
+			if (item == null) {
+				p.inventory.setInventorySlotContents(p.index, p.item);
+			} else {
+				p.inventory.getStackInSlot(p.index).stackSize++;
+			}
+		}
+	}
+
+	public StackPointer getNearbyItem(ItemStack stack) {
+		StackPointer pointer = null;
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.WEST);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.EAST);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.DOWN);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.UP);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.NORTH);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.SOUTH);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(stack, ForgeDirection.UNKNOWN);
+		}
+
+		return pointer;
+	}
+
+	public StackPointer getNearbyItemFromOrientation(ItemStack itemStack, ForgeDirection direction) {
+		TileEntity tile = worldObj.getBlockTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+
+		if (tile instanceof ISpecialInventory) {
+			// Don't get stuff out of ISpecialInventory for now / we wouldn't
+			// know how to put it back... And it's not clear if we want to
+			// have workbenches automatically getting things from one another.
+		} else if (tile instanceof IInventory) {
+			IInventory inventory = Utils.getInventory((IInventory) tile);
+
+			for (int j = 0; j < inventory.getSizeInventory(); ++j) {
+				ItemStack stack = inventory.getStackInSlot(j);
+
+				if (stack != null) {
+					if (stack.stackSize > 0) {
+						if (stack.itemID == itemStack.itemID) {
+							if (!stack.isItemStackDamageable()) {
+								if (stack.itemID == itemStack.itemID && stack.getItemDamage() == itemStack.getItemDamage()) {
+									inventory.decrStackSize(j, 1);
+
+									StackPointer result = new StackPointer();
+									result.inventory = inventory;
+									result.index = j;
+									result.item = stack;
+
+									return result;
+								}
+							} else {
+								if (stack.itemID == itemStack.itemID) {
+									inventory.decrStackSize(j, 1);
+
+									StackPointer result = new StackPointer();
+									result.inventory = inventory;
+									result.index = j;
+									result.item = stack;
+
+									return result;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public StackPointer getNearbyItem(int itemId, int damage) {
+		StackPointer pointer = null;
+
+		pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.WEST);
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.EAST);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.DOWN);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.UP);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.NORTH);
+		}
+
+		if (pointer == null) {
+			pointer = getNearbyItemFromOrientation(itemId, damage, ForgeDirection.SOUTH);
+		}
+
+		return pointer;
+	}
+
+	public StackPointer getNearbyItemFromOrientation(int itemId, int damage, ForgeDirection orientation) {
+		Position p = new Position(xCoord, yCoord, zCoord, orientation);
+		p.moveForwards(1.0);
+
+		TileEntity tile = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
+
+		if (tile instanceof ISpecialInventory) {
+			// Don't get stuff out of ISpecialInventory for now / we wouldn't
+			// know how to put it back... And it's not clear if we want to
+			// have workbenches automatically getting things from one another.
+		} else if (tile instanceof IInventory) {
+			IInventory inventory = Utils.getInventory((IInventory) tile);
+
+			for (int j = 0; j < inventory.getSizeInventory(); ++j) {
+				ItemStack stack = inventory.getStackInSlot(j);
+
+				if (stack != null && stack.stackSize > 0 && stack.itemID == itemId && stack.getItemDamage() == damage) {
+					inventory.decrStackSize(j, 1);
+
+					StackPointer result = new StackPointer();
+					result.inventory = inventory;
+					result.index = j;
+					result.item = stack;
+
+					return result;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	@Override
 	public void openChest() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void closeChest() {
-		// TODO Auto-generated method stub
-		
+	}
+
+	/* ISPECIALINVENTORY */
+	@Override
+	public int addItem(ItemStack stack, boolean doAdd, ForgeDirection from) {
+		return new TransactorRoundRobin(this).add(stack, from, doAdd).stackSize;
 	}
 
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-		hasUpdate = true;
-		return liquidInventory.fill(resource, doFill);
-	}
-
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-		hasUpdate = true;
-		return liquidInventory.fill(resource, doFill);
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		hasUpdate = true;
-		return liquidInventory.drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
-		hasUpdate = true;
-		return liquidInventory.drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) {
-		return new ILiquidTank[] {liquidInventory};
-	}
-
-	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-		return liquidInventory;
+	public ItemStack[] extractItem(boolean doRemove, ForgeDirection from, int maxItemCount) {
+		return new ItemStack[] { extractItem(doRemove, false) };
 	}
 
 }

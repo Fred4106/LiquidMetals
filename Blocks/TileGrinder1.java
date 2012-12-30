@@ -86,7 +86,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	private void ajustInput() {
 		GrinderRecipe tempRecipe = GrinderRecipeManager.getRecipe(inventory[0], getTier());
 		if(inventory[0].stackSize > tempRecipe.getInput().stackSize) {
-			inventory[0].stackSize-=2;
+			inventory[0].stackSize-=tempRecipe.getInput().stackSize;
 			return;
 		} else {
 			inventory[0] = null;

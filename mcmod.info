@@ -1,0 +1,17 @@
+[
+ {
+  "authors": [
+   "Fred4106"
+  ], 
+  "credits": "SpaceToad and the Buildcraft team", 
+  "description": "Liquid Metals and buildcraft ore processing.", 
+  "mcversion": "1.4.6", 
+  "modid": "LiquidMetals", 
+  "name": "Liquid Metals", 
+  "parent": "", 
+  "screenshots": [], 
+  "updateUrl": "", 
+  "url": "http://www.minecraftforum.net/topic/1614036-146-bc-addon-liquid-metals-016-alpha/", 
+  "version": "0.1.6"
+ }
+]

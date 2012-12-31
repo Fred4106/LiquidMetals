@@ -38,7 +38,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * 
  * This class also holds references to all our blocks and items that get added to the game.
  */
-@Mod(modid = "LiquidMetals", version = "0.1.5", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders; after:RedPowerCore;")
+@Mod(modid = "LiquidMetals", version = "0.1.6", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders; after:RedPowerCore;")
 @NetworkMod(serverSideRequired = true, clientSideRequired = true)
 public class LM_Main {
 

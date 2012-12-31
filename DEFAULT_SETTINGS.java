@@ -1,7 +1,13 @@
 package LiquidMetals;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +49,16 @@ public class DEFAULT_SETTINGS {
 	public static int blockFurnace = 503;
 	public static int blockIngotFormer = 504;
 	
+	//settings about ores and outputs and such
+	private static int copperIngotOutput = 0;
+	private static int copperIngotOutputMeta = 0;
+	private static int tinIngotOutput = 0;
+	private static int tinIngotOutputMeta = 0;
+	private static int silverIngotOutput = 0;
+	private static int silverIngotOutputMeta = 0;
+	private static int leadIngotOutput = 0;
+	private static int leadIngotOutputMeta = 0;
+	
 	public static void setup() {
 		//*
 		names.add("Iron");
@@ -68,6 +84,16 @@ public class DEFAULT_SETTINGS {
 			blockGrinder3 = config.get("Block Ids", "Large Grinder", blockGrinder3).getInt();
 			blockFurnace = config.get("Block Ids", "Arc Furnace", blockFurnace).getInt();
 			blockIngotFormer = config.get("Block Ids", "Ingot Former", blockIngotFormer).getInt();
+			
+			config.addCustomCategoryComment("Ingot Former Output", "Dont mess with these values unless you know what your doing.");
+			copperIngotOutput = config.get("Ingot Former Output", "Ingot output copper", copperIngotOutput).getInt();
+			copperIngotOutputMeta = config.get("Ingot Former Output", "Ingot output copper Meta", copperIngotOutputMeta).getInt();
+			tinIngotOutput = config.get("Ingot Former Output", "Ingot output tin", tinIngotOutput).getInt();
+			tinIngotOutputMeta = config.get("Ingot Former Output", "Ingot output tin Meta", tinIngotOutputMeta).getInt();
+			silverIngotOutput = config.get("Ingot Former Output", "Ingot output silver", silverIngotOutput).getInt();
+			silverIngotOutputMeta = config.get("Ingot Former Output", "Ingot output silver Meta", silverIngotOutputMeta).getInt();
+			leadIngotOutput = config.get("Ingot Former Output", "Ingot output lead", leadIngotOutput).getInt();
+			leadIngotOutputMeta = config.get("Ingot Former Output", "Ingot output lead Meta", leadIngotOutputMeta).getInt();
 		}
 		finally {
 			config.save();
@@ -150,10 +176,29 @@ public class DEFAULT_SETTINGS {
 	public static void addIngotFormerRecipes() {
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotIron, 1));
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotGold, 1));
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotTin");
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotSilver");
-		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotLead");
+		if(copperIngotOutput == 0) {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
+		} else {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(copperIngotOutput, 1, copperIngotOutputMeta));
+		}
+		
+		if(tinIngotOutput == 0) {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotTin");
+		} else {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(tinIngotOutput, 1, tinIngotOutputMeta));
+		}
+		
+		if(silverIngotOutput == 0) {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotSilver");
+		} else {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(silverIngotOutput, 1, silverIngotOutputMeta));
+		}
+		
+		if(leadIngotOutput == 0) {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotLead");
+		} else {
+			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(leadIngotOutput, 1, leadIngotOutputMeta));
+		}
 	}
 	
 	public static void addArcFurnaceRecipes() {
@@ -225,5 +270,41 @@ public class DEFAULT_SETTINGS {
 		OreDictionary.registerOre("dustTin", new ItemStack(LM_Main.dust, 1, 3));
 		OreDictionary.registerOre("dustSilver", new ItemStack(LM_Main.dust, 1, 4));
 		OreDictionary.registerOre("dustLead", new ItemStack(LM_Main.dust, 1, 5));
+	}
+	
+	public static void versionCheck() {
+		String temp = LM_Main.class.getAnnotations()[0].toString();
+		temp = temp.substring(temp.indexOf("version=")+8, temp.indexOf("version=")+8+5);
+		
+		URL pList;
+		try {
+			pList = new URL("http://pastebin.com/299XgcUS");
+			BufferedReader in;
+			in = new BufferedReader(new InputStreamReader(pList.openStream()));
+			String inputLine;
+
+	        while ((inputLine = in.readLine()) != null) {
+	            if(inputLine.contains("codeVersion")) {
+	                String temp2 = inputLine.subSequence(inputLine.indexOf("codeVersion")+12, inputLine.indexOf("codeVersion")+17).toString();
+	                temp2 = temp2.replaceAll("_", ".");
+	                if(temp.equalsIgnoreCase(temp2)) {
+	                	System.out.println("{*Liquid Metals*} Version up to date");
+	                } else {
+	                	System.out.println("{*Liquid Metals*} Version not up to date");
+	                	System.out.println(temp);
+	                	System.out.println(temp2);
+	                }
+	                break;
+	            }
+	        }
+		} catch (MalformedURLException e1) {
+			System.out.println("{*Liquid Metals*} Unable to grab latest version.");
+			
+		}catch (IOException e) {
+				System.out.println("{*Liquid Metals*} Unable to grab latest version.");
+		}
+        
+
+       
 	}
 }

@@ -14,6 +14,7 @@ import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.oredict.OreDictionary;
 import LiquidMetals.Blocks.BlockFurnace;
 import LiquidMetals.Blocks.BlockGrinder1;
 import LiquidMetals.Blocks.BlockGrinder2;
@@ -170,12 +171,12 @@ public class DEFAULT_SETTINGS {
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 4), LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.sand, 1, 5), LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 0), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 2), LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 3), LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 4), LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(LM_Main.dust, 1, 5), LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustIron", LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustGold", LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustCopper", LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustTin", LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustSilver", LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("dustLead", LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.ingotIron, 1), LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.ingotGold, 1), LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8));
@@ -215,5 +216,14 @@ public class DEFAULT_SETTINGS {
 		} catch (IllegalAccessException e) {
 			System.out.println("Damn 3.0");
 		}
+	}
+
+	public static void setupOreDict() {
+		OreDictionary.registerOre("dustIron", new ItemStack(LM_Main.dust, 1, 0));
+		OreDictionary.registerOre("dustGold", new ItemStack(LM_Main.dust, 1, 1));
+		OreDictionary.registerOre("dustCopper", new ItemStack(LM_Main.dust, 1, 2));
+		OreDictionary.registerOre("dustTin", new ItemStack(LM_Main.dust, 1, 3));
+		OreDictionary.registerOre("dustSilver", new ItemStack(LM_Main.dust, 1, 4));
+		OreDictionary.registerOre("dustLead", new ItemStack(LM_Main.dust, 1, 5));
 	}
 }

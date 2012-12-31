@@ -38,7 +38,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * 
  * This class also holds references to all our blocks and items that get added to the game.
  */
-@Mod(modid = "LiquidMetals", version = "0.1.4", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders; after:RedPowerCore;")
+@Mod(modid = "LiquidMetals", version = "0.1.5", name = "Liquid Metals", useMetadata = false, dependencies="required-after:BuildCraft|Silicon; required-after:BuildCraft|Core; required-after:BuildCraft|Transport; required-after:BuildCraft|Factory; required-after:BuildCraft|Energy; required-after:BuildCraft|Builders; after:RedPowerCore;")
 @NetworkMod(serverSideRequired = true, clientSideRequired = true)
 public class LM_Main {
 
@@ -97,7 +97,7 @@ public class LM_Main {
 		NetworkRegistry.instance().registerGuiHandler(instance, guiHandler);
 		proxy.registerRenderers();
 		proxy.registerTextureFX();
-		
+		DEFAULT_SETTINGS.setupOreDict();
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class LM_Main {
 		DEFAULT_SETTINGS.addGrinderRecipes();
 		DEFAULT_SETTINGS.addArcFurnaceRecipes();
 		DEFAULT_SETTINGS.addIngotFormerRecipes();
-		DEFAULT_SETTINGS.editRp2Recipes();
+		//DEFAULT_SETTINGS.editRp2Recipes();
 		GameRegistry.addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
 		GameRegistry.addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);
 		GameRegistry.addRecipe(new ItemStack(blockGrinder3), "#@#", "$%$", "###", '#', Item.diamond, '$', BuildCraftCore.goldGearItem, '%', blockGrinder2, '@', BuildCraftTransport.pipePowerGold);

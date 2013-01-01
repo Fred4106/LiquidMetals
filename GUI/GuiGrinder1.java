@@ -36,7 +36,7 @@ public class GuiGrinder1 extends GuiContainer {
 	}
 	
 	protected String getName() {
-		return "Small Grinder";
+		return "Rock Pulverizer";
 	}
 
 }

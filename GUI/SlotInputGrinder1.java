@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import LiquidMetals.GrinderRecipe;
 import LiquidMetals.GrinderRecipeManager;
 
 public class SlotInputGrinder1 extends Slot{
@@ -21,7 +22,8 @@ public class SlotInputGrinder1 extends Slot{
 		}
 		else
 		{
-			if(GrinderRecipeManager.getRecipe(item, getTier()) != null) {
+			GrinderRecipe temp = GrinderRecipeManager.getRecipe(new ItemStack(item.getItem().shiftedIndex, 64, item.getItemDamage()), getTier());
+			if(temp != null) {
 				return true;
 			}
 		}

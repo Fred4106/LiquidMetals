@@ -279,7 +279,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	@Override
 	public int getStartInventorySide(ForgeDirection side) {
 		int meta = getBlockMetadata();
-		if(side == BlockGrinder1.metaToForgeDir(meta)) {
+		if(side == BlockGrinder1.getFront(meta) || side == BlockGrinder1.getLeft(meta) || side == BlockGrinder1.getRight(meta)) {
 			return 1;
 		}
 		return 0;
@@ -287,10 +287,6 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 
 	@Override
 	public int getSizeInventorySide(ForgeDirection side) {
-		int meta = getBlockMetadata();
-		if(side == BlockGrinder1.metaToForgeDir(meta) || side == BlockGrinder1.metaToForgeDir(meta).getOpposite()) {
-			return 1;
-		}
-		return 0;
+		return 1;
 	}
 }

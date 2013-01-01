@@ -113,6 +113,43 @@ public class BlockGrinder1 extends BlockContainer{
 		return null;
 	}
 	
+	public static ForgeDirection getFront(int meta) {
+		return metaToForgeDir(meta);
+	}
+	
+	public static ForgeDirection getBack(int meta) {
+		return getFront(meta).getOpposite();
+	}
+	
+	public static ForgeDirection getLeft(int meta) {
+		ForgeDirection front = getFront(meta);
+		if(front == ForgeDirection.NORTH) {
+			return ForgeDirection.WEST;
+		}
+		if(front == ForgeDirection.SOUTH) {
+			return ForgeDirection.EAST;
+		}
+		if(front == ForgeDirection.EAST) {
+			return ForgeDirection.NORTH;
+		}
+		if(front == ForgeDirection.WEST) {
+			return ForgeDirection.SOUTH;
+		}
+		return ForgeDirection.UNKNOWN;
+	}
+	
+	public static ForgeDirection getRight(int meta) {
+		return getLeft(meta).getOpposite();
+	}
+	
+	public static ForgeDirection getTop(int meta) {
+		return ForgeDirection.UP;
+	}
+	
+	public static ForgeDirection getBottom(int meta) {
+		return ForgeDirection.DOWN;
+	}
+	
 	public static int getTextureLoc(int side, int meta) {
 		if(side == 0 || side == 1) {
 			return 208;

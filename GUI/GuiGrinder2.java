@@ -10,7 +10,7 @@ public class GuiGrinder2 extends GuiGrinder1 {
 	}
 
 	protected String getName() {
-		return "Medium Grinder";
+		return "Rough Grinder";
 	}
 	
 }

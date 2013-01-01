@@ -27,7 +27,13 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	
 	public boolean hasUpdate = false;
 	
+	public boolean redstonePowered = false;
+	
 	public TileIngotFormer() {
+	}
+	
+	public void checkRedstonePower() {
+			redstonePowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 	}
 	
 	/* UPDATING */
@@ -49,6 +55,9 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	}
 	
 	private boolean canCook() {
+		if(redstonePowered == true) {
+			return false;
+		}
 		if(input.getLiquid() == null) {
 			return false;
 		}

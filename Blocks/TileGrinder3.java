@@ -9,6 +9,9 @@ public class TileGrinder3 extends TileGrinder1 {
 	}
 	
 	protected boolean useEnergy() {
+		if(this.redstonePowered == true) {
+			return false;
+		}
 		if(powerProvider.useEnergy(80, 80, true) == 80)
 		{
 			return true;

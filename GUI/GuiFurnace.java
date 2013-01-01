@@ -29,7 +29,7 @@ public class GuiFurnace extends GuiContainer {
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		drawTexturedModalRect(left+44, top+57, 0, 176, ((furnace.heat*88)/furnace.heatReq), 10);
+		drawTexturedModalRect(left+44, top+57, 0, 176, ((furnace.heat*30)/furnace.heatReq), 10);
 		drawTexturedModalRect(left+44, top+46, 0, 166, ((furnace.time*88)/furnace.timeReq), 10);
 		if(furnace.output.getLiquid() != null) {
 			displayGauge(left, top, 15, 134, (furnace.output.getLiquid().amount*58)/furnace.output.getCapacity(), furnace.output.getLiquid().itemID, furnace.output.getLiquid().itemMeta);

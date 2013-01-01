@@ -35,9 +35,15 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	
 	protected IPowerProvider powerProvider;
 	
+	public boolean redstonePowered = false;
+	
 	public TileFurnace() {
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
 		powerProvider.configure(5, 100, 100, 100, 100);
+	}
+	
+	public void checkRedstonePower() {
+		redstonePowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 	}
 	
 	/* UPDATING */
@@ -82,6 +88,10 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	}
 	
 	protected boolean useEnergy() {
+
+		if(this.redstonePowered == true) {
+			return false;
+		}
 		if(powerProvider.useEnergy(100, 100, true) == 100)
 		{
 			return true;

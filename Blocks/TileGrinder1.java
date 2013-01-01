@@ -25,6 +25,8 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	
 	protected IPowerProvider powerProvider;
 	
+	public boolean redstonePowered = false;
+	
 	public TileGrinder1() {
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
 		configPower();
@@ -33,6 +35,11 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	protected void configPower() {
 		powerProvider.configure(5, 20, 20, 20, 20);
 	}
+	
+	public void checkRedstonePower() {
+		redstonePowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+	}
+	
 	
 	/* UPDATING */
 	@Override
@@ -61,6 +68,9 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	}
 	
 	protected boolean useEnergy() {
+		if(this.redstonePowered == true) {
+			return false;
+		}
 		if(powerProvider.useEnergy(20, 20, true) == 20)
 		{
 			return true;

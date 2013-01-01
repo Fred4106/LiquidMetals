@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -12,10 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import LiquidMetals.CommonProxy;
 import LiquidMetals.GuiHandler;
 import LiquidMetals.LM_Main;
+import buildcraft.api.core.Position;
 import buildcraft.api.tools.IToolWrench;
+import buildcraft.core.utils.Utils;
 
 public class BlockFurnace extends BlockContainer{
 
@@ -34,10 +38,35 @@ public class BlockFurnace extends BlockContainer{
 		return "/LiquidMetals/gfx/LiquidMetal/Icons.png";
 	}
 	
+	@Override
+	public void onNeighborBlockChange(World world, int i, int j, int k, int l) {
+		TileFurnace tile = (TileFurnace) world.getBlockTileEntity(i, j, k);
+
+		if (tile != null) {
+			tile.checkRedstonePower();
+		}
+	}
+	
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {
 		return BlockGrinder1.getTextureLoc(side, meta)+textureOffset;
     }
+	
+	@Override
+	public void onBlockPlacedBy(World world, int i, int j, int k, EntityLiving entityliving) {
+		super.onBlockPlacedBy(world, i, j, k, entityliving);
+
+		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(i, j, k));
+		if(orientation == ForgeDirection.NORTH) {
+			world.setBlockMetadataWithNotify(i, j, k, 0);
+		} else if(orientation == ForgeDirection.SOUTH){
+			world.setBlockMetadataWithNotify(i, j, k, 1);
+		} else if(orientation == ForgeDirection.EAST){
+			world.setBlockMetadataWithNotify(i, j, k, 2);
+		} else if(orientation == ForgeDirection.WEST){
+			world.setBlockMetadataWithNotify(i, j, k, 3);
+		} 
+	}
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {

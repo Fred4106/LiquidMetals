@@ -40,6 +40,7 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	public TileFurnace() {
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
 		powerProvider.configure(5, 100, 100, 100, 100);
+		
 	}
 	
 	public void checkRedstonePower() {
@@ -52,6 +53,7 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 10 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
+			checkRedstonePower();
 		}
 		ajustHeat();
 		if(canCook()) {

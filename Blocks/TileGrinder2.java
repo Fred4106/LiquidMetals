@@ -16,7 +16,7 @@ public class TileGrinder2 extends TileGrinder1 {
 		if(this.redstonePowered == true) {
 			return false;
 		}
-		if(powerProvider.useEnergy(40, 40, true) == 40)
+		if(powerProvider.useEnergy(80, 80, true) == 80)
 		{
 			return true;
 		}
@@ -24,7 +24,7 @@ public class TileGrinder2 extends TileGrinder1 {
 	}
 	
 	protected void configPower() {
-		powerProvider.configure(5, 40, 40, 40, 40);
+		powerProvider.configure(5, 80, 80, 80, 80);
 	}
 	
 	@Override

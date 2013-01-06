@@ -33,7 +33,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	}
 	
 	protected void configPower() {
-		powerProvider.configure(5, 20, 20, 20, 20);
+		powerProvider.configure(5, 40, 40, 40, 40);
 	}
 	
 	public void checkRedstonePower() {
@@ -47,6 +47,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 10 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
+			checkRedstonePower();
 		}
 		if(canCook()) {
 			if(useEnergy())
@@ -71,7 +72,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 		if(this.redstonePowered == true) {
 			return false;
 		}
-		if(powerProvider.useEnergy(20, 20, true) == 20)
+		if(powerProvider.useEnergy(40, 40, true) == 40)
 		{
 			return true;
 		}

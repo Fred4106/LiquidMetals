@@ -41,8 +41,10 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	public void updateEntity() {
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 10 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
+			checkRedstonePower();
 			hasUpdate = false;
 		}
+		System.out.println(redstonePowered);
 		if(canCook()) {
 			time++;
 			if(time >= timeReq) {
@@ -100,7 +102,7 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	
 	//start to edit
 	private int[] getValuesArray() {
-		int[] values = new int[7];
+		int[] values = new int[8];
 		if(inventory[0] != null) {
 			values[0] = inventory[0].itemID;
 			values[1] = inventory[0].getItemDamage();
@@ -120,6 +122,11 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 			values[5] = 0;
 		}
 		values[6] = time;
+		if(redstonePowered) {
+			values[7] = 1;
+		} else {
+			values[7] = 0;
+		}
 		return values;
 	}
 	
@@ -135,6 +142,10 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 			input.setLiquid(null);
 		}
 		time = values[6];
+		redstonePowered = false;
+		if(values[7] == 1) {
+			redstonePowered = true;
+		}
 	}
 	
 	@Override

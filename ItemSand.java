@@ -13,7 +13,7 @@ public class ItemSand extends ItemLiquidMetal{
 		super(i);
 		setCreativeTab(CreativeTabs.tabMaterials);
 		setMaxStackSize(64);
-		setIconIndex(3);
+		setIconIndex(1);
 		setItemName("Sand");
 		setHasSubtypes(true);
 	}
@@ -21,7 +21,7 @@ public class ItemSand extends ItemLiquidMetal{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getIconFromDamage(int damage) {
-		return iconIndex + (5*damage);
+		return iconIndex + (3*damage);
 	}
 	
 	@Override

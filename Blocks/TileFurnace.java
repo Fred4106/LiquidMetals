@@ -1,5 +1,7 @@
 package LiquidMetals.Blocks;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -20,7 +22,7 @@ import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
 
-public class TileFurnace extends TileBuildCraft implements ITankContainer, IInventory, IPowerReceptor{
+public class TileFurnace extends TileBuildCraft implements ITankContainer, IInventory, IPowerReceptor, IPeripheral{
 
 	public ItemStack[] inventory = new ItemStack[1];
 	public LiquidTank output = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 8);
@@ -31,11 +33,18 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	public int heat = 0;
 	public int time = 0;
 	
+	public int heatMax = 30;
+	
 	public boolean hasUpdate = false;
 	
 	protected IPowerProvider powerProvider;
 	
 	public boolean redstonePowered = false;
+
+	//Computer stuff;
+	IComputerAccess computer = null;
+	public boolean computerMode = false;
+	public boolean enabled = false;
 	
 	public TileFurnace() {
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
@@ -75,8 +84,8 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 			if(worldObj.getWorldTime() % 50 == 0) {
 				if(useEnergy()) {
 					heat++;
-					if(heat > 30) {
-						heat = 30;
+					if(heat > heatMax) {
+						heat = heatMax;
 					}
 				} else {
 					heat--;
@@ -90,10 +99,16 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	}
 	
 	protected boolean useEnergy() {
-
-		if(this.redstonePowered == true) {
+		if(computerMode)
+		{
+			if(!enabled)
+			{
+				return false;
+			}
+		} else if(this.redstonePowered == true) {
 			return false;
 		}
+		
 		if(powerProvider.useEnergy(100, 100, true) == 100)
 		{
 			return true;
@@ -135,12 +150,15 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 			ajustInput();
 			output.fill(temp.getOutput(), true);
 		}
+		if(computerMode && CommonProxy.proxy.isSimulating(worldObj)) {
+			computer.queueEvent("Metal Melted", new Object[] {this.getLiquidName(), this.getLiquidAmount()});
+		}
 		hasUpdate = true;
 	}
 	
 	//start to edit
 	private int[] getValuesArray() {
-		int[] values = new int[8];
+		int[] values = new int[10];
 		if(inventory[0] != null) {
 			values[0] = inventory[0].itemID;
 			values[1] = inventory[0].getItemDamage();
@@ -161,6 +179,14 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 		}
 		values[6] = time;
 		values[7] = heat;
+		values[8] = 0;
+		if(this.computerMode) {
+			values[8] = 1;
+		}
+		values[9] = 0;
+		if(this.enabled) {
+			values[9] = 1;
+		}
 		return values;
 	}
 	
@@ -177,6 +203,14 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 		}
 		time = values[6];
 		heat = values[7];
+		this.computerMode = false;
+		if(values[8] == 1) {
+			this.computerMode = true;
+		}
+		this.enabled = false;
+		if(values[9] == 1) {
+			this.enabled = true;
+		}
 	}
 	
 	@Override
@@ -323,6 +357,130 @@ public class TileFurnace extends TileBuildCraft implements ITankContainer, IInve
 	@Override
 	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
 		return output;
+	}
+
+	@Override
+	public String getType() {
+		return "Furnace";
+	}
+
+	public String getInputName() {
+		if(inventory[0] != null) {
+			return inventory[0].getItem().getItemDisplayName(inventory[0]);
+		}
+		return "null";
+	}
+	
+	public int getInputAmount() {
+		if(inventory[0] != null) {
+			return inventory[0].copy().stackSize;
+		}
+		return 0;
+	}
+	
+	public String getLiquidName() {
+		if(output.getLiquid() != null) {
+			return output.getLiquid().asItemStack().getItem().getItemDisplayName(output.getLiquid().asItemStack());
+		}
+		return "null";
+	}
+	
+	public int getLiquidAmount() {
+		if(output.getLiquid() != null) {
+			return output.getLiquid().amount;
+		}
+		return 0;
+	}
+	
+	public int getLiquidCapacity() {
+		return output.getCapacity();
+	}
+	
+	public int getHeat() {
+		return heat;
+	}
+	
+	public int getReqHeat() {
+		return heatReq;
+	}
+	
+	public int getMaxHeat() {
+		return heatMax;
+	}
+	
+	public void setComputerMode(Object bool, IComputerAccess computer) {
+		boolean temp = (Boolean) bool;
+		this.computerMode = temp;
+		this.computer = null;
+		if(this.computerMode) {
+			this.computer = computer;
+		}
+	}
+	
+	public void setEnabled(Object bool) {
+		boolean temp = (Boolean) bool;
+		this.enabled = temp;
+	}
+	
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"getInputName", "getInputAmount", "getLiquidName", "getLiquidAmount", "getLiquidCapacity", "getHeat", "getReqHeat", "getMaxHeat", "setComputerMode", "setEnabled"};
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, int method,
+			Object[] arguments) throws Exception {
+		if(method == 0) {
+			return new Object[] {getInputName()};
+		}
+		if(method == 1) {
+			if(inventory[0] != null) {
+				return new Object[] {getInputAmount()};
+			}
+			return new Object[] {0};
+		}
+		if(method == 2) {
+			return new Object[] {getLiquidName()};
+		}
+		if(method == 3) {
+			return new Object[] {getLiquidAmount()};
+		}
+		if(method == 4) {
+			return new Object[] {getLiquidCapacity()};
+		}
+		if(method == 5) {
+			return new Object[] {getHeat()};
+		}
+		if(method == 6) {
+			return new Object[] {getReqHeat()};
+		}
+		if(method == 7) {
+			return new Object[] {getMaxHeat()};
+		}
+		if(method == 8) {
+			setComputerMode(arguments[0], computer);
+			return new Object[] {};
+		}
+		if(method == 9) {
+			setEnabled(arguments[0]);
+			return new Object[] {};
+		}
+		return null;
+	}
+
+	@Override
+	public boolean canAttachToSide(int side) {
+		return true;
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+		
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+		
 	}
 
 }

@@ -12,6 +12,7 @@ public class ItemBucket extends ItemLiquidMetal{
 
 	public ItemBucket(int i) {
 		super(i);
+		setTextureFile("/LiquidMetals/gfx/LiquidMetal/Liquids.png");
 		setCreativeTab(CreativeTabs.tabMaterials);
 		setMaxStackSize(1);
 		setContainerItem(Item.bucketEmpty);
@@ -23,7 +24,7 @@ public class ItemBucket extends ItemLiquidMetal{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getIconFromDamage(int damage) {
-		return iconIndex + (5*damage);
+		return iconIndex + (2*damage);
 	}
 	
 	@Override

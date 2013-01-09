@@ -11,6 +11,7 @@ public class ItemMolten extends ItemLiquidMetal{
 
 	public ItemMolten(int i) {
 		super(i);
+		setTextureFile("/LiquidMetals/gfx/LiquidMetal/Liquids.png");
 		setMaxStackSize(64);
 		setIconIndex(0);
 		setItemName("Molten");
@@ -20,7 +21,7 @@ public class ItemMolten extends ItemLiquidMetal{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getIconFromDamage(int damage) {
-		return iconIndex + (5*damage);
+		return iconIndex + (2*damage);
 	}
 	
 	@Override

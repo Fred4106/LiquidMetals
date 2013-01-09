@@ -1,5 +1,7 @@
 package LiquidMetals.Blocks;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -8,6 +10,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import LiquidMetals.CommonProxy;
@@ -17,7 +20,7 @@ import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
 
-public class TileIngotFormer extends TileBuildCraft implements ITankContainer, IInventory{
+public class TileIngotFormer extends TileBuildCraft implements ITankContainer, IInventory, IPeripheral{
 
 	public ItemStack[] inventory = new ItemStack[1];
 	public LiquidTank input = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 4);
@@ -28,6 +31,11 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	public boolean hasUpdate = false;
 	
 	public boolean redstonePowered = false;
+	
+	//for computercraft control
+	public IComputerAccess computer;
+	public boolean computerMode = false;
+	public boolean enabled = false;
 	
 	public TileIngotFormer() {
 	}
@@ -44,11 +52,15 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 			checkRedstonePower();
 			hasUpdate = false;
 		}
-		System.out.println(redstonePowered);
 		if(canCook()) {
 			time++;
 			if(time >= timeReq) {
 				doCook();
+				if(CommonProxy.proxy.isSimulating(worldObj)) {
+					if(computerMode == true) {
+						computer.queueEvent("IngotFormed", new Object[] {this.getOutputName(), this.getOutputAmount()});
+					}
+				}
 				time = 0;
 			}
 		} else {
@@ -57,7 +69,10 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	}
 	
 	private boolean canCook() {
-		if(redstonePowered == true) {
+		if(redstonePowered == true && computerMode == false) {
+			return false;
+		}
+		if(computerMode == true && enabled == false) {
 			return false;
 		}
 		if(input.getLiquid() == null) {
@@ -102,7 +117,7 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	
 	//start to edit
 	private int[] getValuesArray() {
-		int[] values = new int[8];
+		int[] values = new int[10];
 		if(inventory[0] != null) {
 			values[0] = inventory[0].itemID;
 			values[1] = inventory[0].getItemDamage();
@@ -127,6 +142,17 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		} else {
 			values[7] = 0;
 		}
+		
+		if(this.computerMode) {
+			values[8] = 1;
+		} else {
+			values[8] = 0;
+		}
+		if(this.enabled) {
+			values[9] = 1;
+		} else {
+			values[9] = 0;
+		}
 		return values;
 	}
 	
@@ -145,6 +171,14 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		redstonePowered = false;
 		if(values[7] == 1) {
 			redstonePowered = true;
+		}
+		computerMode = false;
+		if(values[8] == 1) {
+			computerMode = true;
+		}
+		enabled = false;
+		if(values[9] == 1) {
+			enabled = true;
 		}
 	}
 	
@@ -278,4 +312,106 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		return input;
 	}
 
+	@Override
+	public String getType() {
+		return "Ingot Former";
+	}
+
+	public String getLiquidName() {
+		if(input.getLiquid() != null) {
+			return input.getLiquid().asItemStack().getDisplayName();
+		}
+		return "null";
+	}
+	
+	public int getLiquidAmount() {
+		if(input.getLiquid() != null) {
+			return input.getLiquid().amount;
+		}
+		return 0;
+	}
+	
+	public int getTankCapactiy() {
+		return input.getCapacity();
+	}
+	
+	public String getOutputName() {
+		if(inventory[0] != null) {
+			return inventory[0].getDisplayName();
+		}
+		return "null";
+	}
+	
+	public int getOutputAmount() {
+		if(inventory[0] != null) {
+			return inventory[0].copy().stackSize;
+		}
+		return 0;
+	}
+	
+	public void setEnabled(Object input) {
+		this.enabled = (Boolean) input;
+	}
+	
+	public void setComputerMode(Object input, IComputerAccess computer) {
+		boolean temp = (Boolean) input;
+		if(temp) {
+			this.computer = computer;
+			this.computerMode = true;
+		} else {
+			computer = null;
+			this.computerMode = false;
+		}
+	}
+	
+	@Override
+	public String[] getMethodNames() {
+		String[] methods = {"getLiquidName", "getLiquidAmount", "getLiquidCapacity", "getOutputName", "getOutputAmount", "setComputerMode", "setEnabled"};
+		return methods;
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, int method,
+			Object[] arguments) throws Exception {
+		if(method == 0) {
+			return new Object[] {getLiquidName()};
+		}
+		if(method == 1) {
+			return new Object[] {getLiquidAmount()};
+		}
+		if(method == 2) {
+			return new Object[] {getTankCapactiy()};
+		}
+		if(method == 3) {
+			return new Object[] {getOutputName()};
+		}
+		if(method == 4) {
+			return new Object[] {getOutputAmount()};
+		}
+		if(method == 5) {
+			setComputerMode(arguments[0], computer);
+			return new Object[] {};
+		}
+		if(method == 6) {
+			setEnabled(arguments[0]);
+			return new Object[] {};
+		}
+		return null;
+	}
+
+	@Override
+	public boolean canAttachToSide(int side) {
+		return true;
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+
+	}
+	
 }

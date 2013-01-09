@@ -1,5 +1,7 @@
 package LiquidMetals.Blocks;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,23 +11,31 @@ import net.minecraftforge.common.ISidedInventory;
 import LiquidMetals.CommonProxy;
 import LiquidMetals.GrinderRecipe;
 import LiquidMetals.GrinderRecipeManager;
+import LiquidMetals.LM_Main;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import buildcraft.core.TileBuildCraft;
 import buildcraft.core.network.PacketPayload;
 import buildcraft.core.network.PacketUpdate;
+import buildcraft.core.utils.StringUtil;
 
-public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerReceptor, ISidedInventory{
+public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerReceptor, ISidedInventory, IPeripheral{
 	public ItemStack[] inventory = new ItemStack[2];
 	public int cookTime = 0;
 	public boolean hasUpdate = false;
 	
 	public static int cookReq = 10;
 	
+	protected int powerReq = 40;
+	
 	protected IPowerProvider powerProvider;
 	
 	public boolean redstonePowered = false;
+	
+	public boolean computerMode = false;
+	public boolean enabled = false;
+	public IComputerAccess computer = null;
 	
 	public TileGrinder1() {
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
@@ -33,7 +43,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	}
 	
 	protected void configPower() {
-		powerProvider.configure(5, 40, 40, 40, 40);
+		powerProvider.configure(5, powerReq, powerReq, powerReq, powerReq);
 	}
 	
 	public void checkRedstonePower() {
@@ -63,16 +73,23 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 		if(cookTime >= cookReq) {
 			if(canCook()) {
 				doCook();
+				if(computerMode && CommonProxy.proxy.isSimulating(worldObj)) {
+					computer.queueEvent("ItemGrinded", new Object[] {getOutputName(), getOutputAmount()});
+				}
 			}
 			cookTime = 0;
 		}
 	}
 	
 	protected boolean useEnergy() {
-		if(this.redstonePowered == true) {
+		if(this.computerMode) {
+			if(!this.enabled) {
+				return false;
+			}
+		} else if(this.redstonePowered == true) {
 			return false;
 		}
-		if(powerProvider.useEnergy(40, 40, true) == 40)
+		if(powerProvider.useEnergy(powerReq, powerReq, true) == powerReq)
 		{
 			return true;
 		}
@@ -289,5 +306,112 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 	@Override
 	public int getSizeInventorySide(ForgeDirection side) {
 		return 1;
+	}
+
+	@Override
+	public String getType() {
+		return "Rock Pulverizer";
+	}
+
+	public String getInputName() {
+		if(inventory[0] != null) {
+			return inventory[0].getItem().getItemDisplayName(inventory[0]);
+		}
+		return "null";
+	}
+	
+	public int getInputAmount() {
+		if(inventory[0] != null) {
+			return inventory[0].copy().stackSize;
+		}
+		return 0;
+	}
+	
+	public String getOutputName() {
+		if(inventory[1] != null) {
+			return inventory[1].getItem().getItemDisplayName(inventory[1]);
+		}
+		return "null";
+	}
+	
+	public int getOutputAmount() {
+		if(inventory[1] != null) {
+			return inventory[1].copy().stackSize;
+		}
+		return 0;
+	}
+	
+	public int getProgress() {
+		return cookTime;
+	}
+	
+	public int getMaxProgress() {
+		return cookReq;
+	}
+	
+	public void setComputerMode(Object bool, IComputerAccess computer) {
+		this.computerMode = (Boolean) bool;
+		this.computer = null;
+		if(this.computerMode) {
+			this.computer = computer;
+		}
+	}
+	
+	public void setEnabled(Object bool) {
+		this.enabled = (Boolean) bool;
+	}
+	
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"getInputName", "getInputAmount", "getOutputName", "getOutputAmount", "getProgress", "getMaxProgress", "setComputerMode", "setEnabled"};
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, int method,
+			Object[] arguments) throws Exception {
+		if(method == 0) {
+			return new Object[] {getInputName()};
+		}
+		if(method == 1) {
+			return new Object[] {getInputAmount()};
+		}
+		if(method == 2) {
+			return new Object[] {getOutputName()};
+		}
+		if(method == 3) {
+			return new Object[] {getOutputAmount()};
+		}
+		if(method == 4) {
+			return new Object[] {getProgress()};
+		}
+		if(method == 5) {
+			return new Object[] {getMaxProgress()};
+		}
+		if(method == 6) {
+			setComputerMode(arguments[0], computer);
+			return new Object[] {};
+		}
+		if(method == 7) {
+			setEnabled(arguments[0]);
+			return new Object[] {};
+		}
+		return null;
+	}
+
+	@Override
+	public boolean canAttachToSide(int side) {
+		return true;
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+		// TODO Auto-generated method stub
+		
 	}
 }

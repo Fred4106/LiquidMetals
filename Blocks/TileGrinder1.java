@@ -1,5 +1,10 @@
 package LiquidMetals.Blocks;
 
+import java.util.Random;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,9 +72,11 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 		} else {
 			cookTime = 0;
 		}
+		
 		if (CommonProxy.proxy.isRenderWorld(worldObj)) {
 			return;
 		}
+		
 		if(cookTime >= cookReq) {
 			if(canCook()) {
 				doCook();

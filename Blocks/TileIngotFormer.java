@@ -52,6 +52,7 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 			checkRedstonePower();
 			hasUpdate = false;
 		}
+		
 		if(canCook()) {
 			time++;
 			if(time >= timeReq) {
@@ -68,7 +69,7 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 		}
 	}
 	
-	private boolean canCook() {
+	public boolean canCook() {
 		if(redstonePowered == true && computerMode == false) {
 			return false;
 		}

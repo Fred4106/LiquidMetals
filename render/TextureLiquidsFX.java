@@ -9,6 +9,12 @@
 
 package LiquidMetals.render;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import LiquidMetals.DEFAULT_SETTINGS;
+
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.ForgeHooksClient;
 import cpw.mods.fml.client.FMLTextureFX;
@@ -42,6 +48,18 @@ public class TextureLiquidsFX extends FMLTextureFX {
 		alpha = new float[tileSizeSquare];
 	}
 
+	protected static int liquidIndexOf(String value) {
+		Set s = DEFAULT_SETTINGS.liquidNames.entrySet();
+		Iterator it = s.iterator();
+		while(it.hasNext()) {
+			Map.Entry m = (Map.Entry)it.next();
+			if(m.getValue().equals(value)) {
+				return (Integer)m.getKey();
+			}
+		}
+		return -1;
+	}
+	
 	@Override
 	public void bindImage(RenderEngine renderengine) {
 		ForgeHooksClient.bindTexture(texture, 0);

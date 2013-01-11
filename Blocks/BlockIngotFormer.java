@@ -2,6 +2,9 @@ package LiquidMetals.Blocks;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import buildcraft.api.core.Position;
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.core.utils.Utils;
@@ -49,6 +52,46 @@ public class BlockIngotFormer extends BlockContainer{
 			tile.checkRedstonePower();
 		}
 	}
+	
+	@SideOnly(Side.CLIENT)
+
+    /**
+     * A randomly called display update to be able to add particles or other items for display
+     */
+    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+		TileIngotFormer tile = (TileIngotFormer) par1World.getBlockTileEntity(par2, par3, par4);
+        if (tile.canCook())
+        {
+            int var6 = par1World.getBlockMetadata(par2, par3, par4);
+            float var7 = (float)par2 + 0.5F;
+            float var8 = (float)par3 + 0.7F + par5Random.nextFloat() * 6.0F / 16.0F;
+            float var9 = (float)par4 + 0.5F;
+            float var10 = 0.52F;
+            float var11 = par5Random.nextFloat() * 0.6F - 0.3F;
+
+            if (var6 == 2)
+            {
+                par1World.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                //par1World.spawnParticle("flame", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+            }
+            else if (var6 == 3)
+            {
+                par1World.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                //par1World.spawnParticle("flame", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+            }
+            else if (var6 == 1)
+            {
+                par1World.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
+                //par1World.spawnParticle("flame", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
+            }
+            else if (var6 == 0)
+            {
+                par1World.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
+                //par1World.spawnParticle("flame", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
+            }
+        }
+    }
 	
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {

@@ -1,6 +1,9 @@
 package LiquidMetals;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -29,15 +32,18 @@ public class ItemBucket extends ItemLiquidMetal{
 	
 	@Override
 	public String getItemDisplayName(ItemStack item) {
-		String type = DEFAULT_SETTINGS.names.get(item.getItemDamage());
+		String type = DEFAULT_SETTINGS.liquidNames.get(item.getItemDamage());
 		return String.format("Bucket of Molten %s", type);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List itemList) {
-		for (int i = 0; i < DEFAULT_SETTINGS.names.size(); i++) {
-			itemList.add(new ItemStack(shiftedIndex, 1, i));
+		Set s = DEFAULT_SETTINGS.liquidNames.entrySet();
+		Iterator it = s.iterator();
+		while(it.hasNext()) {
+			Map.Entry m = (Map.Entry)it.next();
+			itemList.add(new ItemStack(shiftedIndex, 1, (Integer)m.getKey()));
 		}
 	}
 	

@@ -25,11 +25,13 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import LiquidMetals.Blocks.BlockCraftingTable;
 import LiquidMetals.Blocks.BlockFurnace;
 import LiquidMetals.Blocks.BlockGrinder1;
 import LiquidMetals.Blocks.BlockGrinder2;
 import LiquidMetals.Blocks.BlockGrinder3;
 import LiquidMetals.Blocks.BlockIngotFormer;
+import LiquidMetals.Blocks.TileCrafting;
 import LiquidMetals.Blocks.TileFurnace;
 import LiquidMetals.Blocks.TileGrinder1;
 import LiquidMetals.Blocks.TileGrinder2;
@@ -39,9 +41,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class DEFAULT_SETTINGS {
-	//public static ArrayList<String> namesItem = new ArrayList();
-	//public static ArrayList<String> namesLiquid = new ArrayList();
-	
 	public static Map<Integer, String> itemNames = new HashMap<Integer, String>();
 	public static Map<Integer, String> liquidNames = new HashMap<Integer, String>();
 	
@@ -50,12 +49,14 @@ public class DEFAULT_SETTINGS {
 	public static int gravel = 7002;
 	public static int buckets = 7003;
 	public static int liquid = 7004;
+	public static int marker = 7005;
 	
 	public static int blockGrinder1 = 500;
 	public static int blockGrinder2 = 501;
 	public static int blockGrinder3 = 502;
 	public static int blockFurnace = 503;
 	public static int blockIngotFormer = 504;
+	public static int blockCrafting = 505;
 	
 	//settings about ores and outputs and such
 	private static int copperIngotOutput = 0;
@@ -84,14 +85,6 @@ public class DEFAULT_SETTINGS {
 		liquidNames.put(32, "Glowstone");
 		liquidNames.put(33, "Lapis Lazuli");
 		liquidNames.put(34, "Redstone");
-		/*
-		namesItem.add("Iron");
-		namesItem.add("Gold");
-		namesItem.add("Copper");
-		namesItem.add("Tin");
-		namesItem.add("Silver");
-		namesItem.add("Lead");
-		//*/
 	}
 	
 	public static void readConfig(File configurationFile) {
@@ -103,11 +96,13 @@ public class DEFAULT_SETTINGS {
 			gravel = config.get("Item Ids", "Gravel", gravel).getInt();
 			buckets = config.get("Item Ids", "Buckets", buckets).getInt();
 			liquid = config.get("Item Ids", "Liquid", liquid).getInt();
+			marker = config.get("Item Ids", "Marker", marker).getInt();
 			blockGrinder1 = config.get("Block Ids", "Small Grinder", blockGrinder1).getInt();
 			blockGrinder2 = config.get("Block Ids", "Medium Grinder", blockGrinder2).getInt();
 			blockGrinder3 = config.get("Block Ids", "Large Grinder", blockGrinder3).getInt();
 			blockFurnace = config.get("Block Ids", "Arc Furnace", blockFurnace).getInt();
 			blockIngotFormer = config.get("Block Ids", "Ingot Former", blockIngotFormer).getInt();
+			blockCrafting = config.get("Block Ids", "Liquid Crafting", blockCrafting).getInt();
 			
 			config.addCustomCategoryComment("Ingot Former Output", "Dont mess with these values unless you know what your doing.");
 			copperIngotOutput = config.get("Ingot Former Output", "Ingot output copper", copperIngotOutput).getInt();
@@ -130,24 +125,28 @@ public class DEFAULT_SETTINGS {
 		LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
 		LM_Main.blockFurnace = new BlockFurnace(blockFurnace);
 		LM_Main.blockIngotFormer = new BlockIngotFormer(blockIngotFormer);
+		LM_Main.blockCrafting = new BlockCraftingTable(blockCrafting);
 		
 		GameRegistry.registerBlock(LM_Main.blockGrinder1, "LM.Grind1");
 		GameRegistry.registerBlock(LM_Main.blockGrinder2, "LM.Grind2");
 		GameRegistry.registerBlock(LM_Main.blockGrinder3, "LM.Grind3");
 		GameRegistry.registerBlock(LM_Main.blockFurnace, "LM.Furnace");
 		GameRegistry.registerBlock(LM_Main.blockIngotFormer, "LM.IngotFormer");
+		GameRegistry.registerBlock(LM_Main.blockCrafting, "LM,LiquidCrafting");
 		
 		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
 		LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");
 		LanguageRegistry.addName(LM_Main.blockGrinder3, "Fine Grinder");
 		LanguageRegistry.addName(LM_Main.blockFurnace, "Arc Furnace");
 		LanguageRegistry.addName(LM_Main.blockIngotFormer, "Ingot Former");
+		LanguageRegistry.addName(LM_Main.blockCrafting, "Liquid Crafting Table");
 		
 		GameRegistry.registerTileEntity(TileGrinder1.class, "Rock Pulverizer");
 		GameRegistry.registerTileEntity(TileGrinder2.class, "Rough Grinder");
 		GameRegistry.registerTileEntity(TileGrinder3.class, "Fine Grinder");
 		GameRegistry.registerTileEntity(TileFurnace.class, "Arc Furnace");
 		GameRegistry.registerTileEntity(TileIngotFormer.class, "Ingot Former");
+		GameRegistry.registerTileEntity(TileCrafting.class, "Liquid Crafting Table");
 	}
 	
 	public static void initItems() {
@@ -156,6 +155,8 @@ public class DEFAULT_SETTINGS {
 		LM_Main.dust = new ItemDust(dust);
 		LM_Main.bucketMolten = new ItemBucket(buckets);
 		LM_Main.molten = new ItemMolten(liquid);
+		LM_Main.marker = new ItemMarker(marker);
+		
 	}
 	
 	public static void setupLiquids() {

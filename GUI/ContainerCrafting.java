@@ -5,6 +5,7 @@ import buildcraft.core.proxy.CoreProxy;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
@@ -12,139 +13,114 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.AchievementList;
 import LiquidMetals.CommonProxy;
+import LiquidMetals.GrinderRecipeManager;
 import LiquidMetals.Blocks.TileCrafting;
-public class ContainerCrafting extends BuildCraftContainer {
+import LiquidMetals.Blocks.TileGrinder1;
+public class ContainerCrafting extends Container {
 
+	InventoryPlayer playerInventory;
 	TileCrafting tile;
-
-	// public InventoryCrafting craftMatrix;
-	public IInventory craftResult;
-
-	public class SlotAutoCrafting extends Slot {
-
-		private final IInventory craftMatrix;
-		private EntityPlayer thePlayer;
-
-		public SlotAutoCrafting(EntityPlayer entityplayer, IInventory iinventory, IInventory iinventory1, int i, int j, int k) {
-			super(iinventory1, i, j, k);
-			thePlayer = entityplayer;
-			craftMatrix = iinventory;
-		}
-
-		@Override
-		public boolean isItemValid(ItemStack itemstack) {
-			return false;
-		}
-
-		@Override
-		public void onPickupFromSlot(EntityPlayer pl, ItemStack itemstack) {
-			CoreProxy.proxy.onCraftingPickup(thePlayer.worldObj, thePlayer, itemstack);
-			if (itemstack.itemID == Block.workbench.blockID) {
-				thePlayer.addStat(AchievementList.buildWorkBench, 1);
-			} else if (itemstack.itemID == Item.pickaxeWood.shiftedIndex) {
-				thePlayer.addStat(AchievementList.buildPickaxe, 1);
-			} else if (itemstack.itemID == Block.stoneOvenIdle.blockID) {
-				thePlayer.addStat(AchievementList.buildFurnace, 1);
-			} else if (itemstack.itemID == Item.hoeWood.shiftedIndex) {
-				thePlayer.addStat(AchievementList.buildHoe, 1);
-			} else if (itemstack.itemID == Item.bread.shiftedIndex) {
-				thePlayer.addStat(AchievementList.makeBread, 1);
-			} else if (itemstack.itemID == Item.cake.shiftedIndex) {
-				thePlayer.addStat(AchievementList.bakeCake, 1);
-			} else if (itemstack.itemID == Item.pickaxeStone.shiftedIndex) {
-				thePlayer.addStat(AchievementList.buildBetterPickaxe, 1);
-			} else if (itemstack.itemID == Item.swordWood.shiftedIndex) {
-				thePlayer.addStat(AchievementList.buildSword, 1);
-			} else if (itemstack.itemID == Block.enchantmentTable.blockID) {
-				thePlayer.addStat(AchievementList.enchantments, 1);
-			} else if (itemstack.itemID == Block.bookShelf.blockID) {
-				thePlayer.addStat(AchievementList.bookcase, 1);
+	
+	public ContainerCrafting(InventoryPlayer inventoryPlayer, TileCrafting te) {
+		playerInventory = inventoryPlayer;
+		tile = te;
+		
+		for (int a = 0; a < 3; a++) {
+			for(int b = 0; b < 3; b++) {
+				this.addSlotToContainer(new Slot(te, b+a*3, b*18+8, a*18+16));
 			}
-			CoreProxy.proxy.TakenFromCrafting(thePlayer, itemstack, craftMatrix);
-
-			tile.extractItem(true, true);
 		}
-
-	}
-
-	public ContainerCrafting(InventoryPlayer inventoryplayer, TileCrafting tile) {
-		super(tile.getSizeInventory());
-
-		craftResult = new InventoryCraftResult();
-		this.tile = tile;
-		addSlotToContainer(new SlotAutoCrafting(inventoryplayer.player, tile, craftResult, 0, 124, 35));
-		for (int l = 0; l < 3; l++) {
-			for (int k1 = 0; k1 < 3; k1++) {
-				addSlotToContainer(new Slot(tile, k1 + l * 3, 30 + k1 * 18, 17 + l * 18));
+		
+		for (int var3 = 0; var3 < 2; ++var3)
+		{
+			for (int var4 = 0; var4 < 9; ++var4)
+			{
+				this.addSlotToContainer(new Slot(te, var4 + var3 * 9 + 9, 8 + var4 * 18, 74 + var3 * 18));
 			}
-
 		}
-
-		for (int i1 = 0; i1 < 3; i1++) {
-			for (int l1 = 0; l1 < 9; l1++) {
-				addSlotToContainer(new Slot(inventoryplayer, l1 + i1 * 9 + 9, 8 + l1 * 18, 84 + i1 * 18));
+		
+		
+		for (int var3 = 0; var3 < 3; ++var3)
+		{
+			for (int var4 = 0; var4 < 9; ++var4)
+			{
+				this.addSlotToContainer(new Slot(inventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 128 + var3 * 18));
 			}
-
 		}
 
-		for (int j1 = 0; j1 < 9; j1++) {
-			addSlotToContainer(new Slot(inventoryplayer, j1, 8 + j1 * 18, 142));
+		for (int var3 = 0; var3 < 9; ++var3)
+		{
+			this.addSlotToContainer(new Slot(inventoryPlayer, var3, 8 + var3 * 18, 186));
 		}
-
-		onCraftMatrixChanged(tile);
 	}
 
 	@Override
-	public void updateCraftingResults() {
-		super.updateCraftingResults();
-		craftResult.setInventorySlotContents(0, tile.findRecipe());
+	public boolean canInteractWith(EntityPlayer var1) {
+		return true;
 	}
 
-	@Override
-	public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer) {
-		// This call ensures that the ouptut is correctly computed
-		craftResult.setInventorySlotContents(0, tile.findRecipe());
-
-		ItemStack ret = super.slotClick(i, j, flag, entityplayer);
-		onCraftMatrixChanged(tile);
-
-		return ret;
-	}
-
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer) {
-		return tile.isUseableByPlayer(entityplayer);
-	}
-
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer pl, int i) {
-		ItemStack itemstack = null;
-		Slot slot = (Slot) inventorySlots.get(i);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
-			if (i == 0) {
-				if (!mergeItemStack(itemstack1, 10, 46, true))
-					return null;
-			} else if (i >= 10 && i < 37) {
-				if (!mergeItemStack(itemstack1, 37, 46, false))
-					return null;
-			} else if (i >= 37 && i < 46) {
-				if (!mergeItemStack(itemstack1, 10, 37, false))
-					return null;
-			} else if (!mergeItemStack(itemstack1, 10, 46, false))
-				return null;
-			if (itemstack1.stackSize == 0) {
-				slot.putStack(null);
-			} else {
-				slot.onSlotChanged();
+	public boolean pushItemStack(ItemStack item, int lowSlot, int highSlot, boolean reverseOrder) {
+		boolean pushed = false;
+		int i = reverseOrder ? highSlot - 1 : lowSlot;
+		Slot currentSlot;
+		ItemStack targetStack;
+		
+		while (reverseOrder ? i >= lowSlot : i < highSlot) {
+			currentSlot = (Slot)inventorySlots.get(i);
+			targetStack = currentSlot.getStack();
+			
+			if (targetStack == null && currentSlot.isItemValid(item)) {
+				targetStack = item.copy();
+				targetStack.stackSize = Math.min(currentSlot.getSlotStackLimit(), item.stackSize);
+				currentSlot.putStack(targetStack);
+				currentSlot.onSlotChanged();
+				item.stackSize -= targetStack.stackSize;
+				pushed = true;
+				break;
 			}
-			if (itemstack1.stackSize != itemstack.stackSize) {
-				slot.onPickupFromSlot(pl, itemstack1);
-			} else
-				return null;
+			
+			i = reverseOrder ? i - 1 : i + 1;
 		}
-		return itemstack;
+		
+		return pushed;
 	}
+	
+    /**
+     * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
+     */
+    public ItemStack transferStackInSlot(EntityPlayer pl, int i)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.inventorySlots.get(i);
 
+        if (var4 != null && var4.getHasStack())
+        {
+            ItemStack var5 = var4.getStack();
+            var3 = var5.copy();
+
+            if (i < 27)
+            {
+                if (!this.mergeItemStack(var5, 27, this.inventorySlots.size(), true))
+                {
+                    return null;
+                }
+            }
+            else if (!this.mergeItemStack(var5, 9, 27, false))
+            {
+                return null;
+            }
+
+            if (var5.stackSize == 0)
+            {
+                var4.putStack((ItemStack)null);
+            }
+            else
+            {
+                var4.onSlotChanged();
+            }
+        }
+
+        return var3;
+    }
+	
 }

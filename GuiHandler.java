@@ -3,16 +3,19 @@ package LiquidMetals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import LiquidMetals.Blocks.TileCrafting;
 import LiquidMetals.Blocks.TileFurnace;
 import LiquidMetals.Blocks.TileGrinder1;
 import LiquidMetals.Blocks.TileGrinder2;
 import LiquidMetals.Blocks.TileGrinder3;
 import LiquidMetals.Blocks.TileIngotFormer;
+import LiquidMetals.GUI.ContainerCrafting;
 import LiquidMetals.GUI.ContainerFurnace;
 import LiquidMetals.GUI.ContainerGrinder1;
 import LiquidMetals.GUI.ContainerGrinder2;
 import LiquidMetals.GUI.ContainerGrinder3;
 import LiquidMetals.GUI.ContainerIngotFormer;
+import LiquidMetals.GUI.GuiCrafting;
 import LiquidMetals.GUI.GuiFurnace;
 import LiquidMetals.GUI.GuiGrinder1;
 import LiquidMetals.GUI.GuiGrinder2;
@@ -60,6 +63,11 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new GuiIngotFormer(new ContainerIngotFormer(player.inventory, (TileIngotFormer) tile), (TileIngotFormer) tile);
+		} else if(ID == Crafting) {
+			if(!(tile instanceof TileCrafting)) {
+				return null;
+			}
+			return new GuiCrafting(new ContainerCrafting(player.inventory, (TileCrafting) tile), (TileCrafting) tile);
 		}
 		return null;
 	}
@@ -94,6 +102,11 @@ public class GuiHandler implements IGuiHandler {
 				return null;
 			}
 			return new ContainerIngotFormer(player.inventory, (TileIngotFormer) tile);
+		} else if(ID == Crafting) {
+			if(!(tile instanceof TileCrafting)) {
+				return null;
+			}
+			return new ContainerCrafting(player.inventory, (TileCrafting) tile);
 		}
 		return null;
 	}

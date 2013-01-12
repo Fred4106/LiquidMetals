@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import LiquidMetals.Blocks.BlockCraftingTable;
 import LiquidMetals.Blocks.BlockFurnace;
 import LiquidMetals.Blocks.BlockGrinder1;
 import LiquidMetals.Blocks.BlockGrinder2;
@@ -55,6 +56,7 @@ public class LM_Main {
 	public static Item gravel;
 	public static Item sand;
 	public static Item dust;
+	public static Item marker;
 	public static LiquidStack liquid;
 	//end
 	
@@ -64,6 +66,7 @@ public class LM_Main {
 	public static BlockGrinder3 blockGrinder3;
 	public static BlockFurnace blockFurnace;
 	public static BlockIngotFormer blockIngotFormer;
+	public static BlockCraftingTable blockCrafting;
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -115,6 +118,18 @@ public class LM_Main {
 		GameRegistry.addRecipe(new ItemStack(blockIngotFormer), "!@!", "!#!", "!!!", '!', Item.ingotIron, '@', BuildCraftFactory.tankBlock, '#', BuildCraftCore.goldGearItem);
 		GameRegistry.addRecipe(new ItemStack(this.blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
 		
+		GameRegistry.addRecipe(new ItemStack(marker, 2, 0), "!", "@", "#", '!', new ItemStack(Item.dyePowder, 1, 1), '@', Item.ingotGold, '#', Item.paper);
+		GameRegistry.addRecipe(new ItemStack(marker, 2, 1), "!", "@", "#", '!', new ItemStack(Item.dyePowder, 1, 2), '@', Item.ingotGold, '#', Item.paper);
+		GameRegistry.addRecipe(new ItemStack(marker, 2, 2), "!", "@", "#", '!', new ItemStack(Item.dyePowder, 1, 4), '@', Item.ingotGold, '#', Item.paper);
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 0), new ItemStack(marker, 1, 1), new ItemStack(Item.dyePowder, 1, 1));
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 0), new ItemStack(marker, 1, 2), new ItemStack(Item.dyePowder, 1, 1));
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 1), new ItemStack(marker, 1, 0), new ItemStack(Item.dyePowder, 1, 2));
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 1), new ItemStack(marker, 1, 2), new ItemStack(Item.dyePowder, 1, 2));
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 2), new ItemStack(marker, 1, 0), new ItemStack(Item.dyePowder, 1, 4));
+		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 2), new ItemStack(marker, 1, 1), new ItemStack(Item.dyePowder, 1, 4));
 	}
 	
 }

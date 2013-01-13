@@ -164,7 +164,7 @@ public class DEFAULT_SETTINGS {
 		Iterator it = s.iterator();
 		while(it.hasNext()) {
 			Map.Entry m = (Map.Entry)it.next();
-			LiquidDictionary.getOrCreateLiquid("Molten " + m.getValue(), new LiquidStack(LM_Main.molten.shiftedIndex, 1, (Integer)m.getKey()));
+			LiquidDictionary.getOrCreateLiquid("Molten " + m.getValue(), new LiquidStack(LM_Main.molten.itemID, 1, (Integer)m.getKey()));
 			LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + m.getValue(), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, (Integer)m.getKey()), new ItemStack(Item.bucketEmpty)));
 		}
 	}

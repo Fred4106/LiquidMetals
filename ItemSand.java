@@ -40,7 +40,7 @@ public class ItemSand extends ItemLiquidMetal{
 		Iterator it = s.iterator();
 		while(it.hasNext()) {
 			Map.Entry m = (Map.Entry)it.next();
-			itemList.add(new ItemStack(shiftedIndex, 1, (Integer)m.getKey()));
+			itemList.add(new ItemStack(itemID, 1, (Integer)m.getKey()));
 		}
 	}
 	

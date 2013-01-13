@@ -27,7 +27,7 @@ public class ArcFurnaceRecipeManager {
 			return null;
 		}
 		for(int a = 0; a < instance.recipes.size(); a++) {
-			if((instance.recipes.get(a).getInput().getItem().shiftedIndex == item.getItem().shiftedIndex) &&
+			if((instance.recipes.get(a).getInput().getItem().itemID == item.getItem().itemID) &&
 					(instance.recipes.get(a).getInput().getItemDamage() == item.getItemDamage())) {
 				int stackSize = item.stackSize;
 				if(stackSize >= instance.recipes.get(a).getInput().stackSize) {

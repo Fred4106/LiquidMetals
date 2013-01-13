@@ -110,7 +110,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 				return true;
 			}
 			else {
-				if((inventory[1].getItem().shiftedIndex == tempRecipe.getOutput().getItem().shiftedIndex) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
+				if((inventory[1].getItem().itemID == tempRecipe.getOutput().getItem().itemID) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
 					return true;
 				}
 			}
@@ -140,7 +140,7 @@ public class TileGrinder1 extends TileBuildCraft implements IInventory, IPowerRe
 				inventory[1] = tempRecipe.getOutput();
 			}
 			else {
-				if((inventory[1].getItem().shiftedIndex == tempRecipe.getOutput().getItem().shiftedIndex) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
+				if((inventory[1].getItem().itemID == tempRecipe.getOutput().getItem().itemID) && (inventory[1].getItemDamage() == tempRecipe.getOutput().getItemDamage()) && (64-inventory[1].stackSize >= tempRecipe.getOutput().stackSize)) {
 					inventory[1].stackSize+=tempRecipe.getOutput().stackSize;
 				}
 			}

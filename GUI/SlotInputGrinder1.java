@@ -22,7 +22,7 @@ public class SlotInputGrinder1 extends Slot{
 		}
 		else
 		{
-			GrinderRecipe temp = GrinderRecipeManager.getRecipe(new ItemStack(item.getItem().shiftedIndex, 64, item.getItemDamage()), getTier());
+			GrinderRecipe temp = GrinderRecipeManager.getRecipe(new ItemStack(item.getItem().itemID, 64, item.getItemDamage()), getTier());
 			if(temp != null) {
 				return true;
 			}

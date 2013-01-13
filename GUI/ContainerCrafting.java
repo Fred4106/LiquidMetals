@@ -28,7 +28,7 @@ public class ContainerCrafting extends Container {
 		
 		for (int a = 0; a < 3; a++) {
 			for(int b = 0; b < 3; b++) {
-				this.addSlotToContainer(new Slot(tile, b+a*3, b*18+8, a*18+16));
+				this.addSlotToContainer(new SlotInputCrafting(tile, b+a*3, b*18+8, a*18+16));
 			}
 		}
 		
@@ -59,7 +59,7 @@ public class ContainerCrafting extends Container {
 	public boolean canInteractWith(EntityPlayer var1) {
 		return true;
 	}
-
+	
 	public boolean pushItemStack(ItemStack item, int lowSlot, int highSlot, boolean reverseOrder) {
 		boolean pushed = false;
 		int i = reverseOrder ? highSlot - 1 : lowSlot;
@@ -123,5 +123,17 @@ public class ContainerCrafting extends Container {
 
         return var3;
     }
+    
+    public static class ContainerNull extends Container
+	{
+		public boolean canInteractWith(EntityPlayer var1)
+		{
+			return false;
+		}
+
+		public void onCraftMatrixChanged(IInventory inv)
+		{
+		}
+	}
 	
 }

@@ -19,6 +19,9 @@ import buildcraft.core.utils.Utils;
 import LiquidMetals.ArcFurnaceRecipe;
 import LiquidMetals.ArcFurnaceRecipeManager;
 import LiquidMetals.CommonProxy;
+import LiquidMetals.DEFAULT_SETTINGS;
+import LiquidMetals.LM_Main;
+import LiquidMetals.GUI.ContainerCrafting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -48,10 +51,13 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	public LiquidTank[] liquids = new LiquidTank[3];
 	public boolean hasUpdate = false;
 	
+	public InventoryCrafting craftMatrix;
+	
 	public TileCrafting() {
 		for(int a = 0; a < 3; a++) {
 			liquids[a] = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 2);
 		}
+		craftMatrix = new InventoryCrafting(new ContainerCrafting.ContainerNull(), 3, 3);
 	}
 	
 	/* UPDATING */
@@ -60,25 +66,53 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 40 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
-			generateRecipieStackFromInventory();
+			System.out.println(getCraftingResult());
 		}
 	}
 	
-	private ItemStack[] generateRecipieStackFromInventory() {
-		ItemStack[] crafting = new ItemStack[9];
+	private boolean canCraft() {
+		return false;
+	}
+	
+	private boolean hasEnoughLiquid() {
+		return false;
+	}
+	
+	private ItemStack getCraftingResult() {
+		setCraftMatrix();
+		return CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj);
+	}
+	
+	private void setCraftMatrix() {
+		ItemStack red = null;
+		ItemStack green = null;
+		ItemStack blue = null;
+		if(liquids[0].getLiquid() != null) {
+			red = DEFAULT_SETTINGS.liquidNames.get(liquids[0].getLiquid().itemMeta).getItem();
+		}
+		if(liquids[1].getLiquid() != null) {
+			green = DEFAULT_SETTINGS.liquidNames.get(liquids[1].getLiquid().itemMeta).getItem();
+		}
+		if(liquids[2].getLiquid() != null) {
+			blue = DEFAULT_SETTINGS.liquidNames.get(liquids[2].getLiquid().itemMeta).getItem();
+		}
 		for(int a = 0; a < 9; a++) {
 			if(inventory[a] != null) {
-				crafting[a] = new ItemStack(inventory[a].itemID, 1, inventory[a].getItemDamage());
-			} else {
-				crafting[a] = null;
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 0)) && red != null) {
+					craftMatrix.setInventorySlotContents(a, red.copy());//red
+				} else if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 1)) && green != null) {
+					craftMatrix.setInventorySlotContents(a, green.copy());//green
+				} else if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 2)) && blue != null) {
+					craftMatrix.setInventorySlotContents(a, blue.copy());//blue
+				} else {
+					craftMatrix.setInventorySlotContents(a, inventory[a]);
+				}
 			}
+			else {
+				craftMatrix.setInventorySlotContents(a, null);
+			}
+			//System.out.println(craftMatrix.getStackInSlot(a));
 		}
-		int xSize = 3;
-		int ySize = 3;
-		int tempCounter = 0;
-
-		System.out.println(xSize + " " + ySize);
-		return null;
 	}
 	
 	@Override
@@ -296,7 +330,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 
 	@Override
 	public int getStartInventorySide(ForgeDirection side) {
-		return 0;
+		return 9;
 	}
 
 	@Override

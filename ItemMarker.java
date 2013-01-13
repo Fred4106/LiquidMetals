@@ -45,9 +45,9 @@ public class ItemMarker extends ItemLiquidMetal{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List itemList) {
-		itemList.add(new ItemStack(shiftedIndex, 1, 0));
-		itemList.add(new ItemStack(shiftedIndex, 1, 1));
-		itemList.add(new ItemStack(shiftedIndex, 1, 2));
+		itemList.add(new ItemStack(itemID, 1, 0));
+		itemList.add(new ItemStack(itemID, 1, 1));
+		itemList.add(new ItemStack(itemID, 1, 2));
 	}
 
 }

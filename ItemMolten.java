@@ -29,7 +29,7 @@ public class ItemMolten extends ItemLiquidMetal{
 	
 	@Override
 	public String getItemDisplayName(ItemStack item) {
-		String type = DEFAULT_SETTINGS.liquidNames.get(item.getItemDamage());
+		String type = DEFAULT_SETTINGS.liquidNames.get(item.getItemDamage()).getPrefix();
 		return String.format("Molten %s", type);
 	}
 	

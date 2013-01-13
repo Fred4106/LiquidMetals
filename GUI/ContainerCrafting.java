@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ public class ContainerCrafting extends Container {
 		
 		for (int a = 0; a < 3; a++) {
 			for(int b = 0; b < 3; b++) {
-				this.addSlotToContainer(new Slot(te, b+a*3, b*18+8, a*18+16));
+				this.addSlotToContainer(new Slot(tile, b+a*3, b*18+8, a*18+16));
 			}
 		}
 		

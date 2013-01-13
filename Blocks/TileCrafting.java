@@ -1,6 +1,8 @@
 package LiquidMetals.Blocks;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import buildcraft.api.core.Position;
@@ -22,10 +24,14 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,7 +60,25 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 40 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
+			generateRecipieStackFromInventory();
 		}
+	}
+	
+	private ItemStack[] generateRecipieStackFromInventory() {
+		ItemStack[] crafting = new ItemStack[9];
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] != null) {
+				crafting[a] = new ItemStack(inventory[a].itemID, 1, inventory[a].getItemDamage());
+			} else {
+				crafting[a] = null;
+			}
+		}
+		int xSize = 3;
+		int ySize = 3;
+		int tempCounter = 0;
+
+		System.out.println(xSize + " " + ySize);
+		return null;
 	}
 	
 	@Override
@@ -122,7 +146,6 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	private void useValuesArray(int[] values) {
 		for(int a = 0; a < 27; a++) {
 			if(values[a*3] != 0) {
-				System.out.println(values[a*3]);
 				inventory[a] = new ItemStack(values[a*3], values[a*3 + 2], values[a*3 + 1]);
 			} else {
 				inventory[a] = null;
@@ -273,7 +296,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 
 	@Override
 	public int getStartInventorySide(ForgeDirection side) {
-		return 9;
+		return 0;
 	}
 
 	@Override

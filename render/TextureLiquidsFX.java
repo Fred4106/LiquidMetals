@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import LiquidMetals.DEFAULT_SETTINGS;
+import LiquidMetals.Metal;
 
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -53,7 +54,7 @@ public class TextureLiquidsFX extends FMLTextureFX {
 		Iterator it = s.iterator();
 		while(it.hasNext()) {
 			Map.Entry m = (Map.Entry)it.next();
-			if(m.getValue().equals(value)) {
+			if(((Metal)m.getValue()).getPrefix().equalsIgnoreCase(value)) {
 				return (Integer)m.getKey();
 			}
 		}

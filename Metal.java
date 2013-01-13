@@ -7,47 +7,37 @@ import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Metal {
+
+	private String prefix;
+	private ItemStack item = null;
+	private int amount;
+	private String oreDictName = "";
 	
-	private String oreName = "";
-	private ItemStack ore;
-	private String ingotName = "";
-	private ItemStack ingot;
-	private int dustId;
-	private LiquidStack liquidStack;
-	
-	public Metal(ItemStack ore, int dustId, LiquidStack liquidStack, ItemStack ingot) {
-		this.ore = ore;
-		this.ingot = ingot;
-		this.dustId = dustId;
-		this.liquidStack = liquidStack;
+	public Metal(String prefix, ItemStack item, int amount/*amount of liquid to equal one of the itemstack*/) {
+		this.prefix = prefix;
+		this.item = item;
+		this.amount = amount;
 	}
 	
-	public Metal(String oreIdent, int dustId, LiquidStack liquidStack, String outputIdent) {
-		oreName = oreIdent;
-		this.dustId = dustId;
-		ingotName = outputIdent;
-		this.liquidStack = liquidStack;
+	public Metal(String prefix, String oreDictName, int amount/*amount of liquid to equal one of the itemstack*/) {
+		this.prefix = prefix;
+		this.oreDictName = oreDictName;
+		this.amount = amount;
 	}
 	
-	public ItemStack getIngotOutput() {
-		if(ingotName.equals("")) {
-			return ingot;
-		}
-		if(OreDictionary.getOres(ingotName).size() == 0) {
-			return null;
-		}
-		return OreDictionary.getOres(ingotName).get(0);
+	public String getPrefix() {
+		return prefix;
 	}
 	
-	public ItemStack[] getOres() {
-		if(oreName.equals("")) {
-			return new ItemStack[] {ore};
-		}
-		ArrayList<ItemStack> oreIds = OreDictionary.getOres(oreName);
-		ItemStack[] toReturn = new ItemStack[oreIds.size()];
-		for(int a = 0; a <  oreIds.size(); a++) {
-			toReturn[a] = oreIds.get(a);
-		}
-		return toReturn;
+	public ItemStack getItem() {
+		return item;
+	}
+	
+	public String getOreDictName() {
+		return this.oreDictName;
+	}
+	
+	public int getAmount() {
+		return amount;
 	}
 }

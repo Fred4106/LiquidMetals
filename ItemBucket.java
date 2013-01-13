@@ -32,7 +32,7 @@ public class ItemBucket extends ItemLiquidMetal{
 	
 	@Override
 	public String getItemDisplayName(ItemStack item) {
-		String type = DEFAULT_SETTINGS.liquidNames.get(item.getItemDamage());
+		String type = DEFAULT_SETTINGS.liquidNames.get(item.getItemDamage()).getPrefix();
 		return String.format("Bucket of Molten %s", type);
 	}
 	

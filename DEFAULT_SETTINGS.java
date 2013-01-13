@@ -42,7 +42,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class DEFAULT_SETTINGS {
 	public static Map<Integer, String> itemNames = new HashMap<Integer, String>();
-	public static Map<Integer, String> liquidNames = new HashMap<Integer, String>();
+	public static Map<Integer, Metal> liquidNames = new HashMap<Integer, Metal>();
 	
 	public static int dust = 7000;
 	public static int sand = 7001;
@@ -76,15 +76,15 @@ public class DEFAULT_SETTINGS {
 		itemNames.put(4, "Silver");
 		itemNames.put(5, "Lead");
 		
-		liquidNames.put(0, "Iron");
-		liquidNames.put(1, "Gold");
-		liquidNames.put(2, "Copper");
-		liquidNames.put(3, "Tin");
-		liquidNames.put(4, "Silver");
-		liquidNames.put(5, "Lead");
-		liquidNames.put(32, "Glowstone");
-		liquidNames.put(33, "Lapis Lazuli");
-		liquidNames.put(34, "Redstone");
+		liquidNames.put(0, new Metal("Iron", new ItemStack(Item.ingotIron), LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(1, new Metal("Gold", new ItemStack(Item.ingotGold), LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(2, new Metal("Copper", "ingotCopper", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(3, new Metal("Tin", "ingotTin", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(4, new Metal("Silver", "ingotSilver", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(5, new Metal("Lead", "ingotLead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(32, new Metal("Glowstone", new ItemStack(Item.lightStoneDust), LiquidContainerRegistry.BUCKET_VOLUME/40));
+		liquidNames.put(33, new Metal("Lapis Lazuli", new ItemStack(Item.dyePowder, 1, 4), LiquidContainerRegistry.BUCKET_VOLUME/40));
+		liquidNames.put(34, new Metal("Redstone", new ItemStack(Item.redstone), LiquidContainerRegistry.BUCKET_VOLUME/40));
 	}
 	
 	public static void readConfig(File configurationFile) {

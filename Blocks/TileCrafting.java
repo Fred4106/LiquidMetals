@@ -21,6 +21,7 @@ import LiquidMetals.ArcFurnaceRecipeManager;
 import LiquidMetals.CommonProxy;
 import LiquidMetals.DEFAULT_SETTINGS;
 import LiquidMetals.LM_Main;
+import LiquidMetals.Metal;
 import LiquidMetals.GUI.ContainerCrafting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -66,45 +67,133 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 40 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
-			System.out.println(hasEnoughLiquid());
+			getMasterListLowerInv();
 		}
 	}
 	
 	private boolean canCraft() {
+		if(hasEnoughLiquid() && getCraftingResult() != null) {
+			//create masterlist of needed items. Scan inventory for required items.
+		}
 		return false;
 	}
 	
-	private boolean hasEnoughLiquid() {
-		int red = 0;
-		int green = 0;
-		int blue = 0;
-		
-		int redLiquid = 0;
-		int greenLiquid = 0;
-		int blueLiquid = 0;
-		
-		for(int a = 0; a < 9; a++) {
+	private ItemStack[] getMasterListLowerInv() {
+		ArrayList<ItemStack> masterList = new ArrayList<ItemStack>();
+		for(int a = 9; a < 27; a++) {
 			if(inventory[a] != null) {
-				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 0))) {
-					red++;
-				}
-				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 1))) {
-					green++;
-				}
-				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 2))) {
-					blue++;
+				if(masterList.size() == 0) {
+					masterList.add(inventory[a].copy());
+				} else {
+					for(int b = 0; b < masterList.size(); b++) {
+						if(masterList.get(b).isItemEqual(inventory[a])) {
+							masterList.get(b).stackSize+=inventory[a].copy().stackSize;
+							break;
+						}
+						if(b == masterList.size()-1) {
+							masterList.add(inventory[a].copy());
+							break;
+						}
+					}
 				}
 			}
 		}
 		
-		if(red > 0) {
-			
+		for(int a = 0; a < masterList.size(); a++) {
+			if(masterList.get(a).itemID == LM_Main.marker.itemID) {
+				masterList.remove(a);
+			}
 		}
-		if(green > 0) {
-			
+		
+		ItemStack[] items = new ItemStack[masterList.size()];
+		for(int a = 0; a < masterList.size(); a++) {
+			items[a] = masterList.get(a).copy();
+			System.out.println(items[a]);
 		}
-		if(blue > 0) {
-			
+		System.out.println(" ");
+		return items;
+	}
+	
+	private boolean invContainsEnoughItems(ItemStack[] masterList) {
+		
+		
+		return false;
+	}
+	
+	private ItemStack[] getMasterList() {
+		ArrayList<ItemStack> masterList = new ArrayList<ItemStack>();
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] != null) {
+				if(masterList.size() == 0) {
+					masterList.add(inventory[a].copy());
+				} else {
+					for(int b = 0; b < masterList.size(); b++) {
+						if(masterList.get(b).isItemEqual(inventory[a])) {
+							masterList.get(b).stackSize++;
+							break;
+						}
+						if(b == masterList.size()-1) {
+							masterList.add(inventory[a].copy());
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		for(int a = 0; a < masterList.size(); a++) {
+			if(masterList.get(a).itemID == LM_Main.marker.itemID) {
+				masterList.remove(a);
+			}
+		}
+		
+		ItemStack[] items = new ItemStack[masterList.size()];
+		for(int a = 0; a < masterList.size(); a++) {
+			items[a] = masterList.get(a).copy();
+		}
+		return items;
+	}
+	
+	private boolean hasEnoughLiquid() {
+		int[] markers = {0, 0, 0};
+		int[] liquidAmounts = {0, 0, 0};
+		
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] != null) {
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 0))) {
+					markers[0]++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 1))) {
+					markers[1]++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 2))) {
+					markers[2]++;
+				}
+			}
+		}
+		
+		for(int a = 0; a < liquids.length; a++) {
+			if(liquids[a].getLiquid() != null) {
+				if(liquids[a].getLiquid().itemID == LM_Main.molten.itemID) {
+					liquidAmounts[a] = DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a];
+				} else {
+					if(markers[a] > 0) {
+						return false;
+					}
+				}
+			} else {
+				if(markers[a] > 0) {
+					return false;
+				}
+			}
+		}
+		
+		for(int a = 0; a < 3; a++) {
+			if(liquidAmounts[a] > 0) {
+				if(liquids[a].getLiquid().amount < liquidAmounts [a]) {
+					return false;
+				}
+			}
 		}
 		
 		return true;

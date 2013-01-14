@@ -66,7 +66,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 40 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
-			System.out.println(getCraftingResult());
+			System.out.println(hasEnoughLiquid());
 		}
 	}
 	
@@ -75,7 +75,39 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	}
 	
 	private boolean hasEnoughLiquid() {
-		return false;
+		int red = 0;
+		int green = 0;
+		int blue = 0;
+		
+		int redLiquid = 0;
+		int greenLiquid = 0;
+		int blueLiquid = 0;
+		
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] != null) {
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 0))) {
+					red++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 1))) {
+					green++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 2))) {
+					blue++;
+				}
+			}
+		}
+		
+		if(red > 0) {
+			
+		}
+		if(green > 0) {
+			
+		}
+		if(blue > 0) {
+			
+		}
+		
+		return true;
 	}
 	
 	private ItemStack getCraftingResult() {
@@ -111,7 +143,6 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 			else {
 				craftMatrix.setInventorySlotContents(a, null);
 			}
-			//System.out.println(craftMatrix.getStackInSlot(a));
 		}
 	}
 	

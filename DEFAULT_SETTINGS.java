@@ -288,4 +288,13 @@ public class DEFAULT_SETTINGS {
 
        
 	}
+
+	public static void fixLiquids() {
+		Set s = liquidNames.entrySet();
+		Iterator it = s.iterator();
+		while(it.hasNext()) {
+			Map.Entry m = (Map.Entry)it.next();
+			((Metal)m.getValue()).updateLiquid();
+		}
+	}
 }

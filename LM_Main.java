@@ -111,6 +111,9 @@ public class LM_Main {
 		DEFAULT_SETTINGS.addGrinderRecipes();
 		DEFAULT_SETTINGS.addArcFurnaceRecipes();
 		DEFAULT_SETTINGS.addIngotFormerRecipes();
+		
+		DEFAULT_SETTINGS.fixLiquids();
+		
 		//DEFAULT_SETTINGS.editRp2Recipes();
 		GameRegistry.addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
 		GameRegistry.addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);

@@ -52,6 +52,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	public ItemStack[] inventory = new ItemStack[27];
 	public LiquidTank[] liquids = new LiquidTank[3];
 	public boolean hasUpdate = false;
+	private float liquidMultiplier = .95f;
 	
 	public InventoryCrafting craftMatrix;
 	
@@ -392,7 +393,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		for(int a = 0; a < liquids.length; a++) {
 			if(liquids[a].getLiquid() != null) {
 				if(liquids[a].getLiquid().itemID == LM_Main.molten.itemID) {
-					liquidAmounts[a] = DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a];
+					liquidAmounts[a] = (int)(DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a]*liquidMultiplier);
 				}
 			}
 		}
@@ -427,7 +428,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		for(int a = 0; a < liquids.length; a++) {
 			if(liquids[a].getLiquid() != null) {
 				if(liquids[a].getLiquid().itemID == LM_Main.molten.itemID) {
-					liquidAmounts[a] = DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a];
+					liquidAmounts[a] = (int)(DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a]*liquidMultiplier);
 				} else {
 					if(markers[a] > 0) {
 						return false;

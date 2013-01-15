@@ -21,8 +21,9 @@ import LiquidMetals.LM_Main;
 public class BlockCraftingTable extends BlockContainer{
 
 	private int topTexture = 165;
-	private int sideTexture = 165+16;
-	private int bottomTexture = 165+16;
+	private int sideTexture = 165+32;
+	private int bottomTexture = 165+32;
+	private int frontTexture = 165+16;
 	
 	public BlockCraftingTable(int id) {
 		super(id, Material.iron);
@@ -48,6 +49,28 @@ public class BlockCraftingTable extends BlockContainer{
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int par6, float par7, float par8, float par9) {
 		super.onBlockActivated(world, x, y, z, entityplayer, par6, par7, par8, par9);
+		
+		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
+		if (equipped instanceof IToolWrench && ((IToolWrench) equipped).canWrench(entityplayer, x, y, z)) {
+			int metaToUse = world.getBlockMetadata(x, y, z);
+			
+			if (entityplayer.isSneaking()) {
+				metaToUse--;
+				if(metaToUse < 0) {
+					metaToUse = 3;
+				}
+			} else {
+				metaToUse++;
+				if(metaToUse > 3) {
+					metaToUse = 0;
+				}
+			}
+			System.out.println(metaToUse);
+			world.setBlockMetadata(x, y, z, metaToUse);
+			((IToolWrench) equipped).wrenchUsed(entityplayer, x, y, z);
+			return true;
+		}
+		
 		if (entityplayer.isSneaking())
 			return false;
 
@@ -67,6 +90,9 @@ public class BlockCraftingTable extends BlockContainer{
 		}
 		if(side == 1) {
 			return topTexture;
+		}
+		if(meta+2 == side) {
+			return frontTexture;
 		}
 		return sideTexture;
     }

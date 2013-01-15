@@ -23,6 +23,7 @@ import LiquidMetals.DEFAULT_SETTINGS;
 import LiquidMetals.LM_Main;
 import LiquidMetals.Metal;
 import LiquidMetals.GUI.ContainerCrafting;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -64,18 +65,234 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	/* UPDATING */
 	@Override
 	public void updateEntity() {
-		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 40 == 0 || hasUpdate)) {
+		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 80 == 0 || hasUpdate)) {
 			sendNetworkUpdate();
 			hasUpdate = false;
-			getMasterListLowerInv();
+		}
+		
+		if(CommonProxy.proxy.isSimulating(worldObj)) {
+			if(new Random().nextInt(20) == 9) {
+				hasUpdate = true;
+				doCraft();
+			}
 		}
 	}
 	
-	private boolean canCraft() {
-		if(hasEnoughLiquid() && getCraftingResult() != null) {
-			//create masterlist of needed items. Scan inventory for required items.
+	private boolean doCraft() {
+		if(canCraft()) {
+			ItemStack toOutput = getCraftingResult();
+			removeEnoughItems();
+			removeEnoughLiquid();
+			dropOutput(toOutput);
+			return true;
 		}
 		return false;
+	}
+	
+	private int getMaxStackToAdd(IInventory tile, int slotNum) {
+		if(tile.getInventoryStackLimit()-tile.getStackInSlot(slotNum).stackSize < 1) {
+			return 0;
+		}
+		if(tile.getStackInSlot(slotNum).getMaxStackSize()-tile.getStackInSlot(slotNum).stackSize < 1) {
+			return 0;
+		}
+		if(tile.getInventoryStackLimit()-tile.getStackInSlot(slotNum).stackSize > tile.getStackInSlot(slotNum).getMaxStackSize()-tile.getStackInSlot(slotNum).stackSize) {
+			return tile.getStackInSlot(slotNum).getMaxStackSize()-tile.getStackInSlot(slotNum).stackSize;
+		} else {
+			return tile.getInventoryStackLimit()-tile.getStackInSlot(slotNum).stackSize;
+		}
+	}
+	
+	public void dropOutput(ItemStack toDrop) {
+		int side = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		int x = xCoord;
+		int z = zCoord;
+		
+		if(side == 0) {
+			z--;
+		} else if(side == 1) {
+			z++;
+		} else if(side == 2) {
+			x--;
+		} else if(side == 3) {
+			x++;
+		}
+		
+		IInventory tile = (IInventory) (worldObj.getBlockTileEntity(x, yCoord, z));
+		int start = 0;
+		int end = tile.getSizeInventory();
+		if(tile instanceof ISidedInventory) {
+			start = ((ISidedInventory) tile).getStartInventorySide(getDirFromMeta());
+			end = start + ((ISidedInventory) tile).getSizeInventorySide(getDirFromMeta());
+		}
+		for(int a = start; a < end; a++) {
+			if(tile.getStackInSlot(a) == null){
+				if(tile.getInventoryStackLimit() >= toDrop.copy().stackSize){
+					tile.setInventorySlotContents(a, toDrop);
+					break;
+				} else {
+					tile.setInventorySlotContents(a, new ItemStack(toDrop.itemID, tile.getInventoryStackLimit(), toDrop.getItemDamage()));
+					toDrop.stackSize-= tile.getInventoryStackLimit();
+				}
+			} else {
+				if(tile.getStackInSlot(a).isItemEqual(toDrop)) {
+					if(getMaxStackToAdd(tile, a) >= toDrop.stackSize) {
+						tile.getStackInSlot(a).stackSize+= toDrop.stackSize;
+						break;
+					} else {
+						int maxStack = getMaxStackToAdd(tile, a);
+						tile.getStackInSlot(a).stackSize += maxStack;
+						toDrop.stackSize -= maxStack;
+					}
+				}
+			}
+		}
+		/*
+		EntityItem var14 = new EntityItem(worldObj, (double)(this.xCoord), (double)((float)yCoord), (double)((float)zCoord), toDrop.copy());
+
+        if (toDrop.hasTagCompound())
+        {
+            var14.func_92014_d().setTagCompound((NBTTagCompound)toDrop.getTagCompound().copy());
+        }
+
+        float var15 = 0.05F;
+        
+        var14.motionX = (double)((float)new Random().nextGaussian() * var15);
+        var14.motionY = (double)((float)new Random().nextGaussian() * var15 + 0.2F);
+        var14.motionZ = (double)((float)new Random().nextGaussian() * var15);
+        
+        worldObj.spawnEntityInWorld(var14);
+		*/
+	}
+	
+	private ForgeDirection getDirFromMeta(){
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		if(meta == 0) {
+			return ForgeDirection.NORTH;
+		} else if(meta == 1) {
+			return ForgeDirection.SOUTH;
+		} else if(meta == 2) {
+			return ForgeDirection.WEST;
+		} else if(meta == 3) {
+			return ForgeDirection.EAST;
+		}
+		return ForgeDirection.UNKNOWN;
+	}
+	
+	private boolean hasInventoryOnSide() {
+		int side = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		int x = xCoord;
+		int z = zCoord;
+		
+		if(side == 0) {
+			z--;
+		} else if(side == 1) {
+			z++;
+		} else if(side == 2) {
+			x--;
+		} else if(side == 3) {
+			x++;
+		}
+		
+		TileEntity tile = worldObj.getBlockTileEntity(x, yCoord, z);
+		if(tile == null) {
+			return false;
+		}
+		if(tile instanceof IInventory) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean canCraft() {
+		ItemStack item = getCraftingResult();
+		if(!hasInventoryOnSide()) {
+			return false;
+		}
+		if(!containsMarker()) {
+			return false;
+		}
+		if(hasEnoughLiquid() && item != null) {
+			if(invContainsEnoughItems()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean containsMarker() {
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] == null) {
+				continue;
+			}
+			if(inventory[a].itemID == LM_Main.marker.itemID) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void removeEnoughItems() {
+		ItemStack[] crafting = getMasterList();
+		for(int a = 0; a < crafting.length; a++) {
+			for(int b = 9; b < 27; b++) {
+				if(inventory[b] == null) {
+					
+				} else {
+					if(crafting[a].isItemEqual(inventory[b])) {
+						if(inventory[b].copy().stackSize > crafting[a].copy().stackSize) {
+							inventory[b].stackSize-=crafting[a].stackSize;
+							crafting[a] = null;
+							break;
+						} else if(inventory[b].copy().stackSize < crafting[a].copy().stackSize){
+							crafting[a].stackSize-= inventory[b].stackSize;
+							inventory[b] = null;
+						} else {
+							crafting[a] = null;
+							inventory[b] = null;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	private boolean invContainsEnoughItems() {
+		ItemStack[] crafting = getMasterList();
+		ItemStack[] inventory = getMasterListLowerInv();
+		for(int a = 0; a < crafting.length; a++) {
+			for(int b = 0; b < inventory.length; b++) {
+				if(inventory[b] == null) {
+					
+				} else {
+					if(crafting[a].isItemEqual(inventory[b])) {
+						if(inventory[b].copy().stackSize > crafting[a].copy().stackSize) {
+							inventory[b].stackSize-=crafting[a].stackSize;
+							crafting[a] = null;
+							break;
+						} else if(inventory[b].copy().stackSize < crafting[a].copy().stackSize){
+							crafting[a].stackSize-= inventory[b].stackSize;
+							inventory[b] = null;
+						} else {
+							crafting[a] = null;
+							inventory[b] = null;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		for(int a = 0; a < crafting.length; a++) {
+			if(crafting[a] != null) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private ItemStack[] getMasterListLowerInv() {
@@ -102,22 +319,18 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		for(int a = 0; a < masterList.size(); a++) {
 			if(masterList.get(a).itemID == LM_Main.marker.itemID) {
 				masterList.remove(a);
+				a--;
 			}
 		}
 		
 		ItemStack[] items = new ItemStack[masterList.size()];
+		//System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		for(int a = 0; a < masterList.size(); a++) {
 			items[a] = masterList.get(a).copy();
-			System.out.println(items[a]);
+			//System.out.println(items[a]);
 		}
-		System.out.println(" ");
+		//System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		return items;
-	}
-	
-	private boolean invContainsEnoughItems(ItemStack[] masterList) {
-		
-		
-		return false;
 	}
 	
 	private ItemStack[] getMasterList() {
@@ -144,14 +357,53 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		for(int a = 0; a < masterList.size(); a++) {
 			if(masterList.get(a).itemID == LM_Main.marker.itemID) {
 				masterList.remove(a);
+				a--;
 			}
 		}
 		
 		ItemStack[] items = new ItemStack[masterList.size()];
+		//System.out.println("**********************************");
 		for(int a = 0; a < masterList.size(); a++) {
 			items[a] = masterList.get(a).copy();
+			//System.out.println(items[a]);
 		}
+		//	System.out.println("**********************************");
 		return items;
+	}
+	
+	private void removeEnoughLiquid() {
+		int[] markers = {0, 0, 0};
+		int[] liquidAmounts = {0, 0, 0};
+		
+		for(int a = 0; a < 9; a++) {
+			if(inventory[a] != null) {
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 0))) {
+					markers[0]++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 1))) {
+					markers[1]++;
+				}
+				if(inventory[a].isItemEqual(new ItemStack(LM_Main.marker, 1, 2))) {
+					markers[2]++;
+				}
+			}
+		}
+		
+		for(int a = 0; a < liquids.length; a++) {
+			if(liquids[a].getLiquid() != null) {
+				if(liquids[a].getLiquid().itemID == LM_Main.molten.itemID) {
+					liquidAmounts[a] = DEFAULT_SETTINGS.liquidNames.get(liquids[a].getLiquid().itemMeta).getAmount()*markers[a];
+				}
+			}
+		}
+		for(int a = 0; a < 3; a++) {
+			if(liquids[a].getLiquid() != null) {
+				if(liquids[a].getLiquid().itemID == LM_Main.molten.itemID) {
+					liquids[a].drain(liquidAmounts[a], true);
+				}
+			}
+		}
+		
 	}
 	
 	private boolean hasEnoughLiquid() {
@@ -237,17 +489,21 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-		hasUpdate = true;
 		for(int a = 0; a < 3; a++) {
 			if(liquids[a].getLiquid() != null) {
 				if(liquids[a].getLiquid().asItemStack().isItemEqual(resource.asItemStack())) {
-					return liquids[a].fill(resource, doFill);
+					int temp = liquids[a].fill(resource, doFill);
+					if(temp > 0) {
+						hasUpdate = true;
+					}
+					return temp;
 				}
 			}
 		}
 		for(int a = 0; a < 3; a++) {
 			int temp = liquids[a].fill(resource, doFill);
 			if(temp > 0) {
+				hasUpdate = true;
 				return temp;
 			}
 		}
@@ -345,16 +601,19 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-		hasUpdate = true;
-		return liquids[tankIndex].fill(resource, doFill);
+		int temp = liquids[tankIndex].fill(resource, doFill);
+		if(temp>0) {
+			hasUpdate = true;
+		}
+		return temp;
 	}
 
 	@Override
 	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		hasUpdate = true;
 		for (int a = 2; a >= 0; a--) {
 			LiquidStack temp = liquids[a].drain(maxDrain, doDrain);
 			if(temp != null) {
+				hasUpdate = true;
 				return temp;
 			}
 		}
@@ -363,8 +622,11 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 
 	@Override
 	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
-		hasUpdate = true;
-		return liquids[tankIndex].drain(maxDrain, doDrain);
+		LiquidStack temp = liquids[tankIndex].drain(maxDrain, doDrain);
+		if(temp != null) {
+			hasUpdate = true;
+		}
+		return temp;
 	}
 
 	@Override

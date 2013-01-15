@@ -49,9 +49,9 @@ public class BlockGrinder1 extends BlockContainer{
 		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(i, j, k));
 		if(orientation == ForgeDirection.NORTH) {
 			world.setBlockMetadataWithNotify(i, j, k, 0);
-		} else if(orientation == ForgeDirection.SOUTH){
-			world.setBlockMetadataWithNotify(i, j, k, 1);
 		} else if(orientation == ForgeDirection.EAST){
+			world.setBlockMetadataWithNotify(i, j, k, 1);
+		} else if(orientation == ForgeDirection.SOUTH){
 			world.setBlockMetadataWithNotify(i, j, k, 2);
 		} else if(orientation == ForgeDirection.WEST){
 			world.setBlockMetadataWithNotify(i, j, k, 3);
@@ -105,10 +105,10 @@ public class BlockGrinder1 extends BlockContainer{
 			return ForgeDirection.SOUTH;
 		}
 		if(meta == 1) {
-			return ForgeDirection.NORTH;
+			return ForgeDirection.WEST;
 		}
 		if(meta == 2) {
-			return ForgeDirection.WEST;
+			return ForgeDirection.NORTH;
 		}
 		if(meta == 3) {
 			return ForgeDirection.EAST;

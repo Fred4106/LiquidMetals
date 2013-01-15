@@ -36,6 +36,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
@@ -104,6 +105,40 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		}
 	}
 	
+	public ItemStack addOutputToInventory(ItemStack toDrop, IInventory tile) {
+		int start = 0;
+		int end = tile.getSizeInventory();
+		if(tile instanceof ISidedInventory) {
+			start = ((ISidedInventory) tile).getStartInventorySide(getDirFromMeta());
+			end = start + ((ISidedInventory) tile).getSizeInventorySide(getDirFromMeta());
+		}
+		for(int a = start; a < end; a++) {
+			if(tile.getStackInSlot(a) == null){
+				if(tile.getInventoryStackLimit() >= toDrop.copy().stackSize){
+					tile.setInventorySlotContents(a, toDrop);
+					toDrop = null;
+					break;
+				} else {
+					tile.setInventorySlotContents(a, new ItemStack(toDrop.itemID, tile.getInventoryStackLimit(), toDrop.getItemDamage()));
+					toDrop.stackSize -= tile.getInventoryStackLimit();
+				}
+			} else {
+				if(tile.getStackInSlot(a).isItemEqual(toDrop)) {
+					if(getMaxStackToAdd(tile, a) >= toDrop.stackSize) {
+						tile.getStackInSlot(a).stackSize+= toDrop.stackSize;
+						toDrop = null;
+						break;
+					} else {
+						int maxStack = getMaxStackToAdd(tile, a);
+						tile.getStackInSlot(a).stackSize += maxStack;
+						toDrop.stackSize -= maxStack;
+					}
+				}
+			}
+		}
+		return toDrop;
+	}
+	
 	public void dropOutput(ItemStack toDrop) {
 		int side = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		int x = xCoord;
@@ -120,33 +155,36 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		}
 		
 		IInventory tile = (IInventory) (worldObj.getBlockTileEntity(x, yCoord, z));
-		int start = 0;
-		int end = tile.getSizeInventory();
-		if(tile instanceof ISidedInventory) {
-			start = ((ISidedInventory) tile).getStartInventorySide(getDirFromMeta());
-			end = start + ((ISidedInventory) tile).getSizeInventorySide(getDirFromMeta());
-		}
-		for(int a = start; a < end; a++) {
-			if(tile.getStackInSlot(a) == null){
-				if(tile.getInventoryStackLimit() >= toDrop.copy().stackSize){
-					tile.setInventorySlotContents(a, toDrop);
-					break;
-				} else {
-					tile.setInventorySlotContents(a, new ItemStack(toDrop.itemID, tile.getInventoryStackLimit(), toDrop.getItemDamage()));
-					toDrop.stackSize-= tile.getInventoryStackLimit();
-				}
-			} else {
-				if(tile.getStackInSlot(a).isItemEqual(toDrop)) {
-					if(getMaxStackToAdd(tile, a) >= toDrop.stackSize) {
-						tile.getStackInSlot(a).stackSize+= toDrop.stackSize;
-						break;
-					} else {
-						int maxStack = getMaxStackToAdd(tile, a);
-						tile.getStackInSlot(a).stackSize += maxStack;
-						toDrop.stackSize -= maxStack;
-					}
-				}
+		toDrop = addOutputToInventory(toDrop, tile);
+		
+		if(tile instanceof TileEntityChest && toDrop != null) {
+			TileEntityChest tile2 = (TileEntityChest) tile;
+			if(tile2.adjacentChestZNeg != null) {
+				toDrop = this.addOutputToInventory(toDrop, tile2.adjacentChestZNeg);
+			} else if(tile2.adjacentChestZPosition != null) {
+				toDrop = this.addOutputToInventory(toDrop, tile2.adjacentChestZPosition);
+			} else if(tile2.adjacentChestXNeg != null) {
+				toDrop = this.addOutputToInventory(toDrop, tile2.adjacentChestXNeg);
+			} else if(tile2.adjacentChestXPos != null) {
+				toDrop = this.addOutputToInventory(toDrop, tile2.adjacentChestXPos);
 			}
+		}
+		
+		if(toDrop != null && toDrop.stackSize > 0) {
+			EntityItem var14 = new EntityItem(worldObj, (double)(this.xCoord), (double)((float)yCoord), (double)((float)zCoord), toDrop);
+
+	        if (toDrop.hasTagCompound())
+	        {
+	            var14.func_92014_d().setTagCompound((NBTTagCompound)toDrop.getTagCompound().copy());
+	        }
+
+	        float var15 = 0.05F;
+	        
+	        var14.motionX = (double)((float)new Random().nextGaussian() * var15);
+	        var14.motionY = (double)((float)new Random().nextGaussian() * var15 + 0.2F);
+	        var14.motionZ = (double)((float)new Random().nextGaussian() * var15);
+	        
+	        worldObj.spawnEntityInWorld(var14);
 		}
 		/*
 		EntityItem var14 = new EntityItem(worldObj, (double)(this.xCoord), (double)((float)yCoord), (double)((float)zCoord), toDrop.copy());
@@ -180,7 +218,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		return ForgeDirection.UNKNOWN;
 	}
 	
-	private boolean hasInventoryOnSide() {
+	private boolean hasInventoryOnSide(ItemStack toDrop) {
 		int side = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		int x = xCoord;
 		int z = zCoord;
@@ -195,26 +233,25 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 			x++;
 		}
 		
-		TileEntity tile = worldObj.getBlockTileEntity(x, yCoord, z);
-		if(tile == null) {
+		TileEntity tile1 = worldObj.getBlockTileEntity(x, yCoord, z);
+		if(tile1 == null) {
 			return false;
 		}
-		if(tile instanceof IInventory) {
+		if(tile1 instanceof IInventory) {
 			return true;
 		}
-		
 		return false;
 	}
 	
 	private boolean canCraft() {
 		ItemStack item = getCraftingResult();
-		if(!hasInventoryOnSide()) {
-			return false;
-		}
 		if(!containsMarker()) {
 			return false;
 		}
 		if(hasEnoughLiquid() && item != null) {
+			if(!hasInventoryOnSide(item)) {
+				return false;
+			}
 			if(invContainsEnoughItems()) {
 				return true;
 			}

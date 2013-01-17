@@ -48,8 +48,8 @@ public class TileIngotFormer extends TileBuildCraft implements ITankContainer, I
 	@Override
 	public void updateEntity() {
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 10 == 0 || hasUpdate)) {
-			sendNetworkUpdate();
 			checkRedstonePower();
+			sendNetworkUpdate();
 			hasUpdate = false;
 		}
 		

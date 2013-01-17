@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
+
 import buildcraft.api.core.Position;
 import buildcraft.api.inventory.ISpecialInventory;
 import buildcraft.api.power.IPowerProvider;
@@ -48,12 +51,18 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileCrafting extends TileBuildCraft implements IInventory, ITankContainer, ISidedInventory{
+public class TileCrafting extends TileBuildCraft implements IInventory, ITankContainer, ISidedInventory, IPeripheral{
 
 	public ItemStack[] inventory = new ItemStack[27];
 	public LiquidTank[] liquids = new LiquidTank[3];
 	public boolean hasUpdate = false;
 	private float liquidMultiplier = .95f;
+	
+	public boolean redstonePowered = false;
+	
+	public boolean computerMode = false;
+	public boolean enabled = false;
+	public IComputerAccess computer = null;
 	
 	public InventoryCrafting craftMatrix;
 	
@@ -68,6 +77,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	@Override
 	public void updateEntity() {
 		if (CommonProxy.proxy.isSimulating(worldObj) && (worldObj.getWorldTime() % 80 == 0 || hasUpdate)) {
+			this.checkRedstonePower();
 			sendNetworkUpdate();
 			hasUpdate = false;
 		}
@@ -91,6 +101,10 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		return false;
 	}
 	
+	public void checkRedstonePower() {
+		redstonePowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+	}
+	
 	private int getMaxStackToAdd(IInventory tile, int slotNum) {
 		if(tile.getInventoryStackLimit()-tile.getStackInSlot(slotNum).stackSize < 1) {
 			return 0;
@@ -109,8 +123,8 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		int start = 0;
 		int end = tile.getSizeInventory();
 		if(tile instanceof ISidedInventory) {
-			start = ((ISidedInventory) tile).getStartInventorySide(getDirFromMeta());
-			end = start + ((ISidedInventory) tile).getSizeInventorySide(getDirFromMeta());
+			start = ((ISidedInventory) tile).getStartInventorySide(BlockGrinder1.metaToForgeDir(this.getBlockMetadata()).getOpposite());
+			end = start + ((ISidedInventory) tile).getSizeInventorySide(BlockGrinder1.metaToForgeDir(this.getBlockMetadata()).getOpposite());
 		}
 		for(int a = start; a < end; a++) {
 			if(tile.getStackInSlot(a) == null){
@@ -145,11 +159,11 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		int z = zCoord;
 		
 		if(side == 0) {
-			z--;
-		} else if(side == 1) {
 			z++;
-		} else if(side == 2) {
+		} else if(side == 1) {
 			x--;
+		} else if(side == 2) {
+			z--;
 		} else if(side == 3) {
 			x++;
 		}
@@ -204,31 +218,17 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		*/
 	}
 	
-	private ForgeDirection getDirFromMeta(){
-		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-		if(meta == 0) {
-			return ForgeDirection.NORTH;
-		} else if(meta == 1) {
-			return ForgeDirection.SOUTH;
-		} else if(meta == 2) {
-			return ForgeDirection.WEST;
-		} else if(meta == 3) {
-			return ForgeDirection.EAST;
-		}
-		return ForgeDirection.UNKNOWN;
-	}
-	
 	private boolean hasInventoryOnSide(ItemStack toDrop) {
 		int side = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		int x = xCoord;
 		int z = zCoord;
 		
 		if(side == 0) {
-			z--;
-		} else if(side == 1) {
 			z++;
-		} else if(side == 2) {
+		} else if(side == 1) {
 			x--;
+		} else if(side == 2) {
+			z--;
 		} else if(side == 3) {
 			x++;
 		}
@@ -244,6 +244,9 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	}
 	
 	private boolean canCraft() {
+		if(redstonePowered) {
+			return false;
+		}
 		ItemStack item = getCraftingResult();
 		if(!containsMarker()) {
 			return false;
@@ -758,4 +761,70 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		return 18;
 	}
 
+	public void setComputerMode(Object bool, IComputerAccess computer) {
+		this.computerMode = (Boolean) bool;
+		this.computer = null;
+		if(this.computerMode) {
+			this.computer = computer;
+		}
+	}
+	
+	public void setEnabled(Object bool) {
+		this.enabled = (Boolean) bool;
+	}
+	
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {"canCraft", "getOutput", "getNameInSlot", "getAmountInSlot", "getNameInTank", "getAmountInTank"};
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, int method,
+			Object[] arguments) throws Exception {
+		if(method == 0) {
+			return new Object[] {getInputName()};
+		}
+		if(method == 1) {
+			return new Object[] {getInputAmount()};
+		}
+		if(method == 2) {
+			return new Object[] {getOutputName()};
+		}
+		if(method == 3) {
+			return new Object[] {getOutputAmount()};
+		}
+		if(method == 4) {
+			return new Object[] {getProgress()};
+		}
+		if(method == 5) {
+			return new Object[] {getMaxProgress()};
+		}
+		if(method == 6) {
+			setComputerMode(arguments[0], computer);
+			return new Object[] {};
+		}
+		if(method == 7) {
+			setEnabled(arguments[0]);
+			return new Object[] {};
+		}
+		return null;
+	}
+
+	@Override
+	public boolean canAttachToSide(int side) {
+		return true;
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

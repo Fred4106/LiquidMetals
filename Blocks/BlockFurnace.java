@@ -55,17 +55,7 @@ public class BlockFurnace extends BlockContainer{
 	@Override
 	public void onBlockPlacedBy(World world, int i, int j, int k, EntityLiving entityliving) {
 		super.onBlockPlacedBy(world, i, j, k, entityliving);
-
-		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(i, j, k));
-		if(orientation == ForgeDirection.NORTH) {
-			world.setBlockMetadataWithNotify(i, j, k, 0);
-		} else if(orientation == ForgeDirection.EAST){
-			world.setBlockMetadataWithNotify(i, j, k, 1);
-		} else if(orientation == ForgeDirection.SOUTH){
-			world.setBlockMetadataWithNotify(i, j, k, 2);
-		} else if(orientation == ForgeDirection.WEST){
-			world.setBlockMetadataWithNotify(i, j, k, 3);
-		} 
+		BlockGrinder1.setBlockRotMeta(i, j, k, entityliving, world);
 	}
 	
 	@Override

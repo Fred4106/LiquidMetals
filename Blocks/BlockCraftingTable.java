@@ -3,13 +3,16 @@ package LiquidMetals.Blocks;
 import java.util.ArrayList;
 import java.util.Random;
 
+import buildcraft.api.core.Position;
 import buildcraft.api.tools.IToolWrench;
 import buildcraft.core.BlockBuildCraft;
 import buildcraft.core.IItemPipe;
+import buildcraft.core.utils.Utils;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -17,16 +20,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import LiquidMetals.CommonProxy;
 import LiquidMetals.GuiHandler;
 import LiquidMetals.LM_Main;
 
 public class BlockCraftingTable extends BlockContainer{
 
-	private int topTexture = 165;
-	private int sideTexture = 165+32;
-	private int bottomTexture = 165+32;
-	private int frontTexture = 165+16;
+	private int textureOffset = 5;
 	
 	public BlockCraftingTable(int id) {
 		super(id, Material.iron);
@@ -41,11 +42,17 @@ public class BlockCraftingTable extends BlockContainer{
 	}
 	
 	@Override
+	public void onBlockPlacedBy(World world, int i, int j, int k, EntityLiving entityliving) {
+		super.onBlockPlacedBy(world, i, j, k, entityliving);
+		BlockGrinder1.setBlockRotMeta(i, j, k, entityliving, world);
+	}
+	
+	@Override
 	public void onNeighborBlockChange(World world, int i, int j, int k, int l) {
 		TileCrafting tile = (TileCrafting) world.getBlockTileEntity(i, j, k);
 
 		if (tile != null) {
-			//tile.checkRedstonePower();
+			tile.checkRedstonePower();
 		}
 	}
 
@@ -55,25 +62,11 @@ public class BlockCraftingTable extends BlockContainer{
 		
 		Item equipped = entityplayer.getCurrentEquippedItem() != null ? entityplayer.getCurrentEquippedItem().getItem() : null;
 		if (equipped instanceof IToolWrench && ((IToolWrench) equipped).canWrench(entityplayer, x, y, z)) {
-			int metaToUse = world.getBlockMetadata(x, y, z);
-			
-			if (entityplayer.isSneaking()) {
-				metaToUse--;
-				if(metaToUse < 0) {
-					metaToUse = 3;
-				}
-			} else {
-				metaToUse++;
-				if(metaToUse > 3) {
-					metaToUse = 0;
-				}
-			}
-			System.out.println(metaToUse);
-			world.setBlockMetadata(x, y, z, metaToUse);
+			world.setBlockMetadata(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4);
+			System.out.println(world.getBlockMetadata(x, y, z));
 			((IToolWrench) equipped).wrenchUsed(entityplayer, x, y, z);
 			return true;
 		}
-		
 		if (entityplayer.isSneaking())
 			return false;
 
@@ -88,16 +81,7 @@ public class BlockCraftingTable extends BlockContainer{
 	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {
-		if(side == 0) {
-			return bottomTexture;
-		}
-		if(side == 1) {
-			return topTexture;
-		}
-		if(meta+2 == side) {
-			return frontTexture;
-		}
-		return sideTexture;
+		return BlockGrinder1.getTextureLoc(side, meta)+textureOffset;
     }
 	
 	@Override

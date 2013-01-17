@@ -30,6 +30,14 @@ public class BlockGrinder1 extends BlockContainer{
 	private Random grinderRandom = new Random();
 	protected int textureOffset = 2;
 	
+	protected static int leftTexture = 11*16;
+	protected static int rightTexture = 9*16;
+	protected static int topTexture = 12*16;
+	protected static int bottomTexture = 13*16;
+	protected static int frontTexture = 8*16;
+	protected static int backTexture = 10*16;
+	
+	
 	public BlockGrinder1(int par1) {
 		super(par1, Material.iron);
 		setHardness(5F);
@@ -45,16 +53,19 @@ public class BlockGrinder1 extends BlockContainer{
 	@Override
 	public void onBlockPlacedBy(World world, int i, int j, int k, EntityLiving entityliving) {
 		super.onBlockPlacedBy(world, i, j, k, entityliving);
-
-		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(i, j, k));
+		setBlockRotMeta(i, j, k, entityliving, world);
+	}
+	
+	public static void setBlockRotMeta(int x, int y, int z, EntityLiving entityliving, World world) {
+		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(x, y, z)).getOpposite();
 		if(orientation == ForgeDirection.NORTH) {
-			world.setBlockMetadataWithNotify(i, j, k, 0);
+			world.setBlockMetadataWithNotify(x, y, z, 2);
 		} else if(orientation == ForgeDirection.EAST){
-			world.setBlockMetadataWithNotify(i, j, k, 1);
+			world.setBlockMetadataWithNotify(x, y, z, 3);
 		} else if(orientation == ForgeDirection.SOUTH){
-			world.setBlockMetadataWithNotify(i, j, k, 2);
+			world.setBlockMetadataWithNotify(x, y, z, 0);
 		} else if(orientation == ForgeDirection.WEST){
-			world.setBlockMetadataWithNotify(i, j, k, 3);
+			world.setBlockMetadataWithNotify(x, y, z, 1);
 		} 
 	}
 	
@@ -121,117 +132,78 @@ public class BlockGrinder1 extends BlockContainer{
 	}
 	
 	public static ForgeDirection getBack(int meta) {
-		return getFront(meta).getOpposite();
-	}
-	
-	public static ForgeDirection getLeft(int meta) {
-		ForgeDirection front = getFront(meta);
-		if(front == ForgeDirection.NORTH) {
-			return ForgeDirection.WEST;
-		}
-		if(front == ForgeDirection.SOUTH) {
-			return ForgeDirection.EAST;
-		}
-		if(front == ForgeDirection.EAST) {
-			return ForgeDirection.NORTH;
-		}
-		if(front == ForgeDirection.WEST) {
-			return ForgeDirection.SOUTH;
-		}
-		return ForgeDirection.UNKNOWN;
+		return metaToForgeDir(meta).getOpposite();
 	}
 	
 	public static ForgeDirection getRight(int meta) {
-		return getLeft(meta).getOpposite();
+		return metaToForgeDir((meta+1)%4);
 	}
 	
-	public static ForgeDirection getTop(int meta) {
-		return ForgeDirection.UP;
-	}
-	
-	public static ForgeDirection getBottom(int meta) {
-		return ForgeDirection.DOWN;
+	public static ForgeDirection getLeft(int meta) {
+		return metaToForgeDir((meta+1)%4).getOpposite();
 	}
 	
 	public static int getTextureLoc(int side, int meta) {
-		if(side == 0 || side == 1) {
-			return 208;
+		if(side == 0) {
+			return bottomTexture;
 		}
-		ForgeDirection dir = metaToForgeDir(meta);
-		if(dir == ForgeDirection.NORTH) {
-			//north
+		if(side == 1) {
+			return topTexture;
+		}
+		if(metaToForgeDir(meta) == ForgeDirection.NORTH) {
 			if(side == 2) {
-				//back
-				return 160;
+				return frontTexture;
 			}
-			if(side == 3) {
-				//front
-				return 192;
+			if(side == 3) { 
+				return backTexture;
 			}
 			if(side == 4) {
-				//left
-				return 176;
+				return rightTexture;
 			}
 			if(side == 5) {
-				//right
-				return 176;
+				return leftTexture;
 			}
 		}
-		if(dir == ForgeDirection.SOUTH) {
-			//south
-			if(side == 3) {
-				//front
-				return 160;
-			}
+		if(metaToForgeDir(meta) == ForgeDirection.EAST) {
 			if(side == 2) {
-				//back
-				return 192;
+				return rightTexture;
+			}
+			if(side == 3) { 
+				return leftTexture;
 			}
 			if(side == 4) {
-				//left
-				return 176;
+				return backTexture;
 			}
 			if(side == 5) {
-				//right
-				return 176;
+				return frontTexture;
 			}
 		}
-		if(dir == ForgeDirection.EAST) {
-			//east
-			if(side == 5) {
-				//back
-				return 160;
+		if(metaToForgeDir(meta) == ForgeDirection.SOUTH) {
+			if(side == 2) {
+				return backTexture;
+			}
+			if(side == 3) { 
+				return frontTexture;
 			}
 			if(side == 4) {
-				//front
-				return 192;
+				return leftTexture;
 			}
-			if(side == 3) {
-				//left
-				return 176;
-			}
-			if(side == 2) {
-				//right
-				return 176;
+			if(side == 5) {
+				return rightTexture;
 			}
 		}
-		if(dir == ForgeDirection.WEST) {
-			//west
+		if(metaToForgeDir(meta) == ForgeDirection.WEST) {
+			if(side == 2) {
+				return leftTexture;
+			}
+			if(side == 3) { 
+				return rightTexture;
+			}
 			if(side == 4) {
-				//back
-				return 160;
+				return frontTexture;
 			}
 			if(side == 5) {
-				//front
-				return 192;
-			}
-			if(side == 2) {
-				//left
-				return 176;
-			}
-			if(side == 3) {
-				//right
-				return 176;
+				return backTexture;
 			}
 		}
 		return 0;

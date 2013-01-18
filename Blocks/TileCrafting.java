@@ -12,6 +12,7 @@ import buildcraft.api.core.Position;
 import buildcraft.api.inventory.ISpecialInventory;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerFramework;
 import buildcraft.core.TileBuildCraft;
 import buildcraft.core.inventory.TransactorRoundRobin;
 import buildcraft.core.network.PacketPayload;
@@ -26,6 +27,7 @@ import LiquidMetals.DEFAULT_SETTINGS;
 import LiquidMetals.LM_Main;
 import LiquidMetals.Metal;
 import LiquidMetals.GUI.ContainerCrafting;
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -51,7 +53,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileCrafting extends TileBuildCraft implements IInventory, ITankContainer, ISidedInventory, IPeripheral{
+public class TileCrafting extends TileBuildCraft implements IInventory, ITankContainer, ISidedInventory, IPeripheral, IPowerReceptor{
 
 	public ItemStack[] inventory = new ItemStack[27];
 	public LiquidTank[] liquids = new LiquidTank[3];
@@ -65,12 +67,17 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	public IComputerAccess computer = null;
 	
 	public InventoryCrafting craftMatrix;
+	private IPowerProvider powerProvider;
+	
+//	ItemStack[] blackList = {new ItemStack(Item.goldNugget, 1), new ItemStack(Block.blockGold, 1), new ItemStack(Block.blockSteel, 1)};
 	
 	public TileCrafting() {
 		for(int a = 0; a < 3; a++) {
-			liquids[a] = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 2);
+			liquids[a] = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME * 1);
 		}
 		craftMatrix = new InventoryCrafting(new ContainerCrafting.ContainerNull(), 3, 3);
+		powerProvider = PowerFramework.currentFramework.createPowerProvider();
+		powerProvider.configure(5, 200, 200, 200, 200);
 	}
 	
 	/* UPDATING */
@@ -83,20 +90,22 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		}
 		
 		if(CommonProxy.proxy.isSimulating(worldObj)) {
-			if(new Random().nextInt(20) == 9) {
-				hasUpdate = true;
-				doCraft();
-			}
+			doCraft();
 		}
 	}
 	
 	private boolean doCraft() {
 		if(canCraft()) {
-			ItemStack toOutput = getCraftingResult();
-			removeEnoughItems();
-			removeEnoughLiquid();
-			dropOutput(toOutput);
-			return true;
+			if(powerProvider.useEnergy(200, 200, true) == 200) {
+				ItemStack toOutput = getCraftingResult();
+				removeEnoughItems();
+				removeEnoughLiquid();
+				if(computer != null) {
+					computer.queueEvent("Item Crafted", new Object[]{toOutput.getDisplayName(), toOutput.stackSize});
+				}
+				dropOutput(toOutput);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -200,22 +209,6 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	        
 	        worldObj.spawnEntityInWorld(var14);
 		}
-		/*
-		EntityItem var14 = new EntityItem(worldObj, (double)(this.xCoord), (double)((float)yCoord), (double)((float)zCoord), toDrop.copy());
-
-        if (toDrop.hasTagCompound())
-        {
-            var14.func_92014_d().setTagCompound((NBTTagCompound)toDrop.getTagCompound().copy());
-        }
-
-        float var15 = 0.05F;
-        
-        var14.motionX = (double)((float)new Random().nextGaussian() * var15);
-        var14.motionY = (double)((float)new Random().nextGaussian() * var15 + 0.2F);
-        var14.motionZ = (double)((float)new Random().nextGaussian() * var15);
-        
-        worldObj.spawnEntityInWorld(var14);
-		*/
 	}
 	
 	private boolean hasInventoryOnSide(ItemStack toDrop) {
@@ -244,7 +237,10 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	}
 	
 	private boolean canCraft() {
-		if(redstonePowered) {
+		if(redstonePowered && computerMode == false) {
+			return false;
+		}
+		if(computerMode && enabled == false) {
 			return false;
 		}
 		ItemStack item = getCraftingResult();
@@ -494,7 +490,16 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	
 	private ItemStack getCraftingResult() {
 		setCraftMatrix();
-		return CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj);
+		ItemStack output = CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj);
+		if(output == null) {
+			return output;
+		}
+		for(int a = 0; a < DEFAULT_SETTINGS.craftingBlackList.length; a++) {
+			if(output.getItem().itemID == DEFAULT_SETTINGS.craftingBlackList[a]) {
+				return null;
+			}
+		}
+		return output;
 	}
 	
 	private void setCraftMatrix() {
@@ -552,7 +557,7 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	}
 
 	private int[] getValuesArray() {
-		int[] values = new int[90];
+		int[] values = new int[93];
 		for(int a = 0; a < 81; a+=3) {
 			if(inventory[a/3] != null) {
 				values[a] = inventory[a/3].itemID;
@@ -591,6 +596,18 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 			values[88] = 0;
 			values[89] = 0;
 		}
+		values[90] = 0;
+		if(this.redstonePowered) {
+			values[90] = 1;
+		}
+		values[91] = 0;
+		if(this.computerMode) {
+			values[91] = 1;
+		}
+		values[92] = 0;
+		if(this.enabled) {
+			values[92] = 1;
+		}
 		return values;
 	}
 	
@@ -611,6 +628,19 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 		if(values[87] != 0) {
 			liquids[2].setLiquid(new LiquidStack(values[87], values[89], values[88]));
 		}
+		this.redstonePowered = false;
+		if(values[90] != 0) {
+			this.redstonePowered = true;
+		}
+		this.computerMode = false;
+		if(values[91] != 0) {
+			this.computerMode = true;
+		}
+		this.enabled = false;
+		if(values[92] != 0) {
+			this.enabled = true;
+		}
+		
 	}
 	
 	@Override
@@ -775,31 +805,92 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"canCraft", "getOutput", "getNameInSlot", "getAmountInSlot", "getNameInTank", "getAmountInTank"};
+		return new String[] {"canCraft", "getOutputName", "getOutputAmount", "getNameInSlot", "getAmountInSlot", "getNameInTank", "getAmountInTank", "setComputerMode", "setEnabled"};
 	}
-
+	
+	public String getOutputName() {
+		if(canCraft()) {
+			return getCraftingResult().getDisplayName();
+		}
+		return "null";
+	}
+	
+	public int getOutputAmount() {
+		if(canCraft()) {
+			return getCraftingResult().copy().stackSize;
+		}
+		return 0;
+	}
+	
+	public String getNameInSlot(Object o) {
+		int slot = ((Integer) o);
+		if(slot < 1 || slot > 18) {
+			return "Slot "+slot+" is out of range";
+		}
+		if(inventory[slot+8] != null) {
+			return inventory[slot+8].getDisplayName();
+		}
+		return "null";
+	}
+	
+	public int getAmountInSlot(Object o) {
+		int slot = ((Integer) o);
+		if(slot < 1 || slot > 18) {
+			return -1;
+		}
+		if(inventory[slot+8] != null) {
+			return inventory[slot+8].stackSize;
+		}
+		return 0;
+	}
+	
+	public String getNameInTank(Object o) {
+		int slot = ((Integer) o);
+		if(slot < 1 || slot > 3) {
+			return "Slot "+slot+" is out of range";
+		}
+		if(liquids[slot].getLiquid() != null) {
+			return liquids[slot].getLiquid().asItemStack().getDisplayName();
+		}
+		return "null";
+	}
+	
+	public int getAmountInTank(Object o) {
+		int slot = ((Integer) o);
+		if(slot < 1 || slot > 3) {
+			return -1;
+		}
+		if(liquids[slot].getLiquid() != null) {
+			return liquids[slot].getLiquid().amount;
+		}
+		return 0;
+	}
+	
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int method,
 			Object[] arguments) throws Exception {
 		if(method == 0) {
-			return new Object[] {getInputName()};
+			return new Object[] {canCraft()};
 		}
 		if(method == 1) {
-			return new Object[] {getInputAmount()};
-		}
-		if(method == 2) {
 			return new Object[] {getOutputName()};
 		}
-		if(method == 3) {
+		if(method == 2) {
 			return new Object[] {getOutputAmount()};
 		}
+		if(method == 3) {
+			return new Object[] {getNameInSlot(arguments[0])};
+		}
 		if(method == 4) {
-			return new Object[] {getProgress()};
+			return new Object[] {getAmountInSlot(arguments[0])};
 		}
 		if(method == 5) {
-			return new Object[] {getMaxProgress()};
+			return new Object[] {getNameInTank(arguments[0])};
 		}
 		if(method == 6) {
+			return new Object[] {getAmountInTank(arguments[0])};
+		}
+		if(method == 7) {
 			setComputerMode(arguments[0], computer);
 			return new Object[] {};
 		}
@@ -825,6 +916,29 @@ public class TileCrafting extends TileBuildCraft implements IInventory, ITankCon
 	public void detach(IComputerAccess computer) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getType() {
+		return "Liquid Crafting Table";
+	}
+	
+	@Override
+	public void setPowerProvider(IPowerProvider provider) {
+		this.powerProvider = provider;
+	}
+
+	@Override
+	public IPowerProvider getPowerProvider() {
+		return this.powerProvider;
+	}
+
+	@Override
+	public void doWork() { }
+
+	@Override
+	public int powerRequest() {
+		return (int) Math.ceil(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored() - getPowerProvider().getEnergyStored()));
 	}
 	
 }

@@ -58,6 +58,8 @@ public class DEFAULT_SETTINGS {
 	public static int blockIngotFormer = 504;
 	public static int blockCrafting = 505;
 	
+	public static int[] craftingBlackList = {Item.goldNugget.itemID, Block.blockGold.blockID, Block.blockSteel.blockID};
+	
 	//settings about ores and outputs and such
 	private static int copperIngotOutput = 0;
 	private static int copperIngotOutputMeta = 0;
@@ -103,6 +105,9 @@ public class DEFAULT_SETTINGS {
 			blockFurnace = config.get("Block Ids", "Arc Furnace", blockFurnace).getInt();
 			blockIngotFormer = config.get("Block Ids", "Ingot Former", blockIngotFormer).getInt();
 			blockCrafting = config.get("Block Ids", "Liquid Crafting", blockCrafting).getInt();
+			
+			config.addCustomCategoryComment("Tweaks", "Used to fine tune the behavior of Liquid Metals");
+			craftingBlackList = config.get("Tweaks", "Liquid Crafting blacklist", craftingBlackList, "Enter the ids of items you dont want my crafing table to make.").getIntList();
 			
 			config.addCustomCategoryComment("Ingot Former Output", "Dont mess with these values unless you know what your doing.");
 			copperIngotOutput = config.get("Ingot Former Output", "Ingot output copper", copperIngotOutput).getInt();
@@ -239,9 +244,7 @@ public class DEFAULT_SETTINGS {
 		
 		//For liquids that are made from non standard items;
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.lightStoneDust, 1), LiquidDictionary.getLiquid("Molten Glowstone", LiquidContainerRegistry.BUCKET_VOLUME/40));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.dyePowder, 1, 4), LiquidDictionary.getLiquid("Molten Lapis Lazuli", LiquidContainerRegistry.BUCKET_VOLUME/40));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.redstone, 1), LiquidDictionary.getLiquid("Molten Redstone", LiquidContainerRegistry.BUCKET_VOLUME/40));
-	}
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.dyePowder, 1, 4), LiquidDictionary.getLiquid("Molten Lapis Lazuli", LiquidContainerRegistry.BUCKET_VOLUME/40));	}
 
 	public static void setupOreDict() {
 		//register all the dusts.

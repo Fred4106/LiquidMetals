@@ -59,6 +59,7 @@ public class DEFAULT_SETTINGS {
 	public static int blockCrafting = 505;
 	
 	public static int[] craftingBlackList = {Item.goldNugget.itemID, Block.blockGold.blockID, Block.blockSteel.blockID};
+	public static boolean tweakRp2Alloy = true;
 	
 	//settings about ores and outputs and such
 	private static int copperIngotOutput = 0;
@@ -84,9 +85,13 @@ public class DEFAULT_SETTINGS {
 		liquidNames.put(3, new Metal("Tin", "ingotTin", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		liquidNames.put(4, new Metal("Silver", "ingotSilver", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		liquidNames.put(5, new Metal("Lead", "ingotLead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		
 		liquidNames.put(32, new Metal("Glowstone", new ItemStack(Item.lightStoneDust), LiquidContainerRegistry.BUCKET_VOLUME/40));
 		liquidNames.put(33, new Metal("Lapis Lazuli", new ItemStack(Item.dyePowder, 1, 4), LiquidContainerRegistry.BUCKET_VOLUME/40));
 		liquidNames.put(34, new Metal("Redstone", new ItemStack(Item.redstone), LiquidContainerRegistry.BUCKET_VOLUME/40));
+		liquidNames.put(35, new Metal("Nikolite", "dustNikolite", LiquidContainerRegistry.BUCKET_VOLUME/40));
+		liquidNames.put(36, new Metal("Bronze", "ingotBronze", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		liquidNames.put(37, new Metal("Brass", "ingotBrass", LiquidContainerRegistry.BUCKET_VOLUME/8));
 	}
 	
 	public static void readConfig(File configurationFile) {
@@ -108,6 +113,7 @@ public class DEFAULT_SETTINGS {
 			
 			config.addCustomCategoryComment("Tweaks", "Used to fine tune the behavior of Liquid Metals");
 			craftingBlackList = config.get("Tweaks", "Liquid Crafting blacklist", craftingBlackList, "Enter the ids of items you dont want my crafing table to make.").getIntList();
+			tweakRp2Alloy = config.get("Tweaks", "Edit rp2 alloy furnace recipes?", tweakRp2Alloy, "Removes the reclaimation recipies to avoid exploits.").getBoolean(tweakRp2Alloy);
 			
 			config.addCustomCategoryComment("Ingot Former Output", "Dont mess with these values unless you know what your doing.");
 			copperIngotOutput = config.get("Ingot Former Output", "Ingot output copper", copperIngotOutput).getInt();
@@ -169,8 +175,9 @@ public class DEFAULT_SETTINGS {
 		Iterator it = s.iterator();
 		while(it.hasNext()) {
 			Map.Entry m = (Map.Entry)it.next();
-			LiquidDictionary.getOrCreateLiquid("Molten " + m.getValue(), new LiquidStack(LM_Main.molten.itemID, 1, (Integer)m.getKey()));
-			LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + m.getValue(), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, (Integer)m.getKey()), new ItemStack(Item.bucketEmpty)));
+			Metal temp = (Metal) m.getValue();
+			LiquidDictionary.getOrCreateLiquid("Molten " + temp.getPrefix(), new LiquidStack(LM_Main.molten.itemID, 1, (Integer)m.getKey()));
+			LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Molten " + temp.getPrefix(), LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(LM_Main.bucketMolten, 1, (Integer)m.getKey()), new ItemStack(Item.bucketEmpty)));
 		}
 	}
 	
@@ -194,11 +201,14 @@ public class DEFAULT_SETTINGS {
 	public static void addIngotFormerRecipes() {
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Iron", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotIron, 1));
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Gold", LiquidContainerRegistry.BUCKET_VOLUME/8), new ItemStack(Item.ingotGold, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Brass", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotBrass");
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Bronze", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotBronze");
 		
-		//special things
+		//Dust
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Glowstone", LiquidContainerRegistry.BUCKET_VOLUME/40), new ItemStack(Item.lightStoneDust, 1));
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Lapis Lazuli", LiquidContainerRegistry.BUCKET_VOLUME/40), new ItemStack(Item.dyePowder, 1, 4));
 		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Redstone", LiquidContainerRegistry.BUCKET_VOLUME/40), new ItemStack(Item.redstone, 1));
+		IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Nikolite", LiquidContainerRegistry.BUCKET_VOLUME/40), "dustNikolite");
 		
 		if(copperIngotOutput == 0) {
 			IngotFormerRecipeManager.addRecipe(LiquidDictionary.getLiquid("Molten Copper", LiquidContainerRegistry.BUCKET_VOLUME/8), "ingotCopper");
@@ -241,10 +251,15 @@ public class DEFAULT_SETTINGS {
 		ArcFurnaceRecipeManager.addRecipe("ingotTin", LiquidDictionary.getLiquid("Molten Tin", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		ArcFurnaceRecipeManager.addRecipe("ingotSilver", LiquidDictionary.getLiquid("Molten Silver", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		ArcFurnaceRecipeManager.addRecipe("ingotLead", LiquidDictionary.getLiquid("Molten Lead", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotBrass", LiquidDictionary.getLiquid("Molten Brass", LiquidContainerRegistry.BUCKET_VOLUME/8));
+		ArcFurnaceRecipeManager.addRecipe("ingotBronze", LiquidDictionary.getLiquid("Molten Bronze", LiquidContainerRegistry.BUCKET_VOLUME/8));
 		
 		//For liquids that are made from non standard items;
 		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.lightStoneDust, 1), LiquidDictionary.getLiquid("Molten Glowstone", LiquidContainerRegistry.BUCKET_VOLUME/40));
-		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.dyePowder, 1, 4), LiquidDictionary.getLiquid("Molten Lapis Lazuli", LiquidContainerRegistry.BUCKET_VOLUME/40));	}
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.dyePowder, 1, 4), LiquidDictionary.getLiquid("Molten Lapis Lazuli", LiquidContainerRegistry.BUCKET_VOLUME/40));
+		ArcFurnaceRecipeManager.addRecipe(new ItemStack(Item.redstone, 1), LiquidDictionary.getLiquid("Molten Redstone", LiquidContainerRegistry.BUCKET_VOLUME/40));
+		ArcFurnaceRecipeManager.addRecipe("dustNikolite", LiquidDictionary.getLiquid("Molten Nikolite", LiquidContainerRegistry.BUCKET_VOLUME/40));
+	}
 
 	public static void setupOreDict() {
 		//register all the dusts.
@@ -292,6 +307,38 @@ public class DEFAULT_SETTINGS {
        
 	}
 
+	public static void editRp2Recipes() {
+		try {
+			Field[] fields = Class.forName("com.eloraam.redpower.core.CraftLib").getDeclaredFields();
+			List tempAlloyRecipes = new ArrayList();
+			
+			for(Field f : fields) {
+				if(f.getName().equals("alloyRecipes")) {
+					f.setAccessible(true);
+					List d = (List) f.get(null); //this is the list of alloyRecipes
+					for(int a = 0; a < d.size(); a++) {
+						List l = (List)d.get(a); //gets the parts of the recipes
+						Object[] ob = l.toArray(); //makes it an object array 0 is object[] of inputs and 1 is output
+						if(!((ItemStack)ob[1]).isItemEqual(new ItemStack(Item.ingotGold, 1))) {
+							if(!((ItemStack)ob[1]).isItemEqual(new ItemStack(Item.ingotIron, 1))) {
+								tempAlloyRecipes.add(l);
+							}
+						}
+					}
+					f.set(null, tempAlloyRecipes);
+					f.setAccessible(false);
+					break;
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("No Redpower2 detected.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Damn 2.0");
+		} catch (IllegalAccessException e) {
+			System.out.println("Damn 3.0");
+		}
+	}
+	
 	public static void fixLiquids() {
 		Set s = liquidNames.entrySet();
 		Iterator it = s.iterator();

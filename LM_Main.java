@@ -114,12 +114,16 @@ public class LM_Main {
 		
 		DEFAULT_SETTINGS.fixLiquids();
 		
-		//DEFAULT_SETTINGS.editRp2Recipes();
+		if(DEFAULT_SETTINGS.tweakRp2Alloy) {
+			DEFAULT_SETTINGS.editRp2Recipes();
+		}
+		
 		GameRegistry.addRecipe(new ItemStack(blockGrinder1), "#@#", "$%$", "###", '#', Item.ingotIron, '$', Block.pistonBase, '%', Block.blockSteel, '@', BuildCraftTransport.pipePowerWood);
 		GameRegistry.addRecipe(new ItemStack(blockGrinder2), "#@#", "$%$", "###", '#', Item.ingotGold, '$', BuildCraftCore.ironGearItem, '%', blockGrinder1, '@', BuildCraftTransport.pipePowerStone);
 		GameRegistry.addRecipe(new ItemStack(blockGrinder3), "#@#", "$%$", "###", '#', Item.diamond, '$', BuildCraftCore.goldGearItem, '%', blockGrinder2, '@', BuildCraftTransport.pipePowerGold);
 		GameRegistry.addRecipe(new ItemStack(blockIngotFormer), "!@!", "!#!", "!!!", '!', Item.ingotIron, '@', BuildCraftFactory.tankBlock, '#', BuildCraftCore.goldGearItem);
-		GameRegistry.addRecipe(new ItemStack(this.blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
+		GameRegistry.addRecipe(new ItemStack(blockFurnace), "#@#", "#%#", "#*#", '#', Item.ingotIron, '@', BuildCraftCore.diamondGearItem, '%', Block.blockSteel, '*', BuildCraftTransport.pipePowerGold);
+		GameRegistry.addRecipe(new ItemStack(blockCrafting), "#$#", "#%#", "(@(", '#', Item.ingotGold, '$', Item.diamond, '%', this.blockIngotFormer, '(', Item.ingotIron, '@', BuildCraftTransport.pipePowerGold);
 		
 		GameRegistry.addRecipe(new ItemStack(marker, 2, 0), "!", "@", "#", '!', new ItemStack(Item.dyePowder, 1, 1), '@', Item.ingotGold, '#', Item.paper);
 		GameRegistry.addRecipe(new ItemStack(marker, 2, 1), "!", "@", "#", '!', new ItemStack(Item.dyePowder, 1, 2), '@', Item.ingotGold, '#', Item.paper);

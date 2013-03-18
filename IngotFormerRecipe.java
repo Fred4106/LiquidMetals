@@ -10,7 +10,7 @@ public class IngotFormerRecipe {
 	
 	public IngotFormerRecipe(LiquidStack input, ItemStack output) {
 		this.input = input;
-		this.output = output;
+		this.output = new ItemStack(output.itemID, 1, output.getItemDamage());
 	}
 	
 	public LiquidStack getInput() {

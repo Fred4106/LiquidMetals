@@ -2,12 +2,15 @@ package LiquidMetals;
 
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.MinecraftForgeClient;
+import LiquidMetals.render.TextureBrassFX;
+import LiquidMetals.render.TextureBronzeFX;
 import LiquidMetals.render.TextureCopperFX;
 import LiquidMetals.render.TextureGlowstoneFX;
 import LiquidMetals.render.TextureGoldFX;
 import LiquidMetals.render.TextureIronFX;
 import LiquidMetals.render.TextureLapisLazuliFX;
 import LiquidMetals.render.TextureLeadFX;
+import LiquidMetals.render.TextureNikoliteFX;
 import LiquidMetals.render.TextureRedstoneFX;
 import LiquidMetals.render.TextureSilverFX;
 import LiquidMetals.render.TextureTinFX;
@@ -40,5 +43,9 @@ public class ClientProxy extends CommonProxy {
 		renderEngine.registerTextureFX(new TextureRedstoneFX());
 		renderEngine.registerTextureFX(new TextureGlowstoneFX());
 		renderEngine.registerTextureFX(new TextureLapisLazuliFX());
+		renderEngine.registerTextureFX(new TextureNikoliteFX());
+		renderEngine.registerTextureFX(new TextureBrassFX());
+		renderEngine.registerTextureFX(new TextureBronzeFX());
+		
 	}
 }

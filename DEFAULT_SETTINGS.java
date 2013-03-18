@@ -60,6 +60,7 @@ public class DEFAULT_SETTINGS {
 	
 	public static int[] craftingBlackList = {Item.goldNugget.itemID, Block.blockGold.blockID, Block.blockSteel.blockID};
 	public static boolean tweakRp2Alloy = true;
+	public static boolean grindingVersion = true;
 	
 	//settings about ores and outputs and such
 	private static int copperIngotOutput = 0;
@@ -114,6 +115,7 @@ public class DEFAULT_SETTINGS {
 			config.addCustomCategoryComment("Tweaks", "Used to fine tune the behavior of Liquid Metals");
 			craftingBlackList = config.get("Tweaks", "Liquid Crafting blacklist", craftingBlackList, "Enter the ids of items you dont want my crafing table to make.").getIntList();
 			tweakRp2Alloy = config.get("Tweaks", "Edit rp2 alloy furnace recipes?", tweakRp2Alloy, "Removes the reclaimation recipies to avoid exploits.").getBoolean(tweakRp2Alloy);
+			grindingVersion = config.get("Tweaks", "Add grinding machines?", grindingVersion).getBoolean(grindingVersion);
 			
 			config.addCustomCategoryComment("Ingot Former Output", "Dont mess with these values unless you know what your doing.");
 			copperIngotOutput = config.get("Ingot Former Output", "Ingot output copper", copperIngotOutput).getInt();
@@ -131,30 +133,36 @@ public class DEFAULT_SETTINGS {
 	}
 	
 	public static void initBlocks() {
-		LM_Main.blockGrinder1 = new BlockGrinder1(blockGrinder1);
-		LM_Main.blockGrinder2 = new BlockGrinder2(blockGrinder2);
-		LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
+		if(grindingVersion) {
+			LM_Main.blockGrinder1 = new BlockGrinder1(blockGrinder1);
+			LM_Main.blockGrinder2 = new BlockGrinder2(blockGrinder2);
+			LM_Main.blockGrinder3 = new BlockGrinder3(blockGrinder3);
+			
+			GameRegistry.registerBlock(LM_Main.blockGrinder1, "LM.Grind1");
+			GameRegistry.registerBlock(LM_Main.blockGrinder2, "LM.Grind2");
+			GameRegistry.registerBlock(LM_Main.blockGrinder3, "LM.Grind3");
+			
+			LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
+			LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");
+			LanguageRegistry.addName(LM_Main.blockGrinder3, "Fine Grinder");
+			
+			GameRegistry.registerTileEntity(TileGrinder1.class, "Rock Pulverizer");
+			GameRegistry.registerTileEntity(TileGrinder2.class, "Rough Grinder");
+			GameRegistry.registerTileEntity(TileGrinder3.class, "Fine Grinder");
+		}
+		
 		LM_Main.blockFurnace = new BlockFurnace(blockFurnace);
 		LM_Main.blockIngotFormer = new BlockIngotFormer(blockIngotFormer);
 		LM_Main.blockCrafting = new BlockCraftingTable(blockCrafting);
 		
-		GameRegistry.registerBlock(LM_Main.blockGrinder1, "LM.Grind1");
-		GameRegistry.registerBlock(LM_Main.blockGrinder2, "LM.Grind2");
-		GameRegistry.registerBlock(LM_Main.blockGrinder3, "LM.Grind3");
 		GameRegistry.registerBlock(LM_Main.blockFurnace, "LM.Furnace");
 		GameRegistry.registerBlock(LM_Main.blockIngotFormer, "LM.IngotFormer");
 		GameRegistry.registerBlock(LM_Main.blockCrafting, "LM,LiquidCrafting");
 		
-		LanguageRegistry.addName(LM_Main.blockGrinder1, "Rock Pulverizer");
-		LanguageRegistry.addName(LM_Main.blockGrinder2, "Rough Grinder");
-		LanguageRegistry.addName(LM_Main.blockGrinder3, "Fine Grinder");
 		LanguageRegistry.addName(LM_Main.blockFurnace, "Arc Furnace");
 		LanguageRegistry.addName(LM_Main.blockIngotFormer, "Ingot Former");
 		LanguageRegistry.addName(LM_Main.blockCrafting, "Liquid Crafting Table");
 		
-		GameRegistry.registerTileEntity(TileGrinder1.class, "Rock Pulverizer");
-		GameRegistry.registerTileEntity(TileGrinder2.class, "Rough Grinder");
-		GameRegistry.registerTileEntity(TileGrinder3.class, "Fine Grinder");
 		GameRegistry.registerTileEntity(TileFurnace.class, "Arc Furnace");
 		GameRegistry.registerTileEntity(TileIngotFormer.class, "Ingot Former");
 		GameRegistry.registerTileEntity(TileCrafting.class, "Liquid Crafting Table");

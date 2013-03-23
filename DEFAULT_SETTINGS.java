@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.stream.events.Namespace;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -277,6 +279,24 @@ public class DEFAULT_SETTINGS {
 			Map.Entry m = (Map.Entry)it.next();
 			OreDictionary.registerOre("dust"+m.getValue(), new ItemStack(LM_Main.dust, 1, (Integer)m.getKey()));
 		}
+	}
+	
+	public static void readOreDict() {
+		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+		String[] names = OreDictionary.getOreNames();
+		for(int a = 0; a < names.length; a++) {
+			if(names[a].contains("ingot"))
+				System.out.println(names[a]);
+		}
+		for(int a = 0; a < names.length; a++) {
+			if(names[a].contains("ore"))
+				System.out.println(names[a]);
+		}
+		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+		for(int a = 0; a < names.length; a++) {
+			System.out.println(names[a]);
+		}
+		System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
 	}
 	
 	public static void versionCheck() {

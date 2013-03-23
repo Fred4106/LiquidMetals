@@ -25,10 +25,16 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+	private static String[] toPreload = {"Icons.png", "Acrfurnace.png", "grinder1.png", "IngotFormer.png", "LiquidCrafting.png", "Liquids.png", "Liquifier.png"};
+	private static String path = "/LM/gfx/LiquidMetal/";
+	
 	@Override
 	public void registerRenderers() {
 		super.registerRenderers();
-		MinecraftForgeClient.preloadTexture("/LM/gfx/LiquidMetal/Icons.png");
+		for(int a = 0; a < toPreload.length; a++) {
+			MinecraftForgeClient.preloadTexture(path+toPreload[a]);
+			System.out.println("[Liquid Metals] Preloaded \""+path+toPreload[a] + "\".");
+		}
 	}
 	
 	@Override

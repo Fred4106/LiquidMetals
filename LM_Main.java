@@ -138,6 +138,8 @@ public class LM_Main {
 		
 		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 2), new ItemStack(marker, 1, 0), new ItemStack(Item.dyePowder, 1, 4));
 		GameRegistry.addShapelessRecipe(new ItemStack(marker, 1, 2), new ItemStack(marker, 1, 1), new ItemStack(Item.dyePowder, 1, 4));
+		
+		//DEFAULT_SETTINGS.readOreDict();
 	}
 	
 }

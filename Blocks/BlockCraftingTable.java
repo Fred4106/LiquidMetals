@@ -33,7 +33,7 @@ public class BlockCraftingTable extends BlockContainer{
 		super(id, Material.iron);
 		setHardness(5F);
 		this.setBlockName("liquidCrafting");
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(LM_Main.tabBlocks);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ public class ItemBucket extends ItemLiquidMetal{
 	public ItemBucket(int i) {
 		super(i);
 		setTextureFile("/LiquidMetals/gfx/LiquidMetal/Liquids.png");
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(LM_Main.tabItems);
 		setMaxStackSize(1);
 		setContainerItem(Item.bucketEmpty);
 		setIconIndex(1);

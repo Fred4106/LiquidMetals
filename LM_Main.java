@@ -10,6 +10,7 @@ import buildcraft.BuildCraftCore;
 import buildcraft.BuildCraftFactory;
 import buildcraft.BuildCraftTransport;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidStack;
@@ -20,6 +21,7 @@ import LiquidMetals.Blocks.BlockGrinder1;
 import LiquidMetals.Blocks.BlockGrinder2;
 import LiquidMetals.Blocks.BlockGrinder3;
 import LiquidMetals.Blocks.BlockIngotFormer;
+import LiquidMetals.Blocks.DEBUGLiquidGen;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -67,6 +69,12 @@ public class LM_Main {
 	public static BlockFurnace blockFurnace;
 	public static BlockIngotFormer blockIngotFormer;
 	public static BlockCraftingTable blockCrafting;
+	public static DEBUGLiquidGen blockDebugLiquidGen;
+	
+	//start tabs
+	public static CreativeTabs tabItems;
+	public static CreativeTabs tabBlocks;
+	
 	
 	/**
 	 * The mod's pre-initialisation event hook. Deals with reading and/or initialising the configuration file
@@ -79,6 +87,7 @@ public class LM_Main {
 	public void preInitialise(FMLPreInitializationEvent event) {
 		DEFAULT_SETTINGS.readConfig(event.getSuggestedConfigurationFile());
 		DEFAULT_SETTINGS.setup();
+		DEFAULT_SETTINGS.initTabs();
 		DEFAULT_SETTINGS.initBlocks();
 		DEFAULT_SETTINGS.initItems();
 		DEFAULT_SETTINGS.setupLiquids();

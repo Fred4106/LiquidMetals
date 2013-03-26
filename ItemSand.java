@@ -14,7 +14,7 @@ public class ItemSand extends ItemLiquidMetal{
 
 	public ItemSand(int i) {
 		super(i);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(LM_Main.tabItems);
 		setMaxStackSize(64);
 		setIconIndex(1);
 		setItemName("Sand");

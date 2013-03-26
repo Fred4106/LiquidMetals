@@ -42,7 +42,7 @@ public class BlockGrinder1 extends BlockContainer{
 		super(par1, Material.iron);
 		setHardness(5F);
 		this.setBlockName("SmallGrinder");
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(LM_Main.tabBlocks);
 	}
 
 	@Override

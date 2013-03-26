@@ -33,12 +33,15 @@ import LiquidMetals.Blocks.BlockGrinder1;
 import LiquidMetals.Blocks.BlockGrinder2;
 import LiquidMetals.Blocks.BlockGrinder3;
 import LiquidMetals.Blocks.BlockIngotFormer;
+import LiquidMetals.Blocks.DEBUGLiquidGen;
+import LiquidMetals.Blocks.DEBUGLiquidGenTile;
 import LiquidMetals.Blocks.TileCrafting;
 import LiquidMetals.Blocks.TileFurnace;
 import LiquidMetals.Blocks.TileGrinder1;
 import LiquidMetals.Blocks.TileGrinder2;
 import LiquidMetals.Blocks.TileGrinder3;
 import LiquidMetals.Blocks.TileIngotFormer;
+import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -59,6 +62,7 @@ public class DEFAULT_SETTINGS {
 	public static int blockFurnace = 503;
 	public static int blockIngotFormer = 504;
 	public static int blockCrafting = 505;
+	public static int blockDebugLiquidGen = 506;
 	
 	public static int[] craftingBlackList = {Item.goldNugget.itemID, Block.blockGold.blockID, Block.blockSteel.blockID};
 	public static boolean tweakRp2Alloy = true;
@@ -113,6 +117,7 @@ public class DEFAULT_SETTINGS {
 			blockFurnace = config.get("Block Ids", "Arc Furnace", blockFurnace).getInt();
 			blockIngotFormer = config.get("Block Ids", "Ingot Former", blockIngotFormer).getInt();
 			blockCrafting = config.get("Block Ids", "Liquid Crafting", blockCrafting).getInt();
+			blockDebugLiquidGen = config.get("Block Ids", "DEBUG Liquid Gen", blockDebugLiquidGen).getInt();
 			
 			config.addCustomCategoryComment("Tweaks", "Used to fine tune the behavior of Liquid Metals");
 			craftingBlackList = config.get("Tweaks", "Liquid Crafting blacklist", craftingBlackList, "Enter the ids of items you dont want my crafing table to make.").getIntList();
@@ -156,18 +161,22 @@ public class DEFAULT_SETTINGS {
 		LM_Main.blockFurnace = new BlockFurnace(blockFurnace);
 		LM_Main.blockIngotFormer = new BlockIngotFormer(blockIngotFormer);
 		LM_Main.blockCrafting = new BlockCraftingTable(blockCrafting);
+		LM_Main.blockDebugLiquidGen = new DEBUGLiquidGen(blockDebugLiquidGen);
 		
 		GameRegistry.registerBlock(LM_Main.blockFurnace, "LM.Furnace");
 		GameRegistry.registerBlock(LM_Main.blockIngotFormer, "LM.IngotFormer");
-		GameRegistry.registerBlock(LM_Main.blockCrafting, "LM,LiquidCrafting");
+		GameRegistry.registerBlock(LM_Main.blockCrafting, "LM.LiquidCrafting");
+		GameRegistry.registerBlock(LM_Main.blockDebugLiquidGen, "LM.DebugLiquidGen");
 		
 		LanguageRegistry.addName(LM_Main.blockFurnace, "Arc Furnace");
 		LanguageRegistry.addName(LM_Main.blockIngotFormer, "Ingot Former");
 		LanguageRegistry.addName(LM_Main.blockCrafting, "Liquid Crafting Table");
+		LanguageRegistry.addName(LM_Main.blockDebugLiquidGen, "Debug Liquid Gen");
 		
 		GameRegistry.registerTileEntity(TileFurnace.class, "Arc Furnace");
 		GameRegistry.registerTileEntity(TileIngotFormer.class, "Ingot Former");
 		GameRegistry.registerTileEntity(TileCrafting.class, "Liquid Crafting Table");
+		GameRegistry.registerTileEntity(DEBUGLiquidGenTile.class, "Debug liquid gen");
 	}
 	
 	public static void initItems() {
@@ -178,6 +187,21 @@ public class DEFAULT_SETTINGS {
 		LM_Main.molten = new ItemMolten(liquid);
 		LM_Main.marker = new ItemMarker(marker);
 		
+	}
+	
+	public static void initTabs() {
+		LM_Main.tabBlocks = new CreativeTabs("tabBlocks") {
+            public ItemStack getIconItemStack() {
+                return new ItemStack(LM_Main.blockFurnace, 1, 0);
+            }
+		};
+		LM_Main.tabItems = new CreativeTabs("tabItems") {
+            public ItemStack getIconItemStack() {
+                return new ItemStack(LM_Main.marker, 1, 0);
+            }
+		};
+		LanguageRegistry.instance().addStringLocalization("itemGroup.tabItems", "en_US", "Liquid Metals Items");
+		LanguageRegistry.instance().addStringLocalization("itemGroup.tabBlocks", "en_US", "Liquid Metals Blocks");
 	}
 	
 	public static void setupLiquids() {

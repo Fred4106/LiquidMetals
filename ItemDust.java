@@ -14,7 +14,7 @@ public class ItemDust extends ItemLiquidMetal{
 
 	public ItemDust(int i) {
 		super(i);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(LM_Main.tabItems);
 		setMaxStackSize(64);
 		setIconIndex(2);
 		setItemName("Dust");

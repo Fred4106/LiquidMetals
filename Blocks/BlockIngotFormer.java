@@ -36,7 +36,7 @@ public class BlockIngotFormer extends BlockContainer{
 		super(par1, Material.iron);
 		setHardness(5F);
 		this.setBlockName("ingotFormer");
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(LM_Main.tabBlocks);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class BlockIngotFormer extends BlockContainer{
             float var10 = 0.52F;
             float var11 = par5Random.nextFloat() * 0.6F - 0.3F;
 
-            if (var6 == 2)
+            if (var6 == 1)
             {
                 par1World.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
                 //par1World.spawnParticle("flame", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
@@ -80,7 +80,7 @@ public class BlockIngotFormer extends BlockContainer{
                 par1World.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
                 //par1World.spawnParticle("flame", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
             }
-            else if (var6 == 1)
+            else if (var6 == 2)
             {
                 par1World.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
                 //par1World.spawnParticle("flame", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);

@@ -14,7 +14,7 @@ public class ItemGravel extends ItemLiquidMetal{
 
 	public ItemGravel(int i) {
 		super(i);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(LM_Main.tabItems);
 		setMaxStackSize(64);
 		setIconIndex(0);
 		setItemName("Gravel");

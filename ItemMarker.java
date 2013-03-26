@@ -14,7 +14,7 @@ public class ItemMarker extends ItemLiquidMetal{
 
 	public ItemMarker(int i) {
 		super(i);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(LM_Main.tabItems);
 		setMaxStackSize(8);
 		setIconIndex(240);
 		setItemName("Marker");

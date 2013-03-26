@@ -30,7 +30,7 @@ public class BlockFurnace extends BlockContainer{
 		super(par1, Material.iron);
 		setHardness(5F);
 		this.setBlockName("arcFurnace");
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(LM_Main.tabBlocks);
 	}
 
 	@Override
